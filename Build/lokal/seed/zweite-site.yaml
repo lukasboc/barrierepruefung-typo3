@@ -1,0 +1,17 @@
+# Zweite Site je Instanz: eigene Wurzelseite (100) unter der Adresse 127.0.0.1.
+# lokal.sh ersetzt __PORT__ und __SET__ (Sitepackage-Set der Fassung).
+base: 'http://127.0.0.1:__PORT__/'
+errorHandling: {  }
+languages:
+  -
+    title: Deutsch
+    enabled: true
+    languageId: 0
+    base: /
+    locale: de_DE.UTF-8
+    navigationTitle: Deutsch
+    flag: de
+rootPageId: 100
+routes: {  }
+dependencies:
+  - __SET__

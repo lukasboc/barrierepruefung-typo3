@@ -1,0 +1,24 @@
+# Zwei lokale TYPO3-Instanzen (13.4 auf 8089, 14.3 auf 8090). Die Erweiterung liegt unter /ext
+# (nur lesbar) und wird per Pfad-Repository eingebunden. Bedienung: ./lokal.sh
+name: barrierepruefung-lokal
+
+x-typo3: &typo3
+  build: .
+  environment:
+    TYPO3_CONTEXT: Development
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+services:
+  v13:
+    <<: *typo3
+    ports: ["8089:80"]
+    volumes:
+      - ../..:/ext:ro
+      - ./v13:/var/www/projekt
+  v14:
+    <<: *typo3
+    ports: ["8090:80"]
+    volumes:
+      - ../..:/ext:ro
+      - ./v14:/var/www/projekt
