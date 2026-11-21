@@ -26,3 +26,6 @@ services:
 
   Lubomedia\Barrierepruefung\Verbindung\Verbindungen:
     public: true
+
+  Lubomedia\Barrierepruefung\Verbindung\Verifikation:
+    public: true
