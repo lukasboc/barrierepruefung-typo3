@@ -12,6 +12,13 @@ final class Tresor
 {
     public function __construct(private readonly string $encryptionKey) {}
 
+    public static function ausInstallation(): self
+    {
+        $schluessel = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] ?? '';
+
+        return new self(is_string($schluessel) ? $schluessel : '');
+    }
+
     public function verschluesseln(string $klar): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);

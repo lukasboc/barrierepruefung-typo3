@@ -16,3 +16,13 @@ services:
   Lubomedia\Barrierepruefung\Api\Client:
     arguments:
       $http: '@barrierepruefung.guzzle'
+
+  # Der Schlüssel wird bei jeder Auflösung gelesen, nicht beim Übersetzen des Containers.
+  Lubomedia\Barrierepruefung\Verbindung\Tresor:
+    factory: ['Lubomedia\Barrierepruefung\Verbindung\Tresor', 'ausInstallation']
+
+  Lubomedia\Barrierepruefung\Verbindung\Verbinden:
+    public: true
+
+  Lubomedia\Barrierepruefung\Verbindung\Verbindungen:
+    public: true
