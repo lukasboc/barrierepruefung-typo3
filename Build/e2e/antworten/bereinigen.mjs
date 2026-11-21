@@ -34,6 +34,8 @@ function ausschnitt(html) {
 }
 
 function gehe(o, schluessel = '') {
+  // Name der Admin, die das Freigaberecht erteilt hat (data.token.publish.granted_by)
+  if (schluessel === 'granted_by' && typeof o === 'string') return 'Beispiel Person';
   if (typeof o === 'string') return schluessel === 'html_snippet' ? text(ausschnitt(o)) : text(o);
   if (Array.isArray(o)) return o.map((v) => gehe(v, schluessel));
   if (o && typeof o === 'object') return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, gehe(v, k)]));

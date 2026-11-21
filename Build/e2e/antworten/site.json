@@ -20,6 +20,21 @@
       "open_findings": 412,
       "report_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000"
     },
-    "running_scan": null
+    "running_scan": null,
+    "token": {
+      "abilities": [
+        "sites:read",
+        "scans:read",
+        "scans:write",
+        "findings:read",
+        "declaration:read",
+        "declaration:prepare",
+        "declaration:publish"
+      ],
+      "publish": {
+        "state": "erlaubt",
+        "granted_by": "Beispiel Person"
+      }
+    }
   }
 }
