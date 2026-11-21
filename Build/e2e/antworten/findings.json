@@ -1,0 +1,186 @@
+{
+  "data": [
+    {
+      "rule": "axe.button-name",
+      "title": "Schaltflächen müssen wahrnehmbaren Text enthalten.",
+      "remediation": null,
+      "severity": "critical",
+      "success_criteria": [
+        "4.1.2"
+      ],
+      "advisory": false,
+      "state": "open",
+      "occurrences": 18,
+      "pages": 9,
+      "page_urls": [
+        "http://localhost:8089/",
+        "http://localhost:8089/welcome",
+        "http://localhost:8089/invoices",
+        "http://localhost:8089/settings",
+        "http://localhost:8089/invoice/new",
+        "http://localhost:8089/projects",
+        "http://localhost:8089/project",
+        "http://localhost:8089/invoice/edit/:id",
+        "http://localhost:8089/projects/edit"
+      ]
+    },
+    {
+      "rule": "axe.color-contrast",
+      "title": "Zu geringer Kontrast",
+      "remediation": "Erhöhen Sie den Kontrast auf mindestens 4,5:1 (bzw. 3:1 bei großer Schrift).",
+      "severity": "serious",
+      "success_criteria": [
+        "1.4.3"
+      ],
+      "advisory": false,
+      "state": "open",
+      "occurrences": 267,
+      "pages": 111,
+      "page_urls": [
+        "http://localhost:8089/welcome",
+        "http://localhost:8089/",
+        "http://localhost:8089/user-documentation/standard-invoice-information",
+        "http://localhost:8089/user-documentation/create-e-invoice",
+        "http://localhost:8089/user-documentation/create-invoice",
+        "http://localhost:8089/invoices",
+        "http://localhost:8089/imprint",
+        "http://localhost:8089/settings",
+        "http://localhost:8089/invoice/new",
+        "http://localhost:8089/user-documentation/delete-timer",
+        "http://localhost:8089/user-documentation/invoice-terminology",
+        "http://localhost:8089/user-documentation/first-steps",
+        "http://localhost:8089/projects",
+        "http://localhost:8089/user-documentation",
+        "http://localhost:8089/user-documentation/introduction",
+        "http://localhost:8089/user-documentation/edit-invoice-status",
+        "http://localhost:8089/user-documentation/edit-project",
+        "http://localhost:8089/user-documentation/standard-invoice-sender",
+        "http://localhost:8089/project",
+        "http://localhost:8089/user-documentation/create-project"
+      ]
+    },
+    {
+      "rule": "axe.label",
+      "title": "Formularfeld ohne Beschriftung",
+      "remediation": "Verknüpfen Sie ein <label for=\"…\"> mit dem Feld oder setzen Sie aria-label.",
+      "severity": "critical",
+      "success_criteria": [
+        "4.1.2"
+      ],
+      "advisory": false,
+      "state": "open",
+      "occurrences": 30,
+      "pages": 30,
+      "page_urls": [
+        "http://localhost:8089/user-documentation/create-invoice",
+        "http://localhost:8089/",
+        "http://localhost:8089/welcome",
+        "http://localhost:8089/user-documentation/standard-invoice-information",
+        "http://localhost:8089/user-documentation/create-e-invoice",
+        "http://localhost:8089/invoices",
+        "http://localhost:8089/imprint",
+        "http://localhost:8089/settings",
+        "http://localhost:8089/invoice/new",
+        "http://localhost:8089/user-documentation/delete-timer",
+        "http://localhost:8089/user-documentation/invoice-terminology",
+        "http://localhost:8089/user-documentation/first-steps",
+        "http://localhost:8089/user-documentation/edit-invoice-status",
+        "http://localhost:8089/projects",
+        "http://localhost:8089/user-documentation",
+        "http://localhost:8089/user-documentation/introduction",
+        "http://localhost:8089/user-documentation/edit-project",
+        "http://localhost:8089/user-documentation/standard-invoice-sender",
+        "http://localhost:8089/project",
+        "http://localhost:8089/user-documentation/create-project"
+      ]
+    },
+    {
+      "rule": "own.missing-accessibility-statement",
+      "title": "Keine Erklärung zur Barrierefreiheit verlinkt",
+      "remediation": "Veröffentlichen Sie die Erklärung und verlinken Sie sie dauerhaft, üblicherweise im Footer.",
+      "severity": "critical",
+      "success_criteria": [],
+      "advisory": false,
+      "state": "open",
+      "occurrences": 1,
+      "pages": 1,
+      "page_urls": [
+        "http://localhost:8089/"
+      ]
+    },
+    {
+      "rule": "own.missing-skip-link",
+      "title": "Kein Sprunglink zum Hauptinhalt",
+      "remediation": "Setzen Sie als erstes fokussierbares Element einen Link auf den Hauptinhalt.",
+      "severity": "moderate",
+      "success_criteria": [
+        "2.4.1"
+      ],
+      "advisory": false,
+      "state": "open",
+      "occurrences": 30,
+      "pages": 30,
+      "page_urls": [
+        "http://localhost:8089/user-documentation/create-project",
+        "http://localhost:8089/",
+        "http://localhost:8089/user-documentation/create-invoice",
+        "http://localhost:8089/welcome",
+        "http://localhost:8089/user-documentation/standard-invoice-information",
+        "http://localhost:8089/user-documentation/create-e-invoice",
+        "http://localhost:8089/invoices",
+        "http://localhost:8089/imprint",
+        "http://localhost:8089/settings",
+        "http://localhost:8089/invoice/new",
+        "http://localhost:8089/user-documentation/delete-timer",
+        "http://localhost:8089/user-documentation/invoice-terminology",
+        "http://localhost:8089/user-documentation/first-steps",
+        "http://localhost:8089/projects",
+        "http://localhost:8089/user-documentation",
+        "http://localhost:8089/user-documentation/introduction",
+        "http://localhost:8089/user-documentation/edit-invoice-status",
+        "http://localhost:8089/user-documentation/edit-project",
+        "http://localhost:8089/user-documentation/standard-invoice-sender",
+        "http://localhost:8089/project"
+      ]
+    },
+    {
+      "rule": "own.reflow-320",
+      "title": "Horizontales Scrollen bei 320 Pixel Breite",
+      "remediation": "Vermeiden Sie feste Breiten; nutzen Sie flexible Layouts und max-width: 100%.",
+      "severity": "critical",
+      "success_criteria": [
+        "1.4.10"
+      ],
+      "advisory": false,
+      "state": "open",
+      "occurrences": 66,
+      "pages": 30,
+      "page_urls": [
+        "http://localhost:8089/",
+        "http://localhost:8089/user-documentation/create-invoice",
+        "http://localhost:8089/welcome",
+        "http://localhost:8089/user-documentation/standard-invoice-information",
+        "http://localhost:8089/user-documentation/create-e-invoice",
+        "http://localhost:8089/user-documentation/first-steps",
+        "http://localhost:8089/invoices",
+        "http://localhost:8089/imprint",
+        "http://localhost:8089/settings",
+        "http://localhost:8089/invoice/new",
+        "http://localhost:8089/user-documentation/delete-timer",
+        "http://localhost:8089/user-documentation/invoice-terminology",
+        "http://localhost:8089/projects",
+        "http://localhost:8089/user-documentation",
+        "http://localhost:8089/user-documentation/introduction",
+        "http://localhost:8089/user-documentation/edit-invoice-status",
+        "http://localhost:8089/user-documentation/edit-project",
+        "http://localhost:8089/user-documentation/standard-invoice-sender",
+        "http://localhost:8089/project",
+        "http://localhost:8089/user-documentation/create-project"
+      ]
+    }
+  ],
+  "meta": {
+    "total_rules": 6,
+    "total_findings": 412
+  }
+}

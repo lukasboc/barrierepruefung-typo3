@@ -7,3 +7,10 @@
 .DS_Store
 /public/
 /var/
+/Build/lokal/v1?/vendor/
+/Build/lokal/v1?/public/
+/Build/lokal/v1?/var/
+/Build/e2e/node_modules/
+/Build/e2e/ergebnisse/
+/Build/lokal/v1?/config/
+/Build/lokal/v1?/composer.lock

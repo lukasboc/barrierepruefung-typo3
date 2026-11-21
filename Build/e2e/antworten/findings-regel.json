@@ -1,0 +1,340 @@
+{
+  "data": [
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".col-span-6.md\\:col-span-3:nth-child(1) > .font-chillax.text-gray-500.md\\:text-lg",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 4,49:1 statt 4,5:1",
+        "Schrift 20px"
+      ],
+      "colors": {
+        "Text": "#6a7282",
+        "Hintergrund": "#f2f7fe"
+      },
+      "summary": "Element has insufficient color contrast of 4.49 (foreground color: #6a7282, background color: #f2f7fe, font size: 15.0pt (20px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<p class=\"max-w-2xl font-chillax text-gray-500 md:text-lg lg:text-xl\">Beispieltext</p>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".border-t.bg-base-100.border-base-200 > .lg\\:px-6.mt-5.text-left > .pb-6.text-base-content\\/60.justify-center",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<span class=\"flex items-center justify-center text-sm text-center pb-6 text-base-content/60\">Beispieltext</span>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".border-t.bg-base-100.border-base-200 > .lg\\:px-6.mt-5.text-left > p",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<p class=\"text-sm text-base-content/60\">Beispieltext</p>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".lg\\:max-w-md > .lg\\:px-6.mt-5.text-left > .pb-6.text-base-content\\/60.justify-center",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<span class=\"flex items-center justify-center text-sm text-center pb-6 text-base-content/60\">Beispieltext</span>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".lg\\:max-w-md > .lg\\:px-6.mt-5.text-left > p",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<p class=\"text-sm text-base-content/60\">Beispieltext</p>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".lg\\:px-8 > .pb-6.text-base-content\\/60.justify-center",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<span class=\"flex items-center justify-center text-sm text-center pb-6 text-base-content/60\">Beispieltext</span>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".pl-2",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<p class=\"pl-2 text-sm text-base-content/60\">Beispieltext</p>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": "div:nth-child(1) > .footer-title",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<span class=\"footer-title\">Beispieltext</span>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": "div:nth-child(2) > .footer-title",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,04:1 statt 4,5:1",
+        "Schrift 14px"
+      ],
+      "colors": {
+        "Text": "#8895a5",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": "Element has insufficient color contrast of 3.04 (foreground color: #8895a5, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "html_snippet": "<span class=\"footer-title\">Beispieltext</span>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-1 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,2:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-2 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,3:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-3 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,4:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-4 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,5:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-5 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,6:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-6 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,7:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-7 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,8:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-8 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 2,9:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-9 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-10 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,1:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    },
+    {
+      "page_url": "http://localhost:8089/",
+      "selector": ".sichtpruefung-bereich-11 > .eine-lange-klasse-zum-umbrechen > a.verweis",
+      "ui_state": null,
+      "viewport": null,
+      "measurements": [
+        "Kontrast 3,2:1 statt 4,5:1"
+      ],
+      "colors": {
+        "Text": "#9aa0a6",
+        "Hintergrund": "#ffffff"
+      },
+      "summary": null,
+      "html_snippet": "<a class=\"verweis\" href=\"/beispiel\">Beispieltext</a>",
+      "has_screenshot": false
+    }
+  ],
+  "meta": {
+    "rule": "axe.color-contrast",
+    "total": 267,
+    "limit": 20,
+    "offset": 0,
+    "report_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000"
+  }
+}

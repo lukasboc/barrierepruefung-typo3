@@ -1,0 +1,15 @@
+{
+  "data": [],
+  "meta": {
+    "total": 0,
+    "open": 0,
+    "answers": {
+      "passed": "erfüllt",
+      "failed": "nicht erfüllt",
+      "not_applicable": "trifft nicht zu",
+      "unanswered": "offen"
+    },
+    "note_hint": "Notiz — steht im Prüfbericht, nicht in der Erklärung",
+    "web_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000/pruefschritte"
+  }
+}

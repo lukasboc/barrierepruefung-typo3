@@ -1,0 +1,19 @@
+{
+  "_von_hand": true,
+  "data": {
+    "id": "01STUBSCAN0000000000000000",
+    "status": "queued",
+    "trigger": "api",
+    "finished": false,
+    "completeness": null,
+    "pages_total": 0,
+    "pages_assessed": 0,
+    "open_findings": 0,
+    "failed_criteria": [],
+    "diff": null,
+    "plan": "starter",
+    "created_at": "2026-11-21T10:00:00+00:00",
+    "finished_at": null,
+    "report_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "data": {
+    "scan": {
+      "id": "01STUBSCAN0000000000000000",
+      "status": "completed",
+      "finished_at": "2026-08-31T14:58:26+00:00",
+      "report_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000",
+      "findings_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000/befunde"
+    },
+    "document": {
+      "type": "public_sector_statement",
+      "title": "Erklärung zur Barrierefreiheit (öffentliche Stelle)",
+      "explanation": "Sie haben angegeben, dass eine öffentliche Stelle erklärt. Dann gelten die Pflichten für öffentliche Stellen."
+    },
+    "steps": [
+      {
+        "key": "pruefung",
+        "title": "Prüfung abgeschlossen",
+        "state": "erledigt",
+        "reasons": [],
+        "web_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000"
+      },
+      {
+        "key": "pruefschritte",
+        "title": "Prüfschritte beantworten",
+        "state": "erledigt",
+        "reasons": [],
+        "web_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000/pruefschritte"
+      },
+      {
+        "key": "verantwortliche_stelle",
+        "title": "Wer erklärt",
+        "state": "erledigt",
+        "reasons": [],
+        "web_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000/erklaerung#angaben"
+      },
+      {
+        "key": "betroffenheit",
+        "title": "Betroffenheits-Check",
+        "state": "erledigt",
+        "reasons": [],
+        "web_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000/erklaerung#angaben"
+      },
+      {
+        "key": "domain",
+        "title": "Domain bestätigen",
+        "state": "erledigt",
+        "reasons": [],
+        "web_url": "https://dienst.example/websites/01STUBSITE0000000000000000/einstellungen#bestaetigung-titel"
+      },
+      {
+        "key": "pflichtangaben",
+        "title": "Pflichtangaben der Erklärung",
+        "state": "erledigt",
+        "reasons": [],
+        "web_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000/erklaerung/veroeffentlichen"
+      }
+    ],
+    "done": 6,
+    "total": 6,
+    "next": null,
+    "published": {
+      "version": 4,
+      "published_at": "2026-10-08T21:29:51+00:00",
+      "outdated": false,
+      "public_url": "https://dienst.example/e/beispiel-test",
+      "pdf_url": "https://dienst.example/e/beispiel-test.pdf"
+    }
+  }
+}

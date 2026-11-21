@@ -1,0 +1,94 @@
+{
+  "data": {
+    "name": "",
+    "inherited_name": "Beispiel GmbH",
+    "effective_name": "Beispiel GmbH",
+    "applies_to": "public_body",
+    "subdivision": "NI",
+    "subdivision_required": false,
+    "subdivisions": [
+      {
+        "key": "BUND",
+        "label": "Bund"
+      },
+      {
+        "key": "BW",
+        "label": "Baden-Württemberg"
+      },
+      {
+        "key": "BY",
+        "label": "Bayern"
+      },
+      {
+        "key": "BE",
+        "label": "Berlin"
+      },
+      {
+        "key": "BB",
+        "label": "Brandenburg"
+      },
+      {
+        "key": "HB",
+        "label": "Bremen"
+      },
+      {
+        "key": "HH",
+        "label": "Hamburg"
+      },
+      {
+        "key": "HE",
+        "label": "Hessen"
+      },
+      {
+        "key": "MV",
+        "label": "Mecklenburg-Vorpommern"
+      },
+      {
+        "key": "NI",
+        "label": "Niedersachsen"
+      },
+      {
+        "key": "NW",
+        "label": "Nordrhein-Westfalen"
+      },
+      {
+        "key": "RP",
+        "label": "Rheinland-Pfalz"
+      },
+      {
+        "key": "SL",
+        "label": "Saarland"
+      },
+      {
+        "key": "SN",
+        "label": "Sachsen"
+      },
+      {
+        "key": "ST",
+        "label": "Sachsen-Anhalt"
+      },
+      {
+        "key": "SH",
+        "label": "Schleswig-Holstein"
+      },
+      {
+        "key": "TH",
+        "label": "Thüringen"
+      }
+    ],
+    "options": [
+      {
+        "key": "public_body",
+        "label": "Öffentliche Stelle",
+        "description": "Behörde, Kommune, Hochschule, Anstalt oder Körperschaft des öffentlichen Rechts — und Vereine, Verbände und Stiftungen, die überwiegend öffentlich finanziert oder beaufsichtigt werden."
+      },
+      {
+        "key": "business",
+        "label": "Privatwirtschaft und alle übrigen",
+        "description": "Unternehmen, Vereine, Verbände, Stiftungen, Einzelpersonen — unabhängig von ihrer Größe."
+      }
+    ],
+    "hint": "Davon hängt ab, welches Dokument entsteht — und nach welchem Recht.",
+    "settings_url": "https://dienst.example/websites/01STUBSITE0000000000000000/einstellungen#anbieter-titel"
+  }
+}

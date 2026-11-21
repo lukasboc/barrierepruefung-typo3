@@ -1,0 +1,10 @@
+{
+  "_von_hand": true,
+  "data": {
+    "version": 2,
+    "conformance_status": "partial",
+    "published_at": "2026-11-21T10:00:00+00:00",
+    "public_url": "https://dienst.example/e/beispiel-test",
+    "pdf_url": "https://dienst.example/e/beispiel-test.pdf"
+  }
+}

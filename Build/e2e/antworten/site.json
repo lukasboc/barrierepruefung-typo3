@@ -1,0 +1,25 @@
+{
+  "data": {
+    "id": "01STUBSITE0000000000000000",
+    "base_url": "http://localhost:8089",
+    "verified": true,
+    "verified_at": "2026-09-21T15:49:48+00:00",
+    "schedule": "none",
+    "next_run_at": null,
+    "quota": {
+      "metric": "pages",
+      "used": 0,
+      "limit": 150,
+      "remaining": 150,
+      "period_end": "2026-12-20"
+    },
+    "latest_scan": {
+      "id": "01STUBSCAN0000000000000000",
+      "status": "completed",
+      "finished_at": "2026-08-31T14:58:26+00:00",
+      "open_findings": 412,
+      "report_url": "https://dienst.example/pruefung/01STUBSCAN0000000000000000"
+    },
+    "running_scan": null
+  }
+}

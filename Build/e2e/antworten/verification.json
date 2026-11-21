@@ -1,0 +1,16 @@
+{
+  "data": {
+    "meta_tag": {
+      "name": "a11y-site-verification",
+      "content": "STUB-PLATZHALTER"
+    },
+    "file": {
+      "path": "/.well-known/a11y-site-verification.txt",
+      "content": "STUB-PLATZHALTER"
+    },
+    "dns_txt": {
+      "name": "_a11y-verify.beispiel.test",
+      "content": "STUB-PLATZHALTER"
+    }
+  }
+}
