@@ -102,6 +102,16 @@ final class ClientTest extends UnitTestCase
     }
 
     #[Test]
+    public function ungueltigeAdresseWirftNicht(): void
+    {
+        $antwort = $this->client([new Response(200, [], '{}')])
+            ->get(new Zugang('https://dienst .example/api/v1', 'site1', 't'), '/x');
+
+        self::assertSame(0, $antwort->status);
+        self::assertSame('nicht_erreichbar', $antwort->problem?->reason);
+    }
+
+    #[Test]
     public function zeitlimitGehtMit(): void
     {
         $this->client([new Response(200, [], '{}')])->get($this->zugang(), '/x', zeitlimit: 3.0);

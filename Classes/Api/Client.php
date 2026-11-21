@@ -67,8 +67,11 @@ final class Client
 
         try {
             $antwort = $this->http->request($methode, rtrim($z->dienstUrl, '/') . '/' . ltrim($pfad, '/'), $optionen);
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException) {
             return $this->netzfehler('Der Dienst ist nicht erreichbar.');
+        } catch (\InvalidArgumentException) {
+            // Eine unlesbare Adresse (Leerzeichen, fehlende Teile) wirft schon beim Zusammenbauen des Uri.
+            return $this->netzfehler('Die Adresse des Dienstes ist ungültig.');
         }
 
         return $this->auswerten($antwort);
