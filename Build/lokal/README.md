@@ -22,7 +22,7 @@ Build/lokal/lokal.sh runter                 # stoppen (Daten bleiben)
 cd Build/lokal && docker compose down -v    # aufräumen
 ```
 
-Jede Instanz hat zwei Sites: `main` (Basis `http://localhost:<Port>/`) und `zweite-site` (Basis
+Jede Instanz hat zwei Sites: `main` in 13.4 bzw. `camino` in 14.3 (Basis `http://localhost:<Port>/`) und `zweite-site` (Basis
 `http://127.0.0.1:<Port>/`, Wurzelseite 100 mit drei Unterseiten aus `seed/seiten.sql`).
 
 ## Sitepackage je LTS

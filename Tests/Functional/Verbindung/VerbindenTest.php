@@ -277,6 +277,45 @@ final class VerbindenTest extends FunctionalTestCase
         self::assertNull($v->fuerSite('stadt'));
     }
 
+    #[Test]
+    public function ungueltigeWebsiteKennungHatEigenenGrund(): void
+    {
+        foreach (['', '   ', '01SITE/../x', 'ä01'] as $kennung) {
+            $ergebnis = $this->verbinden([])->verbinden($this->site(), self::DIENST, $kennung, 't');
+            self::assertFalse($ergebnis->ok);
+            self::assertSame('site_id_ungueltig', $ergebnis->grund, $kennung);
+            self::assertSame([], $this->anfragen);
+        }
+        $ergebnis = $this->verbinden([])->verbinden($this->site(), 'kein-url', '01SITE', 't');
+        self::assertSame('dienst_adresse_ungueltig', $ergebnis->grund);
+    }
+
+    #[Test]
+    public function leeresTokenWirdVorDemVerschluesselnAbgewiesen(): void
+    {
+        foreach (['', "  \n"] as $token) {
+            $ergebnis = $this->verbinden([])->verbinden($this->site(), self::DIENST, '01SITE', $token);
+            self::assertFalse($ergebnis->ok);
+            self::assertSame('token_fehlt', $ergebnis->grund);
+            self::assertSame([], $this->anfragen);
+            self::assertSame(0, $this->zeilen());
+        }
+    }
+
+    #[Test]
+    public function ohneEncryptionKeyKeinAusnahmeSondernGrund(): void
+    {
+        $this->verbinden([$this->website(), $this->nachweis()]);
+        $verbinden = new Verbinden($this->get(\Lubomedia\Barrierepruefung\Api\Client::class), $this->get(Verbindungen::class), new Tresor(''));
+
+        $ergebnis = $verbinden->verbinden($this->site(), self::DIENST, '01SITE', 'tok-123');
+
+        self::assertFalse($ergebnis->ok);
+        self::assertSame('schluessel_fehlt', $ergebnis->grund);
+        self::assertSame([], $this->anfragen);
+        self::assertSame(0, $this->zeilen());
+    }
+
     private function kontext(string $name): void
     {
         $r = new \ReflectionProperty(Environment::class, 'context');

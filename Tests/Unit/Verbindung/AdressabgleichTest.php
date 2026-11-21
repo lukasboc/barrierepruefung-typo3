@@ -27,6 +27,11 @@ final class AdressabgleichTest extends UnitTestCase
             'Dienst ohne Host' => ['https://stadt.de', 'stadt', false],
             'IDN gegen Punycode' => ['https://müller.de', 'https://xn--mller-kva.de', true],
             'anderer Host' => ['https://stadt.de', 'https://andere.de', false],
+            'anderer Port auf demselben Host' => ['https://localhost:8089', 'https://localhost:8090', false],
+            'gleicher Port' => ['http://localhost:8089/', 'http://localhost:8089', true],
+            'Port nur auf einer Seite' => ['https://stadt.de:8443/', 'https://stadt.de', false],
+            '443 gilt als kein Port' => ['https://stadt.de:443/', 'https://stadt.de', true],
+            '80 gilt als kein Port' => ['http://stadt.de:80', 'https://www.stadt.de', true],
         ];
     }
 

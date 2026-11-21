@@ -15,6 +15,11 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 /**
  * Beantwortet `/.well-known/a11y-site-verification.txt` für jede Site mit Verbindung, auf jedem Host,
  * auf den die Site auflöst. Der Rumpf ist der Dateitoken – nicht der Meta-Token.
+ *
+ * Grenze: Die Datei gibt es nur am Wurzelpfad des Hosts. Liegt die Site unter einem Pfad (Basis
+ * `https://stadt.de/museum/`), löst `/.well-known/…` nicht auf diese Site auf – und der Dienst fragt die Datei
+ * ohnehin immer am Wurzelpfad des Hosts ab. Für solche Sites gelingt der Nachweis nur über das Meta-Element
+ * der Startseite (VerifikationsMeta); das Modul sagt das an „Domain“.
  */
 final class VerifikationsDatei implements MiddlewareInterface
 {

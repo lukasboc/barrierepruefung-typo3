@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Lubomedia\Barrierepruefung\Verbindung;
 
 /**
- * Gehört die Adresse der TYPO3-Site zu der Website, die der Dienst kennt? Verglichen wird der Host
- * (Punycode, kleingeschrieben, ohne führendes „www.“), nicht Schema, Port oder Pfad: der Nachweis gelingt
- * ohnehin nur auf dem Host, den der Dienst abfragt.
+ * Gehört die Adresse der TYPO3-Site zu der Website, die der Dienst kennt? Verglichen werden Host (Punycode,
+ * kleingeschrieben, ohne führendes „www.“) und Port, nicht Schema oder Pfad: der Nachweis gelingt nur auf dem
+ * Host und Port, den der Dienst abfragt. 80, 443 und ein fehlender Port gelten gleich als „kein Port“.
  */
 final class Adressabgleich
 {
@@ -16,7 +16,20 @@ final class Adressabgleich
         $a = self::host($typo3Basis);
         $b = self::host($dienstBasis);
 
-        return $a !== null && $a === $b;
+        return $a !== null && $a === $b && self::port($typo3Basis) === self::port($dienstBasis);
+    }
+
+    /**
+     * Nicht-Standard-Port oder null (kein Port, 80 oder 443).
+     */
+    public static function port(string $url): ?int
+    {
+        $port = parse_url(trim($url), PHP_URL_PORT);
+        if (!is_int($port) || $port === 80 || $port === 443) {
+            return null;
+        }
+
+        return $port;
     }
 
     /**

@@ -31,8 +31,20 @@ final class Verbinden
         $teile = parse_url($dienstUrl);
         $schema = is_array($teile) ? strtolower((string)($teile['scheme'] ?? '')) : '';
         if (!is_array($teile) || !in_array($schema, ['http', 'https'], true) || ($teile['host'] ?? '') === ''
-            || preg_match('/\s/', $dienstUrl) === 1 || $siteId === '' || preg_match('/[^A-Za-z0-9_-]/', $siteId) === 1) {
+            || preg_match('/\s/', $dienstUrl) === 1) {
             return Verbindungsergebnis::abgelehnt('dienst_adresse_ungueltig');
+        }
+        if ($siteId === '' || preg_match('/[^A-Za-z0-9_-]/', $siteId) === 1) {
+            return Verbindungsergebnis::abgelehnt('site_id_ungueltig');
+        }
+        if ($token === '') {
+            return Verbindungsergebnis::abgelehnt('token_fehlt');
+        }
+        try {
+            // Vor jeder Anfrage: ohne encryptionKey lässt sich der Token nicht sicher ablegen.
+            $geheim = $this->tresor->verschluesseln($token);
+        } catch (TresorFehler) {
+            return Verbindungsergebnis::abgelehnt('schluessel_fehlt');
         }
         if ($schema === 'http' && !Environment::getContext()->isDevelopment()) {
             return Verbindungsergebnis::abgelehnt('dienst_unsicher');
@@ -71,7 +83,7 @@ final class Verbinden
             $site->getIdentifier(),
             $siteId,
             $dienstUrl,
-            $this->tresor->verschluesseln($token),
+            $geheim,
             is_array($faehigkeiten) ? $faehigkeiten : [],
             (string)($nachweis->daten['data']['meta_tag']['content'] ?? ''),
             (string)($nachweis->daten['data']['file']['content'] ?? ''),

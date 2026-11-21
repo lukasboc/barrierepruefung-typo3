@@ -40,6 +40,9 @@ einrichten() {
     --admin-username="$ADMIN_NAME" --admin-user-password="$ADMIN_PASSWORT" --admin-email=admin@example.org \
     --project-name="Barrierepruefung lokal $v" --create-site="http://localhost:$port/" \
     --server-type=apache --force
+  # Tabellen der Erweiterungen (u. a. tx_barrierepruefung_verbindung): „setup“ legt nur die des Kerns an.
+  log "v$v: extension:setup"
+  im "$v" vendor/bin/typo3 extension:setup --no-interaction
 
   # Mit typo3/theme-camino (14.3) importiert "setup" die Distribution samt eigener Site (config/sites/camino,
   # Wurzelseite 1, Basis /camino/) und beachtet --create-site nicht: dort wird nur die Basis umgestellt.

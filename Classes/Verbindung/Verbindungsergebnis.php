@@ -6,7 +6,7 @@ namespace Lubomedia\Barrierepruefung\Verbindung;
 
 /**
  * Ausgang von Verbinden. `grund`: adresse_ohne_host | adresse_abweichend | dienst_unsicher
- * | dienst_adresse_ungueltig | api:<reason> | nicht_erreichbar.
+ * | dienst_adresse_ungueltig | site_id_ungueltig | token_fehlt | schluessel_fehlt | api:<reason> | nicht_erreichbar.
  */
 final readonly class Verbindungsergebnis
 {
