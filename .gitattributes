@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+# Aus dem Tag-Archiv (Composer/TER) bleibt heraus, was nur der Entwicklung dient.
+/.github export-ignore
+/Build export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/phpstan.neon.dist export-ignore
+/CLAUDE.md export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+
+# Tests/ steht nicht als Ganzes hier: Tests/Fixtures/fragment/ muss im Archiv bleiben,
+# weil der Gleichlauf-Test im Dienst die Fixtures aus dem Tag-Archiv liest. Git kann ein
+# Unterverzeichnis eines export-ignore-Verzeichnisses nicht wieder einschließen,
+# deshalb werden die übrigen Verzeichnisse einzeln ausgenommen.
+/Tests/Unit export-ignore
+/Tests/Functional export-ignore

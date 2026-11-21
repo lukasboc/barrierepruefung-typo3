@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Codierstandard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer install --prefer-dist --no-progress
+      - run: composer lint
+
+  stan:
+    name: PHPStan (Stufe 8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer install --prefer-dist --no-progress
+      - run: composer stan
+
+  tests:
+    name: Tests (TYPO3 ${{ matrix.typo3 }}, PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { typo3: '13.4', php: '8.2' }
+          - { typo3: '13.4', php: '8.4' }
+          - { typo3: '14.3', php: '8.2' }
+          - { typo3: '14.3', php: '8.5' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Abhängigkeiten für die TYPO3-Version auflösen
+        run: |
+          composer require --no-update \
+            "typo3/cms-core:^${{ matrix.typo3 }}" \
+            "typo3/cms-backend:^${{ matrix.typo3 }}" \
+            "typo3/cms-frontend:^${{ matrix.typo3 }}" \
+            "typo3/cms-fluid:^${{ matrix.typo3 }}" \
+            "typo3/cms-fluid-styled-content:^${{ matrix.typo3 }}"
+          composer update -W --prefer-dist --no-progress
+      - run: composer test:unit
+      - run: composer test:functional

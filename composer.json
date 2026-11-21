@@ -1,0 +1,55 @@
+{
+    "name": "lubomedia/barrierepruefung-typo3",
+    "type": "typo3-cms-extension",
+    "description": "Barrierefreiheitserklärung von barrierepruefung.de in TYPO3 einbinden: Prüfung, Entwurf und veröffentlichte Erklärung über die Public API des Dienstes.",
+    "keywords": ["TYPO3", "extension", "accessibility", "barrierefreiheit", "BFSG", "BITV"],
+    "homepage": "https://barrierepruefung.de",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": "^8.2",
+        "typo3/cms-core": "^13.4 || ^14.3",
+        "typo3/cms-backend": "^13.4 || ^14.3",
+        "typo3/cms-frontend": "^13.4 || ^14.3",
+        "typo3/cms-fluid": "^13.4 || ^14.3",
+        "typo3/cms-fluid-styled-content": "^13.4 || ^14.3"
+    },
+    "suggest": {
+        "typo3/cms-scheduler": "Für den regelmäßigen Abgleich der veröffentlichten Erklärung"
+    },
+    "require-dev": {
+        "typo3/testing-framework": "^8.2 || ^9.0",
+        "typo3/coding-standards": "^0.8",
+        "phpstan/phpstan": "^2.0",
+        "saschaegerer/phpstan-typo3": "^2.0 || ^3.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lubomedia\\Barrierepruefung\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lubomedia\\Barrierepruefung\\Tests\\": "Tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "typo3/cms-composer-installers": true,
+            "typo3/class-alias-loader": true
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "barrierepruefung"
+        }
+    },
+    "scripts": {
+        "test:unit": "phpunit -c Build/phpunit/UnitTests.xml --do-not-fail-on-empty-test-suite",
+        "test:functional": "typo3DatabaseDriver=pdo_sqlite phpunit -c Build/phpunit/FunctionalTests.xml",
+        "lint": "php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php",
+        "lint:fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+        "stan": "phpstan analyse --configuration=phpstan.neon.dist --memory-limit=1G"
+    }
+}
