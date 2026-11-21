@@ -6,3 +6,13 @@ services:
 
   Lubomedia\Barrierepruefung\:
     resource: '../Classes/*'
+
+  # Öffentlich, damit Funktionstests den HTTP-Client über den Container ersetzen können.
+  barrierepruefung.guzzle:
+    class: GuzzleHttp\Client
+    public: true
+    factory: ['@TYPO3\CMS\Core\Http\Client\GuzzleClientFactory', 'getClient']
+
+  Lubomedia\Barrierepruefung\Api\Client:
+    arguments:
+      $http: '@barrierepruefung.guzzle'

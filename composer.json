@@ -46,7 +46,7 @@
         }
     },
     "scripts": {
-        "test:unit": "phpunit -c Build/phpunit/UnitTests.xml --do-not-fail-on-empty-test-suite",
+        "test:unit": "phpunit -c Build/phpunit/UnitTests.xml",
         "test:functional": "typo3DatabaseDriver=pdo_sqlite phpunit -c Build/phpunit/FunctionalTests.xml",
         "lint": "php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php",
         "lint:fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
