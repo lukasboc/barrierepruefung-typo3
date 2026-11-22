@@ -1,4 +1,4 @@
-# Die letzte gute Fassung der Erklärung (Aufgabe 10) liegt in sys_registry, nicht hier.
+# Die letzte gute Fassung der Erklärung liegt in sys_registry, nicht hier.
 
 CREATE TABLE tx_barrierepruefung_verbindung (
 	uid int(11) NOT NULL auto_increment,
@@ -15,4 +15,11 @@ CREATE TABLE tx_barrierepruefung_verbindung (
 
 	PRIMARY KEY (uid),
 	UNIQUE KEY site (site_identifier)
+);
+
+# Felder des Inhaltselements „Erklärung zur Barrierefreiheit“.
+CREATE TABLE tt_content (
+	tx_barrierepruefung_teil varchar(16) DEFAULT 'komplett' NOT NULL,
+	tx_barrierepruefung_ueberschrift smallint DEFAULT '2' NOT NULL,
+	tx_barrierepruefung_stand smallint DEFAULT '1' NOT NULL
 );

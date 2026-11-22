@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Lubomedia\Barrierepruefung\Erklaerung\Abruf;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3') or die();
 
@@ -17,3 +18,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][Abruf::CACH
     'groups' => ['pages'],
     'options' => ['defaultLifetime' => Abruf::STANDARD_SEKUNDEN],
 ];
+
+// Global statt als Site-Set: das Element funktioniert so auch in Sites mit sys_template.
+ExtensionManagementUtility::addTypoScriptSetup(
+    "@import 'EXT:barrierepruefung/Configuration/TypoScript/setup.typoscript'"
+);

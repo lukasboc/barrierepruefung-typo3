@@ -1,0 +1,8 @@
+# Inhaltselement „Erklärung zur Barrierefreiheit“ (CType barrierepruefung_erklaerung).
+# Rahmen und Abstände kommen vom Sitepackage (Layout „Default“), der Inhalt ist reines HTML ohne Gestaltung.
+tt_content.barrierepruefung_erklaerung =< lib.contentElement
+tt_content.barrierepruefung_erklaerung {
+    templateName = Erklaerung
+    templateRootPaths.200 = EXT:barrierepruefung/Resources/Private/Templates/Inhalt/
+    dataProcessing.10 = Lubomedia\Barrierepruefung\DataProcessing\ErklaerungProcessor
+}

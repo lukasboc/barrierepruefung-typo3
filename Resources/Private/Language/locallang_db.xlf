@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:barrierepruefung/Resources/Private/Language/locallang_db.xlf" product-name="barrierepruefung">
+		<header/>
+		<body>
+			<trans-unit id="element.titel">
+				<source>Accessibility statement</source>
+			</trans-unit>
+			<trans-unit id="element.beschreibung">
+				<source>Shows the accessibility statement this site published on barrierepruefung.de, in the language it was approved in.</source>
+			</trans-unit>
+			<trans-unit id="feld.teil">
+				<source>Part</source>
+			</trans-unit>
+			<trans-unit id="feld.teil.beschreibung">
+				<source>Show the whole statement or only one of its sections.</source>
+			</trans-unit>
+			<trans-unit id="feld.teil.komplett">
+				<source>Whole statement</source>
+			</trans-unit>
+			<trans-unit id="feld.teil.maengel">
+				<source>Only the content that is not accessible</source>
+			</trans-unit>
+			<trans-unit id="feld.teil.kontakt">
+				<source>Only feedback and contact</source>
+			</trans-unit>
+			<trans-unit id="feld.ueberschrift">
+				<source>First heading level</source>
+			</trans-unit>
+			<trans-unit id="feld.ueberschrift.beschreibung">
+				<source>The headings of the statement start at this level, without skipping a level. Choose the level that fits below the headings of the page; the page keeps its single h1.</source>
+			</trans-unit>
+			<trans-unit id="feld.ueberschrift.2">
+				<source>Heading 2 (h2)</source>
+			</trans-unit>
+			<trans-unit id="feld.ueberschrift.3">
+				<source>Heading 3 (h3)</source>
+			</trans-unit>
+			<trans-unit id="feld.ueberschrift.4">
+				<source>Heading 4 (h4)</source>
+			</trans-unit>
+			<trans-unit id="feld.stand">
+				<source>Version and date</source>
+			</trans-unit>
+			<trans-unit id="feld.stand.beschreibung">
+				<source>Adds a closing line with the version of the statement and the date it was published.</source>
+			</trans-unit>
+			<trans-unit id="feld.stand.an">
+				<source>Show</source>
+			</trans-unit>
+			<trans-unit id="vorschau.text">
+				<source>Accessibility statement – part: %1$s, from heading h%2$d, version and date: %3$s</source>
+			</trans-unit>
+			<trans-unit id="vorschau.ja">
+				<source>yes</source>
+			</trans-unit>
+			<trans-unit id="vorschau.nein">
+				<source>no</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
