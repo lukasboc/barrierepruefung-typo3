@@ -390,6 +390,68 @@ final class UebersichtControllerTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function domainBestaetigenBeiApiFehlerNenntDetailUndHinweis(): void
+    {
+        $this->verbinde('a', '01SITEA');
+        foreach ([
+            [403, 'recht_erloschen', 'D-recht-weg', 'die Freigabe im Reiter „Einbindung“ neu zu erteilen'],
+            [429, null, 'D-zu-viele', 'Zu viele Anfragen'],
+            [503, null, 'D-stoerung', 'gerade eine Störung'],
+        ] as [$status, $reason, $detail, $hinweis]) {
+            $this->attrappe($this->standA(['verified' => false]) + [
+                'POST /api/v1/sites/01SITEA/verify' => $this->problem($status, (string)$reason, $detail),
+            ]);
+            $this->anmelden(self::ADMIN);
+
+            $html = $this->html($this->folgen($this->aufrufen(self::ROUTE . '.bestaetigen', [], ['site' => 'a'])));
+
+            self::assertStringContainsString('role="alert"', $html, (string)$status);
+            self::assertStringContainsString($detail, $html, (string)$status);
+            self::assertStringContainsString($hinweis, $html, (string)$status);
+            // Nie ein Rohcode wie „recht_erloschen“ oder „kein Grund angegeben“.
+            self::assertStringNotContainsString('recht_erloschen', $html, (string)$status);
+            self::assertStringNotContainsString('kein Grund', $html, (string)$status);
+            self::assertStringNotContainsString('Meta-Element:', $html, (string)$status);
+            // Bei einem Fehler des Dienstes gibt es keinen zweiten Versuch mit der Datei.
+            self::assertCount(1, $this->anfragenAn('/verify'), (string)$status);
+        }
+    }
+
+    #[Test]
+    public function kontingentNullUndNullBefundeStehenAlsZahl(): void
+    {
+        $this->verbinde('a', '01SITEA');
+        $letzte = ['id' => '01STUBSCAN0000000000000000', 'status' => 'completed', 'finished_at' => '2026-08-31T14:58:26+00:00', 'open_findings' => 0, 'report_url' => 'https://dienst.example/pruefung/x'];
+        $this->attrappe($this->standA(['quota' => ['metric' => 'pages', 'used' => 0, 'limit' => 0, 'remaining' => 0, 'period_end' => '2026-12-20'], 'latest_scan' => $letzte]));
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a']));
+
+        self::assertStringNotContainsString('unbegrenzt', $html);
+        self::assertStringContainsString('0 von 0', $html);
+        self::assertStringContainsString('0 offene Befunde', $html);
+    }
+
+    #[Test]
+    public function tokenFeldIstKeinPasswortFeld(): void
+    {
+        $this->verbinde('a', '01SITEA');
+        $this->attrappe(['GET /api/v1/sites/01SITEA' => new Response(401, ['Content-Type' => 'application/problem+json'], '{"status":401,"detail":"Unauthenticated."}')]);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a']));
+
+        $feld = $this->knoten($html, '//input[@name="api_token"]');
+        self::assertNotNull($feld);
+        // Bei type=password ignorieren Browser autocomplete=off und böten das gespeicherte TYPO3-Passwort an.
+        self::assertSame('text', $feld->getAttribute('type'));
+        self::assertSame('off', $feld->getAttribute('autocomplete'));
+        self::assertSame('false', $feld->getAttribute('spellcheck'));
+        self::assertSame('off', $feld->getAttribute('autocapitalize'));
+        self::assertCount(0, (new \DOMXPath($this->dom($html)))->query('//input[@type="password"]') ?: []);
+    }
+
+    #[Test]
     public function siteMitPfadBasisNurUeberMetaElement(): void
     {
         $this->verbinde('c', '01SITEC');

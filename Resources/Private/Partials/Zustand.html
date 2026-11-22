@@ -31,7 +31,7 @@
     <f:if condition="{stand.kontingent}">
         <dt class="col-sm-3"><f:translate key="zustand.kontingent" extensionName="Barrierepruefung" /></dt>
         <dd class="col-sm-9">
-            <f:if condition="{stand.kontingent.grenze}">
+            <f:if condition="{stand.kontingent.begrenzt}">
                 <f:then><f:translate key="kontingent.begrenzt" arguments="{0: stand.kontingent.genutzt, 1: stand.kontingent.grenze}" extensionName="Barrierepruefung" /></f:then>
                 <f:else><f:translate key="kontingent.unbegrenzt" arguments="{0: stand.kontingent.genutzt}" extensionName="Barrierepruefung" /></f:else>
             </f:if>
@@ -45,7 +45,7 @@
             <f:if condition="{stand.letzte}">
                 <f:then>
                     <span class="badge badge-{stand.letzte.abzeichen}">{stand.letzte.wort}</span>
-                    <f:if condition="{stand.letzte.am}"><f:translate key="am" arguments="{0: stand.letzte.am}" extensionName="Barrierepruefung" /></f:if><f:if condition="{stand.letzte.befunde}">, <f:translate key="letzte.befunde" arguments="{0: stand.letzte.befunde}" extensionName="Barrierepruefung" /></f:if>
+                    <f:if condition="{stand.letzte.am}"><f:translate key="am" arguments="{0: stand.letzte.am}" extensionName="Barrierepruefung" /></f:if><f:if condition="{stand.letzte.hatBefunde}">, <f:translate key="letzte.befunde" arguments="{0: stand.letzte.befunde}" extensionName="Barrierepruefung" /></f:if>
                     <f:if condition="{stand.letzte.bericht}"><br><a class="text-decoration-underline" href="{stand.letzte.bericht}"><f:translate key="letzte.bericht" extensionName="Barrierepruefung" /></a></f:if>
                 </f:then>
                 <f:else><f:translate key="letzte.keine" extensionName="Barrierepruefung" /></f:else>

@@ -1,14 +1,16 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 <f:comment>
     Formular „Verbinden“, nur für Admins. Das Token-Feld heißt api_token: ein Feld „token“ überschriebe den
-    Routen-Token, mit dem TYPO3 die Anfrage prüft. Fehler je Feld über aria-describedby und aria-invalid.
+    Routen-Token, mit dem TYPO3 die Anfrage prüft. Es ist bewusst type="text": bei type="password" ignorieren Browser
+    autocomplete="off" und böten das gespeicherte TYPO3-Passwort an, das dann als Bearer-Token an die eingetippte Adresse
+    ginge (übliches Muster für API-Token: text + off + spellcheck/autocapitalize aus). Fehler je Feld über aria-describedby und aria-invalid.
 </f:comment>
 <form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.verbinden')}" id="barrierepruefung-verbinden" class="row" novalidate>
     <div class="col-lg-8">
     <input type="hidden" name="site" value="{site.identifier}">
     <f:render section="Feld" arguments="{name: 'dienst_url', id: 'barrierepruefung-dienst-url', typ: 'url', wert: werte.dienst_url, fehler: felder.dienst_url, autocomplete: 'url'}" />
     <f:render section="Feld" arguments="{name: 'site_id', id: 'barrierepruefung-site-id', typ: 'text', wert: werte.site_id, fehler: felder.site_id, autocomplete: 'off'}" />
-    <f:render section="Feld" arguments="{name: 'api_token', id: 'barrierepruefung-token', typ: 'password', wert: '', fehler: felder.api_token, autocomplete: 'off'}" />
+    <f:render section="Feld" arguments="{name: 'api_token', id: 'barrierepruefung-token', typ: 'text', wert: '', fehler: felder.api_token, autocomplete: 'off'}" />
     <button type="submit" class="btn btn-primary"><f:translate key="knopf.verbinden" extensionName="Barrierepruefung" /></button>
     </div>
 </form>
@@ -18,11 +20,11 @@
         <label class="form-label" for="{id}"><f:translate key="feld.{name}" extensionName="Barrierepruefung" /></label>
         <f:if condition="{fehler}">
             <f:then>
-                <input class="form-control is-invalid" type="{typ}" id="{id}" name="{name}" value="{wert}" autocomplete="{autocomplete}" spellcheck="false" required aria-invalid="true" aria-describedby="{id}-fehler {id}-hilfe">
+                <input class="form-control is-invalid" type="{typ}" id="{id}" name="{name}" value="{wert}" autocomplete="{autocomplete}" spellcheck="false" autocapitalize="off" required aria-invalid="true" aria-describedby="{id}-fehler {id}-hilfe">
                 <div class="invalid-feedback" id="{id}-fehler">{fehler}</div>
             </f:then>
             <f:else>
-                <input class="form-control" type="{typ}" id="{id}" name="{name}" value="{wert}" autocomplete="{autocomplete}" spellcheck="false" required aria-describedby="{id}-hilfe">
+                <input class="form-control" type="{typ}" id="{id}" name="{name}" value="{wert}" autocomplete="{autocomplete}" spellcheck="false" autocapitalize="off" required aria-describedby="{id}-hilfe">
             </f:else>
         </f:if>
         <div class="form-text" id="{id}-hilfe"><f:translate key="feld.{name}.hilfe" extensionName="Barrierepruefung" /></div>

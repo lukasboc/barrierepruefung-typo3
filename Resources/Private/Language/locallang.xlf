@@ -240,6 +240,9 @@
 			<trans-unit id="bestaetigen.erfolg.file">
 				<source>The domain is confirmed (via the proof file).</source>
 			</trans-unit>
+			<trans-unit id="bestaetigen.fehler.api">
+				<source>The domain could not be checked: the service refused the request.</source>
+			</trans-unit>
 			<trans-unit id="bestaetigen.fehler">
 				<source>The domain is not confirmed yet. %s</source>
 			</trans-unit>

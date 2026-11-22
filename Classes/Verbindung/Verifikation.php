@@ -33,6 +33,11 @@ final class Verifikation
 
                 return new Verifikationsergebnis(true, $methode, $gruende);
             }
+            if (!$antwort->ok() && $antwort->status > 0) {
+                // Der Dienst hat die Anfrage selbst abgelehnt (Recht, Takt, Störung): geprüft wurde nichts, und mit der
+                // zweiten Methode ginge es nicht anders (ein Netzfehler dagegen zählt je Methode als Grund). Ohne Zweitversuch, mit der Antwort, damit sie gesagt werden kann.
+                return new Verifikationsergebnis(false, null, [$methode . ':' . $this->grund($antwort)], $antwort);
+            }
             $gruende[] = $methode . ':' . $this->grund($antwort);
         }
 

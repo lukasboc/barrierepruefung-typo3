@@ -319,6 +319,10 @@
 				<source>The domain is confirmed (via the proof file).</source>
 				<target>Die Domain ist bestätigt (über die Nachweisdatei).</target>
 			</trans-unit>
+			<trans-unit id="bestaetigen.fehler.api">
+				<source>The domain could not be checked: the service refused the request.</source>
+				<target>Die Domain konnte nicht geprüft werden: Der Dienst hat die Anfrage abgelehnt.</target>
+			</trans-unit>
 			<trans-unit id="bestaetigen.fehler">
 				<source>The domain is not confirmed yet. %s</source>
 				<target>Die Domain ist noch nicht bestätigt. %s</target>
