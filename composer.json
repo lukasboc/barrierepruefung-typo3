@@ -11,7 +11,8 @@
         "typo3/cms-backend": "^13.4 || ^14.3",
         "typo3/cms-frontend": "^13.4 || ^14.3",
         "typo3/cms-fluid": "^13.4 || ^14.3",
-        "typo3/cms-fluid-styled-content": "^13.4 || ^14.3"
+        "typo3/cms-fluid-styled-content": "^13.4 || ^14.3",
+        "typo3/html-sanitizer": "^2.1"
     },
     "suggest": {
         "typo3/cms-scheduler": "Für den regelmäßigen Abgleich der veröffentlichten Erklärung"
