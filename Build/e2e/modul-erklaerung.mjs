@@ -89,7 +89,7 @@ for (const inst of instanzen) {
     // --- „Seite mit Erklärung anlegen“ per Tastatur ---
     const vorher = await seitenzeilen(frame);
     await inDenRahmen(page);
-    await tabBis(page, frame, (f) => f.id === '' && /Seite mit Erklärung anlegen|Create page with statement/.test(f.text), protokoll, 60);
+    await tabBis(page, frame, (f) => f.id === '' && /Seite mit Erklärung anlegen|Create page with statement/.test(f.text), protokoll, 40 + 2 * vorher); // der Knopf steht hinter der Seitenliste
     frame = await enterUndWarten(page);
     const meldung = frame.locator('.callout-success[role=status]');
     pruefe(await meldung.count() === 1, 'Rückmeldung nach dem Anlegen als callout role=status');
