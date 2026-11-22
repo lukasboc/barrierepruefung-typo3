@@ -20,12 +20,28 @@ export async function modulOeffnen(page, basis, modul, parameter = {}) {
 
 // Der Frame des Modulinhalts, sobald sein Inhalt steht.
 export async function modulRahmen(page) {
-  await page.waitForSelector('iframe[name="list_frame"]');
-  const frame = page.frame({ name: 'list_frame' });
-  await frame.waitForSelector('.module-body', { timeout: 30000 });
-  return frame;
+  // Das iframe steht oft schon im DOM, bevor Playwright seinen Frame kennt.
+  for (let i = 0; i < 300; i++) {
+    const frame = page.frame({ name: 'list_frame' });
+    if (frame) {
+      await frame.waitForSelector('.module-body', { timeout: 30000 });
+      return frame;
+    }
+    await page.waitForTimeout(100);
+  }
+  throw new Error('Modulrahmen list_frame erscheint nicht');
 }
 
 export async function keinQuerscrollen(page) {
   return page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+}
+
+// Führt aktion() aus (Klick, Enter) und wartet, bis der Modulrahmen neu geladen ist. Nach POST → 303 kann die
+// Adresse gleich bleiben; deshalb auf das Navigationsereignis warten, nicht auf eine andere URL.
+export async function neuGeladen(page, aktion) {
+  const geladen = page.waitForEvent('framenavigated', { predicate: (f) => f.name() === 'list_frame', timeout: 30000 });
+  await aktion();
+  const frame = await geladen;
+  await frame.waitForLoadState('load');
+  return modulRahmen(page);
 }

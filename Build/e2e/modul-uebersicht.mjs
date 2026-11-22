@@ -7,7 +7,7 @@
 //   node modul-uebersicht.mjs [v13|v14]
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
-import { anmelden, modulOeffnen, modulRahmen } from './hilfen.mjs';
+import { anmelden, modulOeffnen, modulRahmen, neuGeladen } from './hilfen.mjs';
 
 const ATTRAPPE = 'http://localhost:8091';
 const AUS_DEM_CONTAINER = 'http://host.docker.internal:8091/api/v1';
@@ -65,13 +65,9 @@ async function inDenRahmen(page) {
   await page.locator('iframe[name="list_frame"]').focus();
 }
 
-// Enter auf Link oder Knopf; wartet, bis der Modulrahmen neu geladen ist (nach POST → 303 kann die Adresse gleich sein).
+// Enter auf Link oder Knopf, dann den neu geladenen Modulrahmen.
 async function enterUndWarten(page) {
-  const geladen = page.waitForEvent('framenavigated', { predicate: (f) => f.name() === 'list_frame', timeout: 30000 });
-  await page.keyboard.press('Enter');
-  const frame = await geladen;
-  await frame.waitForLoadState('load');
-  return modulRahmen(page);
+  return neuGeladen(page, () => page.keyboard.press('Enter'));
 }
 
 async function farbschema(page, schema) {
@@ -103,13 +99,11 @@ for (const inst of instanzen) {
     // Ausgangslage: die Site auf localhost wählen und eine alte Verbindung trennen (Wiederholbarkeit).
     if (!(await frame.locator('h1').innerText()).includes(host)) {
       await frame.locator('.module-docheader .dropdown-toggle').first().click();
-      await frame.locator(`.dropdown-menu a:has-text("${host}")`).first().click();
-      frame = await modulRahmen(page);
+      frame = await neuGeladen(page, () => frame.locator(`.dropdown-menu a:has-text("${host}")`).first().click());
       await frame.waitForSelector(`h1:has-text("${host}")`);
     }
     if (await frame.locator('#barrierepruefung-trennen').count()) {
-      await frame.locator('#barrierepruefung-trennen button').click();
-      frame = await modulRahmen(page);
+      frame = await neuGeladen(page, () => frame.locator('#barrierepruefung-trennen button').click());
       await frame.waitForSelector('#barrierepruefung-verbinden');
     }
     await page.screenshot({ path: `${ERGEBNISSE}uebersicht-${inst.name}-verbinden-hell.png` });
