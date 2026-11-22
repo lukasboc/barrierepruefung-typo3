@@ -9,8 +9,8 @@
     <div class="col-lg-8">
     <input type="hidden" name="site" value="{site.identifier}">
     <f:render section="Feld" arguments="{name: 'dienst_url', id: 'barrierepruefung-dienst-url', typ: 'url', wert: werte.dienst_url, fehler: felder.dienst_url, autocomplete: 'url'}" />
-    <f:render section="Feld" arguments="{name: 'site_id', id: 'barrierepruefung-site-id', typ: 'text', wert: werte.site_id, fehler: felder.site_id, autocomplete: 'off'}" />
-    <f:render section="Feld" arguments="{name: 'api_token', id: 'barrierepruefung-token', typ: 'text', wert: '', fehler: felder.api_token, autocomplete: 'off'}" />
+    <f:render section="Feld" arguments="{name: 'site_id', id: 'barrierepruefung-site-id', typ: 'text', wert: werte.site_id, fehler: felder.site_id, vorher: felder.dienst_url, autocomplete: 'off'}" />
+    <f:render section="Feld" arguments="{name: 'api_token', id: 'barrierepruefung-token', typ: 'text', wert: '', fehler: felder.api_token, vorher: '{felder.dienst_url}{felder.site_id}', autocomplete: 'off'}" />
     <button type="submit" class="btn btn-primary"><f:translate key="knopf.verbinden" extensionName="Barrierepruefung" /></button>
     </div>
 </form>
@@ -20,7 +20,8 @@
         <label class="form-label" for="{id}"><f:translate key="feld.{name}" extensionName="Barrierepruefung" /></label>
         <f:if condition="{fehler}">
             <f:then>
-                <input class="form-control is-invalid" type="{typ}" id="{id}" name="{name}" value="{wert}" autocomplete="{autocomplete}" spellcheck="false" autocapitalize="off" required aria-invalid="true" aria-describedby="{id}-fehler {id}-hilfe">
+                <f:comment>autofocus nur am ersten fehlerhaften Feld (vorher = Fehler der Felder davor): nach dem Redirect landen Tastatur und Screenreader beim Fehler.</f:comment>
+                <input class="form-control is-invalid" type="{typ}" id="{id}" name="{name}" value="{wert}" autocomplete="{autocomplete}" spellcheck="false" autocapitalize="off" required aria-invalid="true" aria-describedby="{id}-fehler {id}-hilfe"<f:if condition="{vorher}"><f:else> autofocus</f:else></f:if>>
                 <div class="invalid-feedback" id="{id}-fehler">{fehler}</div>
             </f:then>
             <f:else>

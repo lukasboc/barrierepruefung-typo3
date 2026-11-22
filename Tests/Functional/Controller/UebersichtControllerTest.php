@@ -293,6 +293,26 @@ final class UebersichtControllerTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function autofocusNurAmErstenFehlerhaftenFeld(): void
+    {
+        $this->attrappe([]);
+        $this->anmelden(self::ADMIN);
+
+        // Nur das Token fehlt: dort steht autofocus.
+        $html = $this->html($this->folgen($this->aufrufen(self::ROUTE . '.verbinden', [], ['site' => 'a', 'dienst_url' => self::DIENST, 'site_id' => '01SITEA', 'api_token' => ''])));
+        $dom = $this->dom($html);
+        self::assertTrue($dom->getElementById('barrierepruefung-token')?->hasAttribute('autofocus'));
+        self::assertFalse($dom->getElementById('barrierepruefung-site-id')?->hasAttribute('autofocus'));
+
+        // Kennung und Token fehlen: nur die Kennung, das erste fehlerhafte Feld, bekommt autofocus.
+        $html = $this->html($this->folgen($this->aufrufen(self::ROUTE . '.verbinden', [], ['site' => 'a', 'dienst_url' => self::DIENST, 'site_id' => '', 'api_token' => ''])));
+        $dom = $this->dom($html);
+        self::assertTrue($dom->getElementById('barrierepruefung-site-id')?->hasAttribute('autofocus'));
+        self::assertFalse($dom->getElementById('barrierepruefung-token')?->hasAttribute('autofocus'));
+        self::assertSame(1, substr_count($html, 'autofocus'));
+    }
+
+    #[Test]
     public function jetztPruefenSendetIdempotencyKeyAusDemFormular(): void
     {
         $this->verbinde('a', '01SITEA');
