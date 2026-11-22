@@ -29,6 +29,8 @@ final readonly class Fassung
         public ?int $gueltigBis = null,
         /** Der Dienst hat bei diesem Abruf eine andere Fassung geliefert als zuvor gespeichert war. */
         public bool $neu = false,
+        /** HTTP-Status des letzten Fehlers (0: keine Antwort bekommen); `null`, wo er nicht bekannt ist (Registry von vor dieser Angabe). */
+        public ?int $letzterStatus = null,
     ) {}
 
     public function mitAblauf(int $gueltigBis): self
@@ -37,7 +39,7 @@ final readonly class Fassung
     }
 
     /**
-     * @return array{erklaerung: array<string, mixed>|null, zustand: string, abgerufen_am: int|null, letzter_fehler_am: int|null, letzter_fehler: string|null, gueltig_bis: int|null}
+     * @return array{erklaerung: array<string, mixed>|null, zustand: string, abgerufen_am: int|null, letzter_fehler_am: int|null, letzter_fehler: string|null, letzter_status: int|null, gueltig_bis: int|null}
      */
     public function alsArray(): array
     {
@@ -47,6 +49,7 @@ final readonly class Fassung
             'abgerufen_am' => $this->abgerufenAm,
             'letzter_fehler_am' => $this->letzterFehlerAm,
             'letzter_fehler' => $this->letzterFehler,
+            'letzter_status' => $this->letzterStatus,
             'gueltig_bis' => $this->gueltigBis,
         ];
     }
@@ -70,6 +73,8 @@ final readonly class Fassung
             self::zahl($daten['letzter_fehler_am'] ?? null),
             is_string($daten['letzter_fehler'] ?? null) ? $daten['letzter_fehler'] : null,
             self::zahl($daten['gueltig_bis'] ?? null),
+            false,
+            self::zahl($daten['letzter_status'] ?? null),
         );
     }
 

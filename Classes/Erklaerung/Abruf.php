@@ -77,7 +77,7 @@ final class Abruf
             $zustand = Fassung::AKTUELL;
         }
 
-        return new Fassung($erklaerung, $zustand, $abgerufen, $fehlerAm, self::text($gespeichert['letzter_fehler'] ?? null));
+        return new Fassung($erklaerung, $zustand, $abgerufen, $fehlerAm, self::text($gespeichert['letzter_fehler'] ?? null), null, false, self::zahl($gespeichert['letzter_status'] ?? null));
     }
 
     private function abrufen(Verbindung $v): Fassung
@@ -90,7 +90,7 @@ final class Abruf
             $zugang = $this->verbindungen->zugang($v);
         } catch (TresorFehler $e) {
             // encryptionKey gewechselt: keine Anfrage, aber die Erklärung bleibt stehen.
-            return $this->rueckfall($v->siteId, $gespeichert, $e->getMessage());
+            return $this->rueckfall($v->siteId, $gespeichert, $e->getMessage(), 0);
         }
 
         $kopf = $vorherEtag === null ? [] : ['If-None-Match' => $vorherEtag];
@@ -101,12 +101,12 @@ final class Abruf
             $gespeichert['abgerufen_am'] = $jetzt;
             $this->registry->set(self::REGISTRY, $this->registrySchluessel($v->siteId), $gespeichert);
 
-            return $this->merken($v->siteId, new Fassung($vorher, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null)), $this->lebensdauer($antwort));
+            return $this->merken($v->siteId, new Fassung($vorher, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null), null, false, self::zahl($gespeichert['letzter_status'] ?? null)), $this->lebensdauer($antwort));
         }
 
         $neu = $antwort->ok() ? ($antwort->daten['declaration'] ?? null) : null;
         if (!is_array($neu) || !is_string($neu['html'] ?? null)) {
-            return $this->rueckfall($v->siteId, $gespeichert, $this->fehlertext($antwort));
+            return $this->rueckfall($v->siteId, $gespeichert, $this->fehlertext($antwort), $antwort->status);
         }
 
         /** @var array<string, mixed> $neu */
@@ -122,9 +122,10 @@ final class Abruf
             'abgerufen_am' => $jetzt,
             'letzter_fehler' => self::text($gespeichert['letzter_fehler'] ?? null),
             'letzter_fehler_am' => self::zahl($gespeichert['letzter_fehler_am'] ?? null),
+            'letzter_status' => self::zahl($gespeichert['letzter_status'] ?? null),
         ]);
 
-        $fassung = new Fassung($neu, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null), null, $geaendert);
+        $fassung = new Fassung($neu, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null), null, $geaendert, self::zahl($gespeichert['letzter_status'] ?? null));
 
         return $this->merken($v->siteId, $fassung, $this->lebensdauer($antwort));
     }
@@ -132,10 +133,11 @@ final class Abruf
     /**
      * @param array<mixed> $gespeichert
      */
-    private function rueckfall(string $siteId, array $gespeichert, string $fehler): Fassung
+    private function rueckfall(string $siteId, array $gespeichert, string $fehler, int $status): Fassung
     {
         $jetzt = time();
         $gespeichert['letzter_fehler'] = $fehler;
+        $gespeichert['letzter_status'] = $status;
         $gespeichert['letzter_fehler_am'] = $jetzt;
         $this->registry->set(self::REGISTRY, $this->registrySchluessel($siteId), $gespeichert);
 
@@ -146,6 +148,9 @@ final class Abruf
             self::zahl($gespeichert['abgerufen_am'] ?? null),
             $jetzt,
             $fehler,
+            null,
+            false,
+            $status,
         );
 
         // Kurz merken: während eines Ausfalls fragt nicht jeder Seitenaufruf den Dienst.

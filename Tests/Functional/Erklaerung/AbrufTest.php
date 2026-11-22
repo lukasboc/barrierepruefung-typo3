@@ -287,4 +287,68 @@ final class AbrufTest extends FunctionalTestCase
         self::assertEqualsWithDelta(time() + 1800, $erste->gueltigBis, 2);
         self::assertSame($erste->gueltigBis, $zweite->gueltigBis, 'Der Ablauf bleibt der des Eintrags, er wandert nicht mit.');
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function registry(): array
+    {
+        $gespeichert = $this->get(Registry::class)->get(Abruf::REGISTRY, 'fassung_S1');
+        self::assertIsArray($gespeichert);
+
+        return $gespeichert;
+    }
+
+    #[Test]
+    public function merktDenStatusDesLetztenFehlers(): void
+    {
+        // 404: nichts veröffentlicht; 401/403: Token widerrufen; 503 und 429: Ausfall; Netzfehler: 0.
+        foreach ([404, 401, 403, 503, 429] as $status) {
+            $this->registryMit('S1', self::erklaerung(['version' => 7]), '"e7"', 1_763_110_800);
+            $this->get(CacheManager::class)->getCache(Abruf::CACHE)->flush();
+            $this->antworten = [new Response($status, ['Content-Type' => 'application/problem+json'], '{"status":' . $status . ',"detail":"Grund"}')];
+
+            $fassung = $this->abruf()->fassung($this->verbindung());
+
+            self::assertSame($status, $fassung->letzterStatus, 'Status ' . $status);
+            self::assertSame($status, $this->registry()['letzter_status']);
+            self::assertSame($status, $this->abruf()->stand('S1')->letzterStatus, 'stand() liest ihn aus der Registry');
+            self::assertSame(Fassung::RUECKFALL, $fassung->zustand);
+            self::assertSame(7, $fassung->erklaerung['version'] ?? null, 'In jedem Fall bleibt die letzte gute Fassung.');
+        }
+
+        $this->registryMit('S1', self::erklaerung(['version' => 7]), '"e7"', 1_763_110_800);
+        $this->get(CacheManager::class)->getCache(Abruf::CACHE)->flush();
+        $this->antworten = [new ConnectException('Zeitlimit', new Request('GET', 'https://dienst.example/'))];
+        $fassung = $this->abruf()->fassung($this->verbindung());
+        self::assertSame(0, $fassung->letzterStatus);
+        self::assertSame(0, $this->abruf()->stand('S1')->letzterStatus);
+    }
+
+    #[Test]
+    public function statusBleibtAmCacheEintragUndOhneFehlerLeer(): void
+    {
+        $this->antworten = [new Response(404, ['Content-Type' => 'application/problem+json'], '{"status":404,"detail":"x"}')];
+        $this->abruf()->fassung($this->verbindung());
+        self::assertSame(404, $this->abruf()->fassung($this->verbindung())->letzterStatus, 'Auch aus dem Cache');
+
+        $frisch = $this->abruf();
+        $this->antworten = [self::ok(self::erklaerung())];
+        $gut = $frisch->auffrischen($this->verbindung());
+        self::assertSame(Fassung::AKTUELL, $gut->zustand);
+        // Nach einem guten Abruf bleibt der letzte Fehler samt Status stehen (Zeitstempel entscheiden), wie `letzter_fehler`.
+        self::assertSame(404, $this->registry()['letzter_status']);
+        self::assertSame(Fassung::AKTUELL, $frisch->stand('S1')->zustand);
+    }
+
+    #[Test]
+    public function registryOhneStatusLiestSichAlsNull(): void
+    {
+        $this->get(Registry::class)->set(Abruf::REGISTRY, 'fassung_S1', ['erklaerung' => self::erklaerung(), 'etag' => '"e"', 'abgerufen_am' => 1_763_110_800, 'letzter_fehler' => 'alt', 'letzter_fehler_am' => 1_763_111_000]);
+
+        $stand = $this->abruf()->stand('S1');
+
+        self::assertSame(Fassung::RUECKFALL, $stand->zustand);
+        self::assertNull($stand->letzterStatus);
+    }
 }
