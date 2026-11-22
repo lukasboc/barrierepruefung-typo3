@@ -207,9 +207,6 @@
 			<trans-unit id="erklaerung.keine">
 				<source>not published yet</source>
 			</trans-unit>
-			<trans-unit id="erklaerung.unbekannt">
-				<source>The status of the statement could not be retrieved.</source>
-			</trans-unit>
 			<trans-unit id="erklaerung.stand">
 				<source>as of %s</source>
 			</trans-unit>
@@ -434,6 +431,117 @@
 			</trans-unit>
 			<trans-unit id="letzte.befunde_ansehen">
 				<source>Show findings</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.ueberschrift">
+				<source>Published statement</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.nicht_verbunden">
+				<source>This site is not connected yet. Connect it to barrierepruefung.de in the overview; the state of the statement will then appear here.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.noch_nie">
+				<source>not retrieved yet</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.sprache">
+				<source>Approved language</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.zuletzt_erreichbar">
+				<source>Last reachable on %s.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.nie_erreichbar">
+				<source>The service has not been reached successfully yet.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.grund">
+				<source>Reason: %s</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.website_zeigt">
+				<source>The website keeps showing the version of %s.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.fehler.nicht_veroeffentlicht">
+				<source>No statement is currently published in the service.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.fehler.verbindung">
+				<source>The connection is no longer valid: the token was revoked or may no longer read the statement.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.fehler.neu_verbinden">
+				<source>Connect again in the overview, or check the release of the token in the service</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.fehler.titel.ausfall">
+				<source>Service not reachable</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.fehler.titel.nicht_veroeffentlicht">
+				<source>Nothing published in the service</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.fehler.titel.verbindung">
+				<source>Connection no longer valid</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.zum_untermodul">
+				<source>Details in the module “Statement”</source>
+			</trans-unit>
+			<trans-unit id="abgleichen.knopf">
+				<source>Compare now</source>
+			</trans-unit>
+			<trans-unit id="abgleichen.erklaerung">
+				<source>Asks the service for the current statement. If it cannot be reached, the website keeps showing the last good version.</source>
+			</trans-unit>
+			<trans-unit id="abgleichen.erfolg">
+				<source>Compared with the service: version %s, as of %s.</source>
+			</trans-unit>
+			<trans-unit id="seiten.ueberschrift">
+				<source>Pages with the statement</source>
+			</trans-unit>
+			<trans-unit id="seiten.tabelle.beschriftung">
+				<source>Pages that contain the statement element</source>
+			</trans-unit>
+			<trans-unit id="seiten.spalte.seite">
+				<source>Page</source>
+			</trans-unit>
+			<trans-unit id="seiten.spalte.sprache">
+				<source>Language</source>
+			</trans-unit>
+			<trans-unit id="seiten.spalte.zustand">
+				<source>State</source>
+			</trans-unit>
+			<trans-unit id="seiten.spalte.mehr">
+				<source>Open</source>
+			</trans-unit>
+			<trans-unit id="seiten.uebersetzung">
+				<source>Shows the statement in the approved language (%s), not translated.</source>
+			</trans-unit>
+			<trans-unit id="seiten.uebersetzung_ohne_sprache">
+				<source>Shows the statement in the language it was approved in, not translated.</source>
+			</trans-unit>
+			<trans-unit id="seiten.verborgen">
+				<source>hidden</source>
+			</trans-unit>
+			<trans-unit id="seiten.sichtbar">
+				<source>visible</source>
+			</trans-unit>
+			<trans-unit id="seiten.im_seitenmodul">
+				<source>Open in the page module</source>
+			</trans-unit>
+			<trans-unit id="seiten.keine">
+				<source>No page shows the statement yet. Create one below, or add the content element to a page yourself.</source>
+			</trans-unit>
+			<trans-unit id="seite.ueberschrift">
+				<source>Create page with statement</source>
+			</trans-unit>
+			<trans-unit id="seite.erklaerung">
+				<source>Creates a hidden page under the start page of this site with one statement element. The page stays hidden until you publish it; link it in the footer of your website afterwards.</source>
+			</trans-unit>
+			<trans-unit id="seite.knopf">
+				<source>Create page with statement</source>
+			</trans-unit>
+			<trans-unit id="seite.titel">
+				<source>Accessibility statement</source>
+			</trans-unit>
+			<trans-unit id="seite.angelegt">
+				<source>The page “%s” was created. It is hidden until you publish it. Link it in the footer of your website afterwards.</source>
+			</trans-unit>
+			<trans-unit id="seite.oeffnen">
+				<source>Open the page in the page module</source>
+			</trans-unit>
+			<trans-unit id="seite.fehler">
+				<source>The page was not created. Most likely you lack the right to create pages and content elements under the start page of this site.</source>
 			</trans-unit>
 		</body>
 	</file>

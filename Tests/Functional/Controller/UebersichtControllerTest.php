@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Lubomedia\Barrierepruefung\Tests\Functional\Controller;
 
 use GuzzleHttp\Psr7\Response;
+use Lubomedia\Barrierepruefung\Erklaerung\Abruf;
 use Lubomedia\Barrierepruefung\Verbindung\Tresor;
 use Lubomedia\Barrierepruefung\Verbindung\Verbindung;
 use Lubomedia\Barrierepruefung\Verbindung\Verbindungen;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\SiteWriter;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 final class UebersichtControllerTest extends FunctionalTestCase
@@ -89,7 +91,6 @@ final class UebersichtControllerTest extends FunctionalTestCase
     {
         return [
             'GET /api/v1/sites/01SITEA' => $this->website('01SITEA', $ueber),
-            'GET /api/v1/sites/01SITEA/declaration' => $this->aufnahme('declaration'),
         ];
     }
 
@@ -111,6 +112,75 @@ final class UebersichtControllerTest extends FunctionalTestCase
         self::assertSame(200, $antwort->getStatusCode(), substr((string)$antwort->getBody(), 0, 2000));
 
         return (string)$antwort->getBody();
+    }
+
+    /**
+     * @param array<string, mixed> $registry
+     */
+    private function erklaerungInRegistry(array $registry): void
+    {
+        $this->get(Registry::class)->set(Abruf::REGISTRY, 'fassung_01SITEA', $registry);
+    }
+
+    #[Test]
+    public function erklaerungKommtAusDerRegistryUndFragtDenDienstNicht(): void
+    {
+        $this->verbinde('a', '01SITEA');
+        $this->erklaerungInRegistry(['erklaerung' => ['version' => 7, 'outdated' => false, 'assessed_at' => '2026-11-10', 'published_at' => '2026-11-14T09:00:00+00:00', 'public_url' => 'https://dienst.example/e/a', 'html' => '<p>x</p>'], 'abgerufen_am' => 1_794_646_800]);
+        $this->attrappe($this->standA());
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a']));
+
+        self::assertSame([], $this->anfragenAn('/declaration'), 'Die Übersicht liest die Erklärung aus der Registry.');
+        self::assertCount(1, $this->xpath($html, '//dt[normalize-space(.)="Erklärung"]/following-sibling::dd[1]//span[contains(@class,"badge-success")][normalize-space(.)="veröffentlicht"]'));
+        self::assertStringContainsString('Stand 10.11.2026', $html);
+        self::assertStringContainsString('(Fassung 7)', $html);
+    }
+
+    #[Test]
+    public function erklaerungImRueckfallNenntDenGrundUndDenWeg(): void
+    {
+        $this->verbinde('a', '01SITEA');
+        $this->erklaerungInRegistry(['erklaerung' => ['version' => 7, 'locale' => 'de', 'published_at' => '2026-11-14T09:00:00+00:00', 'html' => '<p>x</p>'], 'abgerufen_am' => 1_794_646_800, 'letzter_fehler' => 'Wartung', 'letzter_fehler_am' => 1_794_650_400, 'letzter_status' => 503]);
+        $this->attrappe($this->standA());
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a']));
+
+        self::assertStringContainsString('Zuletzt erreichbar am 14.11.2026.', $html);
+        self::assertStringContainsString('Auf der Website steht weiter die Fassung vom 14.11.2026.', $html);
+        self::assertCount(1, $this->xpath($html, '//dd//a[contains(@href,"erklaerung")]'), 'Link ins Untermodul „Erklärung“');
+        self::assertSame([], $this->anfragenAn('/declaration'));
+    }
+
+    #[Test]
+    public function erklaerungOhneAbrufSagtNochNichtAbgerufen(): void
+    {
+        $this->verbinde('a', '01SITEA');
+        $this->attrappe($this->standA());
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a']));
+
+        self::assertCount(1, $this->xpath($html, '//dt[normalize-space(.)="Erklärung"]/following-sibling::dd[1]//span[contains(@class,"badge")][normalize-space(.)="noch nicht abgerufen"]'));
+        self::assertSame([], $this->anfragenAn('/declaration'));
+    }
+
+    /**
+     * @return list<\DOMElement>
+     */
+    private function xpath(string $html, string $pfad): array
+    {
+        $treffer = (new \DOMXPath($this->dom($html)))->query($pfad);
+        $elemente = [];
+        foreach ($treffer !== false ? $treffer : [] as $knoten) {
+            if ($knoten instanceof \DOMElement) {
+                $elemente[] = $knoten;
+            }
+        }
+
+        return $elemente;
     }
 
     #[Test]

@@ -1,0 +1,112 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+<f:section name="Content">
+    <f:if condition="{keineSite}">
+        <f:then>
+            <h1>{modultitel}</h1>
+            <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung}" />
+            <p><f:translate key="keineSite" extensionName="Barrierepruefung" /></p>
+        </f:then>
+        <f:else>
+            <h1>{modultitel} – {siteName}</h1>
+            <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung}" />
+
+            <h2><f:translate key="erklaerung.ueberschrift" extensionName="Barrierepruefung" /></h2>
+            <f:if condition="{zustand} == 'nichtVerbunden'">
+                <f:then>
+                    <f:render partial="Befunde/Hinweis" arguments="{klasse: 'callout-info', symbol: 'actions-info', textSchluessel: 'erklaerung.nicht_verbunden', uebersichtUri: uebersichtUri}" />
+                </f:then>
+                <f:else>
+                    <f:if condition="{zustand} == 'neuVerbinden'">
+                        <f:render partial="Befunde/Hinweis" arguments="{klasse: 'callout-warning', symbol: 'actions-exclamation', textSchluessel: 'fehler.neu_verbinden', uebersichtUri: uebersichtUri}" />
+                    </f:if>
+                    <f:comment>Was die Registry weiß; das Anzeigen fragt den Dienst nicht. „Jetzt abgleichen“ tut es, auf Wunsch.</f:comment>
+                    <dl class="row">
+                        <dt class="col-sm-3"><f:translate key="zustand.erklaerung" extensionName="Barrierepruefung" /></dt>
+                        <dd class="col-sm-9"><f:render partial="ErklaerungStatus" arguments="{erklaerung: erklaerung}" /></dd>
+                        <f:if condition="{erklaerung.sprache}">
+                        <dt class="col-sm-3"><f:translate key="erklaerung.sprache" extensionName="Barrierepruefung" /></dt>
+                        <dd class="col-sm-9">{erklaerung.sprache}</dd>
+                        </f:if>
+                    </dl>
+                    <f:if condition="{erklaerung.fehler}">
+                        <div class="callout {erklaerung.fehler.klasse}" role="status">
+                            <div class="callout-icon"><span class="icon-emphasized"><core:icon identifier="{erklaerung.fehler.symbol}" size="small" /></span></div>
+                            <div class="callout-content">
+                                <div class="callout-title"><f:translate key="erklaerung.fehler.titel.{erklaerung.fehler.art}" extensionName="Barrierepruefung" /></div>
+                                <div class="callout-body">
+                                    <f:for each="{erklaerung.fehler.saetze}" as="satz">
+                                        <p>{satz}</p>
+                                    </f:for>
+                                    <f:if condition="{erklaerung.fehler.art} == 'verbindung'">
+                                        <p><a class="text-decoration-underline" href="{uebersichtUri}"><f:translate key="erklaerung.fehler.neu_verbinden" extensionName="Barrierepruefung" /></a></p>
+                                    </f:if>
+                                </div>
+                            </div>
+                        </div>
+                    </f:if>
+                    <f:if condition="{zustand} == 'verbunden'">
+                        <form method="post" action="{f:be.uri(route: 'barrierepruefung_erklaerung.abgleichen')}" id="barrierepruefung-abgleichen">
+                            <input type="hidden" name="site" value="{site.identifier}">
+                            <button type="submit" class="btn btn-default"><f:translate key="abgleichen.knopf" extensionName="Barrierepruefung" /></button>
+                        </form>
+                        <p class="form-text mt-2"><f:translate key="abgleichen.erklaerung" extensionName="Barrierepruefung" /></p>
+                    </f:if>
+                </f:else>
+            </f:if>
+
+            <h2><f:translate key="seiten.ueberschrift" extensionName="Barrierepruefung" /></h2>
+            <f:if condition="{seiten}">
+                <f:then>
+                    <div class="table-fit">
+                        <table class="table table-striped table-hover" id="barrierepruefung-seiten">
+                            <caption class="visually-hidden"><f:translate key="seiten.tabelle.beschriftung" extensionName="Barrierepruefung" /></caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col"><f:translate key="seiten.spalte.seite" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="seiten.spalte.sprache" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="seiten.spalte.zustand" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="seiten.spalte.mehr" extensionName="Barrierepruefung" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <f:for each="{seiten}" as="seite">
+                                    <tr>
+                                        <th scope="row">{seite.titel}</th>
+                                        <td>
+                                            {seite.sprache}
+                                            <f:if condition="{seite.uebersetzung}">
+                                                <br><f:if condition="{freigegebeneSprache}">
+                                                    <f:then><f:translate key="seiten.uebersetzung" arguments="{0: freigegebeneSprache}" extensionName="Barrierepruefung" /></f:then>
+                                                    <f:else><f:translate key="seiten.uebersetzung_ohne_sprache" extensionName="Barrierepruefung" /></f:else>
+                                                </f:if>
+                                            </f:if>
+                                        </td>
+                                        <td>
+                                            <f:if condition="{seite.verborgen}">
+                                                <f:then><span class="badge badge-warning"><f:translate key="seiten.verborgen" extensionName="Barrierepruefung" /></span></f:then>
+                                                <f:else><span class="badge badge-success"><f:translate key="seiten.sichtbar" extensionName="Barrierepruefung" /></span></f:else>
+                                            </f:if>
+                                        </td>
+                                        <td><a href="{seite.uri}"><f:translate key="seiten.im_seitenmodul" extensionName="Barrierepruefung" /><span class="visually-hidden">: {seite.titel}</span></a></td>
+                                    </tr>
+                                </f:for>
+                            </tbody>
+                        </table>
+                    </div>
+                </f:then>
+                <f:else>
+                    <p><f:translate key="seiten.keine" extensionName="Barrierepruefung" /></p>
+                </f:else>
+            </f:if>
+
+            <h2><f:translate key="seite.ueberschrift" extensionName="Barrierepruefung" /></h2>
+            <p><f:translate key="seite.erklaerung" extensionName="Barrierepruefung" /></p>
+            <form method="post" action="{f:be.uri(route: 'barrierepruefung_erklaerung.seiteAnlegen')}" id="barrierepruefung-seite-anlegen">
+                <input type="hidden" name="site" value="{site.identifier}">
+                <button type="submit" class="btn btn-primary"><f:translate key="seite.knopf" extensionName="Barrierepruefung" /></button>
+            </form>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

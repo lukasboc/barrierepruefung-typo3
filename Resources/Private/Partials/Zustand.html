@@ -55,22 +55,11 @@
 
         <dt class="col-sm-3"><f:translate key="zustand.erklaerung" extensionName="Barrierepruefung" /></dt>
         <dd class="col-sm-9">
-            <f:switch expression="{stand.erklaerung.zustand}">
-                <f:case value="veroeffentlicht">
-                    <f:if condition="{stand.erklaerung.veraltet}">
-                        <f:then><span class="badge badge-warning"><f:translate key="erklaerung.veraltet" extensionName="Barrierepruefung" /></span></f:then>
-                        <f:else><span class="badge badge-success"><f:translate key="erklaerung.veroeffentlicht" extensionName="Barrierepruefung" /></span></f:else>
-                    </f:if>
-                    <f:if condition="{stand.erklaerung.stand}"><f:translate key="erklaerung.stand" arguments="{0: stand.erklaerung.stand}" extensionName="Barrierepruefung" /></f:if>
-                    <f:if condition="{stand.erklaerung.fassung}"><f:translate key="erklaerung.fassung" arguments="{0: stand.erklaerung.fassung}" extensionName="Barrierepruefung" /></f:if>
-                    <f:if condition="{stand.erklaerung.veraltet}"><p class="mt-2"><f:translate key="erklaerung.veraltet.hinweis" extensionName="Barrierepruefung" /></p></f:if>
-                    <f:if condition="{stand.erklaerung.adresse}"><br><a class="text-decoration-underline" href="{stand.erklaerung.adresse}"><f:translate key="erklaerung.oeffnen" extensionName="Barrierepruefung" /></a></f:if>
-                </f:case>
-                <f:case value="keine">
-                    <span class="badge badge-default"><f:translate key="erklaerung.keine" extensionName="Barrierepruefung" /></span>
-                </f:case>
-                <f:defaultCase><f:translate key="erklaerung.unbekannt" extensionName="Barrierepruefung" /></f:defaultCase>
-            </f:switch>
+            <f:render partial="ErklaerungStatus" arguments="{erklaerung: stand.erklaerung}" />
+            <f:if condition="{stand.erklaerung.fehler}">
+                <f:for each="{stand.erklaerung.fehler.saetze}" as="satz"><p class="mt-2 mb-0">{satz}</p></f:for>
+                <p class="mt-2 mb-0"><a class="text-decoration-underline" href="{f:be.uri(route: 'barrierepruefung_erklaerung', parameters: {site: site.identifier})}"><f:translate key="erklaerung.zum_untermodul" extensionName="Barrierepruefung" /></a></p>
+            </f:if>
         </dd>
     </f:if>
 </dl>

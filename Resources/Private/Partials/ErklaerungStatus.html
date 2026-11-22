@@ -1,0 +1,21 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>Der Stand der Erklärung als Wort im badge, mit Stand, Fassung und Link; gemeinsam für Übersicht und Untermodul „Erklärung“.</f:comment>
+<f:switch expression="{erklaerung.zustand}">
+    <f:case value="veroeffentlicht">
+        <f:if condition="{erklaerung.veraltet}">
+            <f:then><span class="badge badge-warning"><f:translate key="erklaerung.veraltet" extensionName="Barrierepruefung" /></span></f:then>
+            <f:else><span class="badge badge-success"><f:translate key="erklaerung.veroeffentlicht" extensionName="Barrierepruefung" /></span></f:else>
+        </f:if>
+        <f:if condition="{erklaerung.stand}"><f:translate key="erklaerung.stand" arguments="{0: erklaerung.stand}" extensionName="Barrierepruefung" /></f:if>
+        <f:if condition="{erklaerung.fassung}"><f:translate key="erklaerung.fassung" arguments="{0: erklaerung.fassung}" extensionName="Barrierepruefung" /></f:if>
+        <f:if condition="{erklaerung.veraltet}"><p class="mt-2"><f:translate key="erklaerung.veraltet.hinweis" extensionName="Barrierepruefung" /></p></f:if>
+        <f:if condition="{erklaerung.adresse}"><br><a class="text-decoration-underline" href="{erklaerung.adresse}"><f:translate key="erklaerung.oeffnen" extensionName="Barrierepruefung" /></a></f:if>
+    </f:case>
+    <f:case value="keine">
+        <span class="badge badge-default"><f:translate key="erklaerung.keine" extensionName="Barrierepruefung" /></span>
+    </f:case>
+    <f:defaultCase>
+        <span class="badge badge-default"><f:translate key="erklaerung.noch_nie" extensionName="Barrierepruefung" /></span>
+    </f:defaultCase>
+</f:switch>
+</html>

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Lubomedia\Barrierepruefung\Controller\BefundeController;
+use Lubomedia\Barrierepruefung\Controller\ErklaerungController;
 use Lubomedia\Barrierepruefung\Controller\UebersichtController;
 
 /*
@@ -73,6 +74,31 @@ return [
         'routes' => [
             '_default' => [
                 'target' => BefundeController::class . '::index',
+            ],
+        ],
+    ],
+    'barrierepruefung_erklaerung' => [
+        'parent' => 'barrierepruefung',
+        'access' => 'user',
+        'workspaces' => 'live',
+        'path' => '/module/barrierepruefung/erklaerung',
+        'iconIdentifier' => 'barrierepruefung-modul',
+        'labels' => [
+            'title' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:erklaerung.title',
+            'description' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:erklaerung.description',
+            'shortDescription' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:erklaerung.shortDescription',
+        ],
+        'routes' => [
+            '_default' => [
+                'target' => ErklaerungController::class . '::index',
+            ],
+            'seiteAnlegen' => [
+                'target' => ErklaerungController::class . '::seiteAnlegen',
+                'methods' => ['POST'],
+            ],
+            'abgleichen' => [
+                'target' => ErklaerungController::class . '::abgleichen',
+                'methods' => ['POST'],
             ],
         ],
     ],

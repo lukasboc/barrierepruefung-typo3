@@ -39,6 +39,18 @@
 				<source>Open findings</source>
 				<target>Offene Befunde</target>
 			</trans-unit>
+			<trans-unit id="erklaerung.title">
+				<source>Statement</source>
+				<target>Erklärung</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.description">
+				<source>Published accessibility statement of the selected site, the pages that show it, and a new page with the statement.</source>
+				<target>Veröffentlichte Erklärung zur Barrierefreiheit der gewählten Site, die Seiten, die sie zeigen, und eine neue Seite mit der Erklärung.</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.shortDescription">
+				<source>Published statement</source>
+				<target>Veröffentlichte Erklärung</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -26,19 +26,20 @@ final class Rueckmeldung
      * @param string                $art    erfolg|fehler|info
      * @param array<string, string> $felder Fehler je Formularfeld
      * @param array<string, string> $werte  Eingaben, die das Formular wieder zeigt (nie ein Token)
+     * @param array{uri: string, text: string}|null $link ein Weg weiter, als Link unter dem Text (Adresse aus dem UriBuilder)
      */
-    public function merken(string $art, string $text, array $felder = [], array $werte = []): void
+    public function merken(string $art, string $text, array $felder = [], array $werte = [], ?array $link = null): void
     {
         if (!isset(self::ARTEN[$art])) {
             throw new \InvalidArgumentException('Unbekannte Art der Rückmeldung: ' . $art, 1763800001);
         }
-        $this->benutzer()?->setAndSaveSessionData(self::SCHLUESSEL, ['art' => $art, 'text' => $text, 'felder' => $felder, 'werte' => $werte]);
+        $this->benutzer()?->setAndSaveSessionData(self::SCHLUESSEL, ['art' => $art, 'text' => $text, 'felder' => $felder, 'werte' => $werte, 'link' => $link]);
     }
 
     /**
      * Die gemerkte Rückmeldung, danach ist sie weg.
      *
-     * @return array{art: string, text: string, felder: array<string, string>, werte: array<string, string>, rolle: string, klasse: string, symbol: string}|null
+     * @return array{art: string, text: string, felder: array<string, string>, werte: array<string, string>, link: array{uri: string, text: string}|null, rolle: string, klasse: string, symbol: string}|null
      */
     public function nehmen(): ?array
     {
@@ -57,11 +58,22 @@ final class Rueckmeldung
             'text' => is_string($daten['text'] ?? null) ? $daten['text'] : '',
             'felder' => self::texte($daten['felder'] ?? null),
             'werte' => self::texte($daten['werte'] ?? null),
+            'link' => self::link($daten['link'] ?? null),
             // Ein Fehler unterbricht, alles andere wird höflich angesagt.
             'rolle' => $art === 'fehler' ? 'alert' : 'status',
             'klasse' => 'callout-' . $schwere->getCssClass(),
             'symbol' => $schwere->getIconIdentifier(),
         ];
+    }
+
+    /**
+     * @return array{uri: string, text: string}|null
+     */
+    private static function link(mixed $link): ?array
+    {
+        return is_array($link) && is_string($link['uri'] ?? null) && $link['uri'] !== '' && is_string($link['text'] ?? null)
+            ? ['uri' => $link['uri'], 'text' => $link['text']]
+            : null;
     }
 
     /**

@@ -6,7 +6,10 @@
             <span class="icon-emphasized"><core:icon identifier="{rueckmeldung.symbol}" size="small" /></span>
         </div>
         <div class="callout-content">
-            <div class="callout-body"><p>{rueckmeldung.text}</p></div>
+            <div class="callout-body">
+                <p>{rueckmeldung.text}</p>
+                <f:if condition="{rueckmeldung.link}"><p><a class="text-decoration-underline" href="{rueckmeldung.link.uri}">{rueckmeldung.link.text}</a></p></f:if>
+            </div>
         </div>
     </div>
 </f:if>

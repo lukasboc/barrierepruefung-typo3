@@ -30,6 +30,15 @@
 			<trans-unit id="befunde.shortDescription">
 				<source>Open findings</source>
 			</trans-unit>
+			<trans-unit id="erklaerung.title">
+				<source>Statement</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.description">
+				<source>Published accessibility statement of the selected site, the pages that show it, and a new page with the statement.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.shortDescription">
+				<source>Published statement</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

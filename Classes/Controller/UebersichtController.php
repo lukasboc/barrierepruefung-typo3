@@ -7,6 +7,7 @@ namespace Lubomedia\Barrierepruefung\Controller;
 use Lubomedia\Barrierepruefung\Api\Antwort;
 use Lubomedia\Barrierepruefung\Api\Client;
 use Lubomedia\Barrierepruefung\Api\Zugang;
+use Lubomedia\Barrierepruefung\Erklaerung\Abruf;
 use Lubomedia\Barrierepruefung\Modul\Anzeige;
 use Lubomedia\Barrierepruefung\Modul\Rueckmeldung;
 use Lubomedia\Barrierepruefung\Modul\Sitewahl;
@@ -60,6 +61,7 @@ final class UebersichtController
         private readonly Client $client,
         private readonly IconFactory $symbole,
         private readonly Anzeige $anzeige,
+        private readonly Abruf $abruf,
     ) {}
 
     public function index(ServerRequestInterface $request): ResponseInterface
@@ -332,35 +334,10 @@ final class UebersichtController
             ];
         }
 
-        $stand['erklaerung'] = $this->erklaerung($zugang);
+        // Aus der Registry, ohne den Dienst zu fragen: den Abgleich machen der Befehl, die Website und das Untermodul „Erklärung“.
+        $stand['erklaerung'] = $this->anzeige->erklaerung($this->abruf->stand($zugang->siteId));
 
         return $stand;
-    }
-
-    /**
-     * Bis Task 13 aus GET /sites/{id}/declaration; 404 heißt: noch keine veröffentlicht.
-     *
-     * @return array<string, mixed>
-     */
-    private function erklaerung(Zugang $zugang): array
-    {
-        $antwort = $this->client->get($zugang, 'sites/' . rawurlencode($zugang->siteId) . '/declaration');
-        if ($antwort->status === 404) {
-            return ['zustand' => 'keine'];
-        }
-        $erklaerung = $antwort->daten['declaration'] ?? null;
-        if (!$antwort->ok() || !is_array($erklaerung)) {
-            return ['zustand' => 'unbekannt'];
-        }
-        $stand = $this->zeitpunkt($erklaerung['assessed_at'] ?? null) ?? $this->zeitpunkt($erklaerung['published_at'] ?? null);
-
-        return [
-            'zustand' => 'veroeffentlicht',
-            'stand' => $stand !== null ? $this->datum($stand) : null,
-            'fassung' => is_int($erklaerung['version'] ?? null) ? $erklaerung['version'] : null,
-            'veraltet' => ($erklaerung['outdated'] ?? false) === true,
-            'adresse' => $this->adresse($erklaerung['public_url'] ?? null),
-        ];
     }
 
     /**
