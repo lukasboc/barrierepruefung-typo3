@@ -36,3 +36,7 @@ services:
   # Öffentlich: TypoScript nennt den Processor beim Klassennamen, und der Kern sucht ihn im Container.
   Lubomedia\Barrierepruefung\DataProcessing\ErklaerungProcessor:
     public: true
+
+  # Planbar im Scheduler (Aufgabe „Konsolenbefehl ausführen“); öffentlich, damit Tests ihn aus dem Container holen.
+  Lubomedia\Barrierepruefung\Command\AktualisierenCommand:
+    public: true
