@@ -4,6 +4,7 @@
 #   ./lokal.sh einrichten <13|14>    eine Instanz einrichten (idempotent: bereits eingerichtete bleiben)
 #   ./lokal.sh zuruecksetzen [13|14] var/, SQLite und Einstellungen löschen und neu einrichten
 #   ./lokal.sh runter                Container stoppen (Daten bleiben)
+#   ./lokal.sh seiten <13|14>        die 18 Erklärungsseiten (neu) anlegen, auch in bestehenden Instanzen
 #   ./lokal.sh typo3 <13|14> <args>  vendor/bin/typo3 im Container
 set -euo pipefail
 
@@ -77,12 +78,33 @@ einrichten() {
   '
   rm -f "v$v/var/seiten.sql"
 
+  log "v$v: Seiten für den axe-Test"
+  erklaerungsseiten "$v"
+
   log "v$v: Erweiterung barrierepruefung aktiv?"
   im "$v" vendor/bin/typo3 extension:list 2>/dev/null | grep -i barrierepruefung || log "  (Hinweis: Erweiterung nicht in extension:list - in Composer-Instanzen ist sie über den Pfad aktiv)"
   log "v$v: Cache leeren"
   im "$v" vendor/bin/typo3 cache:flush
   date -u +%FT%TZ > "v$v/$MARKE"
   log "v$v: eingerichtet (Marke $MARKE)"
+}
+
+# 18 Seiten mit dem Inhaltselement (/erklaerung-{teil}-h{n}-{mit|ohne}-stand) für den axe-Test. Idempotent.
+erklaerungsseiten() {
+  local v="$1"
+  cp seed/erklaerungsseiten.sql "v$v/var/erklaerungsseiten.sql"
+  if [ "$v" = 14 ]; then
+    # Camino braucht je Seite ein Backend-Layout, sonst bricht die Ausgabe mit 500 ab.
+    printf "UPDATE pages SET backend_layout='pagets__CaminoContentpage' WHERE uid BETWEEN 301 AND 318;\n" >> "v$v/var/erklaerungsseiten.sql"
+  fi
+  im "$v" php -r '
+    $db = (require "config/system/settings.php")["DB"]["Connections"]["Default"]["path"];
+    $pdo = new PDO("sqlite:" . $db);
+    $pdo->exec(file_get_contents("var/erklaerungsseiten.sql"));
+    echo "Erklärungsseiten: ", $pdo->query("select count(*) from pages where slug like \"/erklaerung-%\"")->fetchColumn(), PHP_EOL;
+  '
+  rm -f "v$v/var/erklaerungsseiten.sql"
+  im "$v" vendor/bin/typo3 cache:flush
 }
 
 hoch() {
@@ -111,6 +133,7 @@ case "$kommando" in
   einrichten)    dc up -d; einrichten "${1:?Fassung 13 oder 14}" ;;
   zuruecksetzen) zuruecksetzen "$@" ;;
   runter)        log "docker compose down"; dc down ;;
+  seiten)        erklaerungsseiten "${1:?Fassung 13 oder 14}" ;;
   typo3)         v="${1:?Fassung 13 oder 14}"; shift; port_von "$v" >/dev/null; im "$v" vendor/bin/typo3 "$@" ;;
-  *) sed -n '2,8p' "$0"; exit 2 ;;
+  *) sed -n '2,9p' "$0"; exit 2 ;;
 esac

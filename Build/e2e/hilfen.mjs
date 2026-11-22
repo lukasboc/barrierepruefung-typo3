@@ -1,4 +1,5 @@
 // Gemeinsame Hilfen der Ende-zu-Ende-Läufe.
+export const ATTRAPPE = 'http://localhost:8091';
 export const ZUGANG = { benutzer: 'admin', passwort: 'Lokal-Admin-1!' };
 
 export async function anmelden(page, basis) {
@@ -44,4 +45,10 @@ export async function neuGeladen(page, aktion) {
   const frame = await geladen;
   await frame.waitForLoadState('load');
   return modulRahmen(page);
+}
+
+// Schalter der API-Attrappe: attrappe('zuruecksetzen', {}) / attrappe('anfragen') (ohne Daten = GET).
+export async function attrappe(aktion, daten) {
+  const antwort = await fetch(`${ATTRAPPE}/__stub/${aktion}`, daten === undefined ? {} : { method: 'POST', body: JSON.stringify(daten) });
+  return antwort.json();
 }
