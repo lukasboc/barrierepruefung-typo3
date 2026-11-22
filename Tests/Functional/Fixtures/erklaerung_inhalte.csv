@@ -1,14 +1,19 @@
 "pages"
-,"uid","pid","title","slug","doktype","hidden","perms_userid","perms_groupid","perms_user","perms_group","perms_everybody"
-,4,1,"Barrierefreiheit","/barrierefreiheit",1,0,1,1,31,31,0
-,5,2,"Erklärung Gemeinde B","/erklaerung-b",1,0,1,0,31,0,0
-,6,1,"Noch nicht freigegeben","/entwurf",1,1,1,1,31,31,0
+,"uid","pid","title","slug","doktype","hidden","perms_userid","perms_groupid","perms_user","perms_group","perms_everybody","deleted","t3ver_wsid","t3ver_oid"
+,4,1,"Barrierefreiheit","/barrierefreiheit",1,0,1,1,31,31,0,0,0,0
+,5,2,"Erklärung Gemeinde B","/erklaerung-b",1,0,1,0,31,0,0,0,0,0
+,6,1,"Noch nicht freigegeben","/entwurf",1,1,1,1,31,31,0,0,0,0
+,7,1,"Gelöschte Seite","/geloescht",1,0,1,1,31,31,0,1,0,0
+,8,1,"Version der Seite","/version",1,0,1,1,31,31,0,0,1,4
 "tt_content"
-,"uid","pid","CType","sys_language_uid","hidden","deleted","colPos"
-,101,4,"barrierepruefung_erklaerung",0,0,0,0
-,102,5,"barrierepruefung_erklaerung",0,0,0,0
-,103,4,"text",0,0,0,0
-,104,4,"barrierepruefung_erklaerung",0,1,0,1
-,105,4,"barrierepruefung_erklaerung",0,0,1,0
-,106,4,"barrierepruefung_erklaerung",1,0,0,0
-,107,6,"barrierepruefung_erklaerung",0,0,0,0
+,"uid","pid","CType","sys_language_uid","hidden","deleted","colPos","t3ver_wsid","t3ver_oid"
+,101,4,"barrierepruefung_erklaerung",0,0,0,0,0,0
+,102,5,"barrierepruefung_erklaerung",0,0,0,0,0,0
+,103,4,"text",0,0,0,0,0,0
+,104,4,"barrierepruefung_erklaerung",0,1,0,1,0,0
+,105,4,"barrierepruefung_erklaerung",0,0,1,0,0,0
+,106,4,"barrierepruefung_erklaerung",1,0,0,0,0,0
+,107,6,"barrierepruefung_erklaerung",0,0,0,0,0,0
+,108,4,"barrierepruefung_erklaerung",0,0,0,0,1,101
+,109,7,"barrierepruefung_erklaerung",0,0,0,0,0,0
+,110,8,"barrierepruefung_erklaerung",0,0,0,0,1,0

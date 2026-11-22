@@ -154,11 +154,14 @@ final class ErklaerungControllerTest extends FunctionalTestCase
 
         $zeilen = $this->suche($html, '//table[@id="barrierepruefung-seiten"]//tbody/tr');
         $text = $this->text($html);
-        // 101 (sichtbar), 104 (Element verborgen), 106 (Übersetzung), 107 (Seite verborgen); nicht: 102 fremde Site, 103 anderer CType, 105 gelöscht.
+        // 101 (sichtbar), 104 (Element verborgen), 106 (Übersetzung), 107 (Seite verborgen); nicht: 102 fremde Site, 103 anderer CType,
+        // 105 gelöscht, 109 auf gelöschter Seite, 108 Version eines Elements und 110 auf der Version einer Seite (anderer Arbeitsbereich).
         self::assertCount(4, $zeilen);
         self::assertStringContainsString('Barrierefreiheit', $text);
         self::assertStringContainsString('Noch nicht freigegeben', $text);
         self::assertStringNotContainsString('Erklärung Gemeinde B', $text);
+        self::assertStringNotContainsString('Gelöschte Seite', $text);
+        self::assertStringNotContainsString('Version der Seite', $text);
         self::assertCount(2, $this->suche($html, '//table[@id="barrierepruefung-seiten"]//span[contains(@class,"badge")][normalize-space(.)="verborgen"]'), 'verborgenes Element und verborgene Seite stehen als Wort');
         self::assertCount(2, $this->suche($html, '//table[@id="barrierepruefung-seiten"]//span[contains(@class,"badge")][normalize-space(.)="sichtbar"]'));
         // Link ins Seitenmodul der Seite.

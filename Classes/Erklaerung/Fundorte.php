@@ -8,6 +8,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -35,12 +36,21 @@ final class Fundorte
     public function inSite(Site $s, ?BackendUserAuthentication $benutzer = null): array
     {
         $abfrage = $this->datenbank->getQueryBuilderForTable('tt_content');
-        $abfrage->getRestrictions()->removeAll()->add(new DeletedRestriction());
+        $abfrage->getRestrictions()->removeAll()->add(new DeletedRestriction())->add(new WorkspaceRestriction(0));
         $zeilen = $abfrage
             ->select('c.uid', 'c.pid', 'c.sys_language_uid', 'c.hidden AS inhalt_verborgen', 'p.title', 'p.hidden AS seite_verborgen')
             ->from('tt_content', 'c')
-            ->innerJoin('c', 'pages', 'p', $abfrage->expr()->eq('p.uid', $abfrage->quoteIdentifier('c.pid')))
-            ->where($abfrage->expr()->eq('c.CType', $abfrage->createNamedParameter(self::CTYPE)))
+            // Auch die Seite: nicht gelöscht und nicht die Fassung eines anderen Arbeitsbereichs (das Modul zeigt nur live).
+            ->innerJoin('c', 'pages', 'p', (string)$abfrage->expr()->and(
+                $abfrage->expr()->eq('p.uid', $abfrage->quoteIdentifier('c.pid')),
+                $abfrage->expr()->eq('p.deleted', 0),
+                $abfrage->expr()->eq('p.t3ver_wsid', 0),
+            ))
+            ->where(
+                $abfrage->expr()->eq('c.CType', $abfrage->createNamedParameter(self::CTYPE)),
+                $abfrage->expr()->eq('c.deleted', 0),
+                $abfrage->expr()->eq('c.t3ver_wsid', 0),
+            )
             ->orderBy('p.title')
             ->addOrderBy('c.sys_language_uid')
             ->addOrderBy('c.uid')
