@@ -88,9 +88,7 @@ final class UebersichtController
                 'fehler' => $this->fehler($antwort),
                 // Kennt der Dienst das Token nicht mehr, hilft nur ein neues.
                 'verbindungsformular' => $antwort->status === 401,
-                'werte' => ['dienst_url' => $verbindung->dienstUrl, 'site_id' => $verbindung->siteId],
-                'felder' => [],
-            ]);
+            ] + $this->formularDaten($rueckmeldung, $verbindung));
         } else {
             $daten = is_array($antwort->daten['data'] ?? null) ? $antwort->daten['data'] : [];
             if (is_array($daten['token'] ?? null)) {
@@ -230,17 +228,29 @@ final class UebersichtController
      */
     private function verbindenZeigen(ModuleTemplate $vorlage, ?array $rueckmeldung, ?Verbindung $alt, bool $neuVerbinden): ResponseInterface
     {
+        return $vorlage->assignMultiple(['neuVerbinden' => $neuVerbinden] + $this->formularDaten($rueckmeldung, $alt))
+            ->renderResponse('Uebersicht/Verbinden');
+    }
+
+    /**
+     * Werte und Feldfehler für das Verbindungsformular: was die letzte Eingabe gebracht hat, sonst die gespeicherte
+     * Verbindung, sonst die Vorgabe. Gilt für jede Stelle, an der das Formular steht (auch nach einer 401).
+     *
+     * @param array<string, mixed>|null $rueckmeldung
+     * @return array{werte: array<string, mixed>, felder: array<string, mixed>}
+     */
+    private function formularDaten(?array $rueckmeldung, ?Verbindung $alt): array
+    {
         $werte = is_array($rueckmeldung['werte'] ?? null) ? $rueckmeldung['werte'] : [];
         $werte += [
             'dienst_url' => $alt !== null ? $alt->dienstUrl : self::STANDARD_DIENST,
             'site_id' => $alt !== null ? $alt->siteId : '',
         ];
 
-        return $vorlage->assignMultiple([
-            'neuVerbinden' => $neuVerbinden,
+        return [
             'werte' => $werte,
             'felder' => is_array($rueckmeldung['felder'] ?? null) ? $rueckmeldung['felder'] : [],
-        ])->renderResponse('Uebersicht/Verbinden');
+        ];
     }
 
     /**

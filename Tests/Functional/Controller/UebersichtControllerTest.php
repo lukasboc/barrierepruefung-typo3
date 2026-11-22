@@ -406,6 +406,27 @@ final class UebersichtControllerTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function nach401BehaeltDasFormularFeldfehlerUndEingaben(): void
+    {
+        $this->verbinde('a', '01SITEA');
+        $this->attrappe(['GET /api/v1/sites/01SITEA' => new Response(401, ['Content-Type' => 'application/problem+json'], '{"status":401,"detail":"Unauthenticated."}')]);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a']));
+        self::assertNotNull($this->knoten($html, '//form[@id="barrierepruefung-verbinden"]'));
+
+        $antwort = $this->formularAbsenden($html, 'barrierepruefung-verbinden', ['site_id' => '01NEUESITE', 'api_token' => '']);
+        $danach = $this->html($this->folgen($antwort));
+
+        $token = $this->knoten($danach, '//input[@id="barrierepruefung-token"]');
+        self::assertNotNull($token);
+        self::assertSame('true', $token->getAttribute('aria-invalid'));
+        self::assertContains('barrierepruefung-token-fehler', explode(' ', $token->getAttribute('aria-describedby')));
+        self::assertNotNull($this->knoten($danach, '//*[@id="barrierepruefung-token-fehler"]'));
+        self::assertSame('01NEUESITE', $this->knoten($danach, '//input[@id="barrierepruefung-site-id"]')?->getAttribute('value'));
+    }
+
+    #[Test]
     public function trennenNurFuerAdmins(): void
     {
         $this->verbinde('a', '01SITEA');
