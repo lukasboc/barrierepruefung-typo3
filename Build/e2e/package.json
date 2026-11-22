@@ -8,9 +8,9 @@
     "attrappe": "node stub-api.mjs",
     "modul-uebersicht": "node modul-uebersicht.mjs",
     "modul-befunde": "node modul-befunde.mjs",
-    "test": "node --test axe.test.mjs tastatur.test.mjs",
-    "test:axe": "node --test axe.test.mjs",
-    "test:tastatur": "node --test tastatur.test.mjs",
+    "test": "node --test --test-concurrency=1 axe.test.mjs tastatur.test.mjs",
+    "test:axe": "node --test --test-concurrency=1 axe.test.mjs",
+    "test:tastatur": "node --test --test-concurrency=1 tastatur.test.mjs",
     "modul-erklaerung": "node modul-erklaerung.mjs"
   },
   "dependencies": {
