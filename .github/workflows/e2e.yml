@@ -1,0 +1,47 @@
+name: E2E
+
+# axe-Golden-Test des Inhaltselements (18 Kombinationen) und Tastaturdurchgang durch die Backend-Module,
+# gegen eine echte TYPO3-14.3-Instanz (SQLite, php -S, ohne Docker) und die API-Attrappe. Die Schritte stehen
+# in Build/e2e/ci.sh und laufen lokal genauso (siehe dort).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  e2e:
+    name: axe und Tastatur (TYPO3 14.3)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, gd, zip, pdo_sqlite, mbstring, xml, curl
+          coverage: none
+          tools: composer:v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: Build/e2e/package-lock.json
+      - name: Node-Abhängigkeiten und Chromium
+        working-directory: Build/e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: TYPO3 einrichten, Server starten, Tests ausführen
+        run: Build/e2e/ci.sh "$RUNNER_TEMP/typo3-14"
+      - name: Ergebnisse (Bildschirmfotos) und Server-Protokolle sichern
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-ergebnisse
+          if-no-files-found: ignore
+          path: |
+            Build/e2e/ergebnisse/
+            ${{ runner.temp }}/typo3-14/php-s.log
+            ${{ runner.temp }}/typo3-14/stub.log
+            ${{ runner.temp }}/typo3-14/var/log/

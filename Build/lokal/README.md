@@ -46,6 +46,20 @@ veröffentlichten Erklärung), `POST /__stub/unbestaetigt {"an": true}` (Website
 `POST /__stub/zuruecksetzen`. Website-Kennung für 13.4: `01STUBSITE0000000000000000` (`base_url` `http://localhost:8089`),
 für 14.3: `01STUBSITE0000000000000014` (dieselben Antworten mit `http://localhost:8090`) – der Adressabgleich vergleicht den Port. Die Antworten stehen in `Build/e2e/antworten/` (Herkunft: dort `README.md`).
 
+## axe-Golden-Test und Tastaturdurchgang
+
+```sh
+Build/lokal/lokal.sh seiten 13 && Build/lokal/lokal.sh seiten 14   # die 18 Seiten /erklaerung-{teil}-h{n}-{mit|ohne}-stand (bei neu eingerichteten Instanzen schon da)
+cd Build/e2e && node stub-api.mjs &
+npm test                      # axe.test.mjs (18 Seiten je Instanz) und tastatur.test.mjs; INSTANZ=v14 beschränkt auf eine
+```
+
+Beide Tests laufen nacheinander (`--test-concurrency=1`): sie teilen sich Attrappe und Instanzen. Ausnahmen für Befunde, die nicht
+aus dem Markup der Erweiterung stammen (Website-Paket, TYPO3-Kern), stehen mit Regel, Instanz, Selektor und Grund in
+`Build/e2e/bekannte-befunde.json` - alles andere lässt den Test scheitern. Die CI (`.github/workflows/e2e.yml`) richtet
+dafür mit `Build/e2e/ci.sh <Ordner>` eine TYPO3-14.3-Instanz unter `php -S` ein (ohne Docker); lokal läuft das genauso, wenn die
+Ports 8090/8091 frei sind (`lokal.sh runter` für die Docker-Instanzen).
+
 ## Gegen den echten lokalen Dienst
 
 Der Dienst läuft auf `http://127.0.0.1:8001`, aus den Containern erreichbar als
