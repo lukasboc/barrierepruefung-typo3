@@ -25,10 +25,19 @@ final readonly class Fassung
         public ?int $abgerufenAm = null,
         public ?int $letzterFehlerAm = null,
         public ?string $letzterFehler = null,
+        /** Bis wann der eigene Cache diese Fassung hält (Unix-Zeit); `null`, wo sie nicht aus ihm stammt. */
+        public ?int $gueltigBis = null,
+        /** Der Dienst hat bei diesem Abruf eine andere Fassung geliefert als zuvor gespeichert war. */
+        public bool $neu = false,
     ) {}
 
+    public function mitAblauf(int $gueltigBis): self
+    {
+        return new self($this->erklaerung, $this->zustand, $this->abgerufenAm, $this->letzterFehlerAm, $this->letzterFehler, $gueltigBis, $this->neu);
+    }
+
     /**
-     * @return array{erklaerung: array<string, mixed>|null, zustand: string, abgerufen_am: int|null, letzter_fehler_am: int|null, letzter_fehler: string|null}
+     * @return array{erklaerung: array<string, mixed>|null, zustand: string, abgerufen_am: int|null, letzter_fehler_am: int|null, letzter_fehler: string|null, gueltig_bis: int|null}
      */
     public function alsArray(): array
     {
@@ -38,6 +47,7 @@ final readonly class Fassung
             'abgerufen_am' => $this->abgerufenAm,
             'letzter_fehler_am' => $this->letzterFehlerAm,
             'letzter_fehler' => $this->letzterFehler,
+            'gueltig_bis' => $this->gueltigBis,
         ];
     }
 
@@ -59,6 +69,7 @@ final readonly class Fassung
             self::zahl($daten['abgerufen_am'] ?? null),
             self::zahl($daten['letzter_fehler_am'] ?? null),
             is_string($daten['letzter_fehler'] ?? null) ? $daten['letzter_fehler'] : null,
+            self::zahl($daten['gueltig_bis'] ?? null),
         );
     }
 

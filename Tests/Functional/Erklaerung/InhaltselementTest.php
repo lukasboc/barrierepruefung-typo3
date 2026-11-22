@@ -375,4 +375,70 @@ final class InhaltselementTest extends FunctionalTestCase
         self::assertStringContainsString('<p>Text</p>', $html);
         self::assertStringContainsString('<p class="a11y-erklaerung-hinweis">Hinweis</p>', $html);
     }
+
+    private function seitenAblauf(): int
+    {
+        return (int)$this->getConnectionPool()->getConnectionForTable('cache_pages')
+            ->select(['expires'], 'cache_pages')->fetchOne();
+    }
+
+    #[Test]
+    public function seiteLebtNichtLaengerAlsDieFassungImEigenenCache(): void
+    {
+        // Ohne diese Grenze läge eine Freigabe bis zu 24 h unsichtbar, wo kein Scheduler läuft.
+        $this->verbinden();
+        $this->element();
+
+        $this->seite();
+
+        $ablauf = $this->seitenAblauf();
+        self::assertGreaterThan(time(), $ablauf);
+        self::assertLessThanOrEqual(time() + Abruf::STANDARD_SEKUNDEN, $ablauf);
+    }
+
+    #[Test]
+    public function seiteFolgtDemKuerzerenMaxAgeDerApi(): void
+    {
+        $this->antwort = new Response(200, ['ETag' => '"e4"', 'Cache-Control' => 'private, max-age=600', 'Content-Type' => 'application/json'], (string)json_encode([
+            'site_id' => self::SITE_ID,
+            'declaration' => ['locale' => 'de', 'version' => 4, 'published_at' => '2026-10-08T21:29:51+00:00', 'html' => '<h2>Erklärung</h2><p>Text</p>'],
+        ]));
+        $this->verbinden();
+        $this->element();
+
+        $this->seite();
+
+        self::assertLessThanOrEqual(time() + 600, $this->seitenAblauf());
+    }
+
+    #[Test]
+    public function fehlerBeimLesenDesCachesGibtKeinenFehler500(): void
+    {
+        // Nach einem Update ohne „Datenbank vergleichen“ fehlt die Cache-Tabelle: Abruf::fassung() wirft.
+        $this->verbinden();
+        $this->element();
+        $this->getConnectionPool()->getConnectionForTable('cache_barrierepruefung_erklaerung')->executeStatement('DROP TABLE cache_barrierepruefung_erklaerung');
+        $this->getConnectionPool()->getConnectionForTable('cache_barrierepruefung_erklaerung')->executeStatement('DROP TABLE cache_barrierepruefung_erklaerung_tags');
+
+        $html = $this->seite();
+
+        self::assertStringContainsString('Version 4, Stand', $html, 'Die letzte Fassung aus der Registry bleibt sichtbar.');
+        self::assertLessThanOrEqual(time() + Abruf::RUECKFALL_SEKUNDEN, $this->seitenAblauf());
+    }
+
+    #[Test]
+    public function fehlenCacheUndRegistryZeigtDerSatzNichtVerfuegbar(): void
+    {
+        $this->verbinden();
+        $this->element();
+        $verbindung = $this->getConnectionPool()->getConnectionForTable('cache_barrierepruefung_erklaerung');
+        $verbindung->executeStatement('DROP TABLE cache_barrierepruefung_erklaerung');
+        $verbindung->executeStatement('DROP TABLE cache_barrierepruefung_erklaerung_tags');
+        $verbindung->executeStatement('DROP TABLE sys_registry');
+
+        $html = $this->seite();
+
+        self::assertStringContainsString('a11y-erklaerung-nicht-verfuegbar', $html);
+        self::assertLessThanOrEqual(time() + Abruf::RUECKFALL_SEKUNDEN, $this->seitenAblauf());
+    }
 }

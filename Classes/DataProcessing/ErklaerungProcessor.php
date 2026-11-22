@@ -8,6 +8,7 @@ use Lubomedia\Barrierepruefung\Erklaerung\Abruf;
 use Lubomedia\Barrierepruefung\Erklaerung\Bereinigung;
 use Lubomedia\Barrierepruefung\Erklaerung\Fassung;
 use Lubomedia\Barrierepruefung\Erklaerung\Fragment;
+use Lubomedia\Barrierepruefung\Verbindung\Verbindung;
 use Lubomedia\Barrierepruefung\Verbindung\Verbindungen;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Cache\CacheTag;
@@ -60,7 +61,10 @@ final class ErklaerungProcessor implements DataProcessorInterface
         }
 
         $sammler?->addCacheTags(new CacheTag(Abruf::tag($verbindung->siteId)));
-        $fassung = $this->abruf->fassung($verbindung);
+        $fassung = $this->fassung($verbindung);
+        // Die Seite liegt nicht länger im Seitencache, als die Fassung im eigenen Cache gilt (höchstens max-age der API):
+        // ohne Scheduler stünde eine Freigabe sonst bis zu 24 h nicht auf der Seite. Wo der Ablauf unbekannt ist, 300 s.
+        $sammler?->restrictMaximumLifetime($fassung->gueltigBis === null ? Abruf::RUECKFALL_SEKUNDEN : max(1, $fassung->gueltigBis - time()));
         $erklaerung = $fassung->erklaerung;
         if ($erklaerung === null || !is_string($erklaerung['html'] ?? null)) {
             $sammler?->restrictMaximumLifetime(Abruf::RUECKFALL_SEKUNDEN);
@@ -83,6 +87,23 @@ final class ErklaerungProcessor implements DataProcessorInterface
 
         // Die Fassung wird nie übersetzt; ein Rückfall bekommt keinen eigenen Hinweis: ihr Stand-Datum sagt es.
         return $this->ergebnis($processedData, (new Bereinigung())->bereinigen($html), $fassung->zustand);
+    }
+
+    /**
+     * Die Seite bricht nie an der Erklärung ab: fehlt etwa nach einem Update die Cache- oder Registry-Tabelle
+     * (kein „Datenbank vergleichen“), zählt, was sich noch lesen lässt - sonst „nicht verfügbar“.
+     */
+    private function fassung(Verbindung $verbindung): Fassung
+    {
+        try {
+            return $this->abruf->fassung($verbindung);
+        } catch (\Throwable) {
+            try {
+                return $this->abruf->stand($verbindung->siteId)->mitAblauf(time() + Abruf::RUECKFALL_SEKUNDEN);
+            } catch (\Throwable) {
+                return new Fassung(null, Fassung::KEINE, null, null, null, time() + Abruf::RUECKFALL_SEKUNDEN);
+            }
+        }
     }
 
     /**

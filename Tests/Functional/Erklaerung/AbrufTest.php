@@ -261,4 +261,30 @@ final class AbrufTest extends FunctionalTestCase
         self::assertSame(5, $neu->erklaerung['version'] ?? null);
         self::assertSame(5, $this->abruf()->fassung($this->verbindung())->erklaerung['version'] ?? null);
     }
+
+    #[Test]
+    public function neuIstNurEineVeraenderteFassung(): void
+    {
+        $this->registryMit('S1', self::erklaerung(['version' => 3]), '"e1"', 1_700_000_000);
+        $this->antworten = [self::ok(self::erklaerung(['version' => 4]), '"e2"'), new Response(304, ['ETag' => '"e2"'])];
+
+        $neu = $this->abruf()->auffrischen($this->verbindung());
+        $gleich = $this->abruf()->auffrischen($this->verbindung());
+
+        self::assertTrue($neu->neu);
+        self::assertFalse($gleich->neu);
+        self::assertFalse($this->abruf()->fassung($this->verbindung())->neu, 'Aus dem Cache gilt sie nicht mehr als neu.');
+    }
+
+    #[Test]
+    public function fassungKenntIhrenAblauf(): void
+    {
+        $this->antworten = [self::ok(self::erklaerung(), '"e2"', 'private, max-age=1800')];
+
+        $erste = $this->abruf()->fassung($this->verbindung());
+        $zweite = $this->abruf()->fassung($this->verbindung());
+
+        self::assertEqualsWithDelta(time() + 1800, $erste->gueltigBis, 2);
+        self::assertSame($erste->gueltigBis, $zweite->gueltigBis, 'Der Ablauf bleibt der des Eintrags, er wandert nicht mit.');
+    }
 }

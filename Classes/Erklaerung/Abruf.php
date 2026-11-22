@@ -111,7 +111,8 @@ final class Abruf
 
         /** @var array<string, mixed> $neu */
         $etag = $antwort->etag();
-        if ($etag !== $vorherEtag || $neu !== $vorher) {
+        $geaendert = $etag !== $vorherEtag || $neu !== $vorher;
+        if ($geaendert) {
             // Genau die Seiten, die diese Erklärung zeigen, verlieren ihren Seitencache.
             $this->caches->flushCachesInGroupByTag('pages', self::tag($v->siteId));
         }
@@ -123,7 +124,9 @@ final class Abruf
             'letzter_fehler_am' => self::zahl($gespeichert['letzter_fehler_am'] ?? null),
         ]);
 
-        return $this->merken($v->siteId, new Fassung($neu, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null)), $this->lebensdauer($antwort));
+        $fassung = new Fassung($neu, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null), null, $geaendert);
+
+        return $this->merken($v->siteId, $fassung, $this->lebensdauer($antwort));
     }
 
     /**
@@ -151,7 +154,9 @@ final class Abruf
 
     private function merken(string $siteId, Fassung $fassung, int $sekunden): Fassung
     {
-        $this->cache()->set($this->schluessel($siteId), $fassung->alsArray(), [], max(1, $sekunden));
+        $sekunden = max(1, $sekunden);
+        $fassung = $fassung->mitAblauf(time() + $sekunden);
+        $this->cache()->set($this->schluessel($siteId), $fassung->alsArray(), [], $sekunden);
 
         return $fassung;
     }
