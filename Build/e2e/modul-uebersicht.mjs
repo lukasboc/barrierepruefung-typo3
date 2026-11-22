@@ -7,10 +7,8 @@
 //   node modul-uebersicht.mjs [v13|v14]
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
-import { anmelden, modulOeffnen, modulRahmen, neuGeladen } from './hilfen.mjs';
+import { anmelden, attrappe, AUS_DEM_CONTAINER, fokus, tabBis, inDenRahmen, enterUndWarten, farbschema, axeModul, modulOeffnen, modulRahmen, neuGeladen } from './hilfen.mjs';
 
-const ATTRAPPE = 'http://localhost:8091';
-const AUS_DEM_CONTAINER = 'http://host.docker.internal:8091/api/v1';
 const ERGEBNISSE = new URL('./ergebnisse/', import.meta.url).pathname;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
@@ -20,64 +18,6 @@ const instanzen = [
 ].filter((i) => !process.argv[2] || i.name === process.argv[2]);
 
 mkdirSync(ERGEBNISSE, { recursive: true });
-
-async function attrappe(aktion, daten) {
-  const antwort = await fetch(`${ATTRAPPE}/__stub/${aktion}`, daten === undefined ? {} : { method: 'POST', body: JSON.stringify(daten) });
-  return antwort.json();
-}
-
-// Was gerade den Fokus hat (im Modulrahmen), und ob man es sieht.
-async function fokus(frame) {
-  return frame.evaluate(() => {
-    const a = document.activeElement;
-    if (!a || a === document.body) return null;
-    const s = getComputedStyle(a);
-    const outline = s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0;
-    const schatten = s.boxShadow !== 'none' && s.boxShadow !== '';
-    return {
-      beschreibung: `${a.tagName.toLowerCase()}${a.id ? '#' + a.id : ''}${a.name ? '[name=' + a.name + ']' : ''} „${(a.innerText || a.value || a.getAttribute('aria-label') || '').trim().slice(0, 50)}“`,
-      text: (a.innerText || '').trim(),
-      id: a.id,
-      name: a.getAttribute('name') ?? '',
-      href: a.getAttribute('href') ?? '',
-      form: a.getAttribute('form') ?? '',
-      sichtbar: outline || schatten,
-      stil: `outline: ${s.outlineStyle} ${s.outlineWidth}; box-shadow: ${s.boxShadow}`,
-    };
-  });
-}
-
-// Drückt Tab, bis passt(fokus) gilt; jeder Halt im Modul muss sichtbar fokussiert sein.
-async function tabBis(page, frame, passt, protokoll, max = 60) {
-  for (let i = 0; i < max; i++) {
-    await page.keyboard.press('Tab');
-    const f = await fokus(frame);
-    if (f === null) continue;
-    protokoll.halte.push(f.beschreibung);
-    if (!f.sichtbar) protokoll.unsichtbar.push(`${f.beschreibung} (${f.stil})`);
-    if (passt(f)) return f;
-  }
-  throw new Error('Nach ' + max + ' Tab-Drücken nicht erreicht');
-}
-
-// Fokus in den Modulrahmen setzen, ohne zu klicken: das iframe selbst fokussieren, dann führt Tab hinein.
-async function inDenRahmen(page) {
-  await page.locator('iframe[name="list_frame"]').focus();
-}
-
-// Enter auf Link oder Knopf, dann den neu geladenen Modulrahmen.
-async function enterUndWarten(page) {
-  return neuGeladen(page, () => page.keyboard.press('Enter'));
-}
-
-async function farbschema(page, schema) {
-  // Derselbe Aufruf wie der Schalter „Farbschema“ im Benutzermenü (uc.colorScheme).
-  const status = await page.evaluate(async (s) => {
-    const antwort = await fetch(TYPO3.settings.ajaxUrls.color_scheme_update, { method: 'POST', body: new URLSearchParams({ colorScheme: s }) });
-    return antwort.status;
-  }, schema);
-  if (status !== 200) throw new Error(`Farbschema ${schema}: Status ${status}`);
-}
 
 const browser = await chromium.launch();
 let fehler = 0;
@@ -106,6 +46,8 @@ for (const inst of instanzen) {
       frame = await neuGeladen(page, () => frame.locator('#barrierepruefung-trennen button').click());
       await frame.waitForSelector('#barrierepruefung-verbinden');
     }
+    const verbindenAxe = await axeModul(frame, inst.name);
+    pruefe(verbindenAxe.length === 0, 'axe-core Verbinden-Formular: keine Verstöße' + (verbindenAxe.length ? ': ' + verbindenAxe.join('; ') : ''));
     await page.screenshot({ path: `${ERGEBNISSE}uebersicht-${inst.name}-verbinden-hell.png` });
 
     // --- Tastatur: Site wechseln (Docheader-Dropdown) und zurück ---
@@ -133,6 +75,8 @@ for (const inst of instanzen) {
     frame = await enterUndWarten(page);
     pruefe(await frame.locator('.callout[role="alert"]').count() === 1, 'ohne Token: Rückmeldung als callout role="alert"');
     pruefe(await frame.locator('#barrierepruefung-token[aria-invalid="true"][aria-describedby~="barrierepruefung-token-fehler"]').count() === 1, 'ohne Token: Feld mit aria-invalid und aria-describedby auf den Fehler');
+    const beiFehler = await fokus(frame);
+    pruefe(beiFehler?.id === 'barrierepruefung-token' && beiFehler.autofocus, 'ohne Token: der Fokus liegt nach dem Neuladen auf dem fehlerhaften Feld (autofocus)');
     pruefe(await frame.locator('#barrierepruefung-site-id').inputValue() === inst.siteId, 'ohne Token: Website-Kennung bleibt im Formular');
     await page.screenshot({ path: `${ERGEBNISSE}uebersicht-${inst.name}-verbinden-fehler-hell.png` });
     await inDenRahmen(page);
@@ -144,6 +88,8 @@ for (const inst of instanzen) {
     pruefe(await meldung.count() === 1, 'Verbunden: Rückmeldung als callout role="status"');
     console.log(`     „${(await meldung.innerText()).trim()}“`);
     pruefe(await frame.locator('dl').count() === 1, 'Übersicht zeigt den Stand als <dl>');
+    const standAxe = await axeModul(frame, inst.name);
+    pruefe(standAxe.length === 0, 'axe-core Übersicht: keine Verstöße' + (standAxe.length ? ': ' + standAxe.join('; ') : ''));
 
     // --- Tastatur: Domain bestätigen ---
     await inDenRahmen(page);

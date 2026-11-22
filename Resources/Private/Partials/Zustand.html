@@ -46,8 +46,8 @@
                 <f:then>
                     <span class="badge badge-{stand.letzte.abzeichen}">{stand.letzte.wort}</span>
                     <f:if condition="{stand.letzte.am}"><f:translate key="am" arguments="{0: stand.letzte.am}" extensionName="Barrierepruefung" /></f:if><f:if condition="{stand.letzte.hatBefunde}">, <f:translate key="letzte.befunde" arguments="{0: stand.letzte.befunde}" extensionName="Barrierepruefung" /></f:if>
-                    <f:if condition="{stand.letzte.beheben}"><br><a class="text-decoration-underline" href="{f:be.uri(route: 'barrierepruefung_befunde', parameters: {site: site.identifier})}"><f:translate key="letzte.befunde_ansehen" extensionName="Barrierepruefung" /></a></f:if>
-                    <f:if condition="{stand.letzte.bericht}"><br><a class="text-decoration-underline" href="{stand.letzte.bericht}"><f:translate key="letzte.bericht" extensionName="Barrierepruefung" /></a></f:if>
+                    <f:if condition="{stand.letzte.beheben}"><br><a class="d-inline-block py-1 text-decoration-underline" href="{f:be.uri(route: 'barrierepruefung_befunde', parameters: {site: site.identifier})}"><f:translate key="letzte.befunde_ansehen" extensionName="Barrierepruefung" /></a></f:if>
+                    <f:if condition="{stand.letzte.bericht}"><br><a class="d-inline-block py-1 text-decoration-underline" href="{stand.letzte.bericht}"><f:translate key="letzte.bericht" extensionName="Barrierepruefung" /></a></f:if>
                 </f:then>
                 <f:else><f:translate key="letzte.keine" extensionName="Barrierepruefung" /></f:else>
             </f:if>

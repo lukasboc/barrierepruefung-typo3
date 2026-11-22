@@ -6,13 +6,10 @@
 //   node stub-api.mjs &   (Attrappe auf :8091)
 //   node modul-befunde.mjs [v13|v14]
 import { chromium } from 'playwright';
-import { mkdirSync, readFileSync } from 'node:fs';
-import { anmelden, modulOeffnen, neuGeladen, keinQuerscrollen } from './hilfen.mjs';
+import { mkdirSync } from 'node:fs';
+import { anmelden, attrappe, AUS_DEM_CONTAINER, fokus, tabBis, inDenRahmen, enterUndWarten, farbschema, axeModul, modulOeffnen, neuGeladen, keinQuerscrollen } from './hilfen.mjs';
 
-const ATTRAPPE = 'http://localhost:8091';
-const AUS_DEM_CONTAINER = 'http://host.docker.internal:8091/api/v1';
 const ERGEBNISSE = new URL('./ergebnisse/', import.meta.url).pathname;
-const AXE = readFileSync(new URL('./node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
 
 const instanzen = [
   { name: 'v13', basis: 'http://localhost:8089', siteId: '01STUBSITE0000000000000000' },
@@ -21,64 +18,7 @@ const instanzen = [
 
 mkdirSync(ERGEBNISSE, { recursive: true });
 
-async function attrappe(aktion, daten) {
-  const antwort = await fetch(`${ATTRAPPE}/__stub/${aktion}`, daten === undefined ? {} : { method: 'POST', body: JSON.stringify(daten) });
-  return antwort.json();
-}
-
-async function fokus(frame) {
-  return frame.evaluate(() => {
-    const a = document.activeElement;
-    if (!a || a === document.body) return null;
-    const s = getComputedStyle(a);
-    const outline = s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0;
-    const schatten = s.boxShadow !== 'none' && s.boxShadow !== '';
-    return {
-      beschreibung: `${a.tagName.toLowerCase()}${a.id ? '#' + a.id : ''} „${(a.innerText || a.value || a.getAttribute('aria-label') || '').trim().slice(0, 50)}“`,
-      text: (a.innerText || '').trim(),
-      id: a.id,
-      tag: a.tagName.toLowerCase(),
-      href: a.getAttribute('href') ?? '',
-      sichtbar: outline || schatten,
-      stil: `outline: ${s.outlineStyle} ${s.outlineWidth}; box-shadow: ${s.boxShadow}`,
-    };
-  });
-}
-
-async function tabBis(page, frame, passt, protokoll, max = 60) {
-  for (let i = 0; i < max; i++) {
-    await page.keyboard.press('Tab');
-    const f = await fokus(frame);
-    if (f === null) continue;
-    protokoll.halte.push(f.beschreibung);
-    if (!f.sichtbar) protokoll.unsichtbar.push(`${f.beschreibung} (${f.stil})`);
-    if (passt(f)) return f;
-  }
-  throw new Error('Nach ' + max + ' Tab-Drücken nicht erreicht');
-}
-
-async function inDenRahmen(page) {
-  await page.locator('iframe[name="list_frame"]').focus();
-}
-
 const zaehler = (frame) => frame.locator('p', { hasText: /of 267|von 267/ }).first().innerText();
-const enterUndWarten = (page) => neuGeladen(page, () => page.keyboard.press('Enter'));
-
-async function farbschema(page, schema) {
-  const status = await page.evaluate(async (s) => {
-    const antwort = await fetch(TYPO3.settings.ajaxUrls.color_scheme_update, { method: 'POST', body: new URLSearchParams({ colorScheme: s }) });
-    return antwort.status;
-  }, schema);
-  if (status !== 200) throw new Error(`Farbschema ${schema}: Status ${status}`);
-}
-
-// Ohne `landmark-one-main` und `region`: Der Modulrahmen ist ein iframe-Dokument des TYPO3-Kerns, dessen Gerüst (Docheader,
-// Modulkörper) nicht aus der Erweiterung stammt.
-async function axe(frame) {
-  await frame.evaluate(AXE);
-  return frame.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'best-practice'], rules: { 'landmark-one-main': { enabled: false }, region: { enabled: false } } })).violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`));
-}
-
 const browser = await chromium.launch();
 let fehler = 0;
 for (const inst of instanzen) {
@@ -133,7 +73,7 @@ for (const inst of instanzen) {
     for (const t of await frame.locator('table .badge').allInnerTexts()) pruefe(t.trim().length > 0, `Schweregrad als Wort: „${t.trim()}“`);
     pruefe(await keinQuerscrollen(page), 'kein Querscrollen bei 1280 px');
     await page.screenshot({ path: `${ERGEBNISSE}befunde-${inst.name}-liste-hell.png` });
-    const listeAxe = await axe(frame);
+    const listeAxe = await axeModul(frame, inst.name);
     pruefe(listeAxe.length === 0, 'axe-core Liste: keine Verstöße' + (listeAxe.length ? ': ' + listeAxe.join('; ') : ''));
 
     // --- Tastatur: Regel „Zu geringer Kontrast“ öffnen ---
@@ -152,7 +92,7 @@ for (const inst of instanzen) {
     frame = await enterUndWarten(page);
     pruefe(/seite=2/.test(frame.url()), 'Weitere laden → seite=2');
     pruefe(/21.*40.*267/.test(await zaehler(frame)), 'Zähler „21 bis 40 von 267“');
-    const regelAxe = await axe(frame);
+    const regelAxe = await axeModul(frame, inst.name);
     pruefe(regelAxe.length === 0, 'axe-core Regelansicht: keine Verstöße' + (regelAxe.length ? ': ' + regelAxe.join('; ') : ''));
     await page.screenshot({ path: `${ERGEBNISSE}befunde-${inst.name}-regel-seite2-hell.png` });
     const anfragen = (await attrappe('anfragen')).filter((a) => a.pfad.includes('/findings/axe.color-contrast'));
@@ -174,7 +114,7 @@ for (const inst of instanzen) {
     await page.setViewportSize({ width: 390, height: 800 });
     frame = await modulOeffnen(page, inst.basis, 'barrierepruefung_befunde');
     await page.screenshot({ path: `${ERGEBNISSE}befunde-${inst.name}-liste-schmal-dunkel.png` });
-    const schmalAxe = await axe(frame);
+    const schmalAxe = await axeModul(frame, inst.name);
     pruefe(schmalAxe.length === 0, 'axe-core Liste bei 390 px: keine Verstöße' + (schmalAxe.length ? ': ' + schmalAxe.join('; ') : ''));
     await farbschema(page, 'auto');
     console.log(`ok ${inst.name}`);

@@ -5,6 +5,7 @@
     autocomplete="off" und böten das gespeicherte TYPO3-Passwort an, das dann als Bearer-Token an die eingetippte Adresse
     ginge (übliches Muster für API-Token: text + off + spellcheck/autocapitalize aus). Fehler je Feld über aria-describedby und aria-invalid.
 </f:comment>
+<f:if condition="{felder}"><f:be.pageRenderer includeJavaScriptModules="{0: '@lubomedia/barrierepruefung/formular-fokus.js'}" /></f:if>
 <form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.verbinden')}" id="barrierepruefung-verbinden" class="row" novalidate>
     <div class="col-lg-8">
     <input type="hidden" name="site" value="{site.identifier}">
