@@ -51,6 +51,15 @@ einrichten() {
   log "v$v: Site '$erste': Basis http://localhost:$port/, Sitepackage-Set $set"
   im "$v" sh -c "sed -i \"s#^base: .*#base: 'http://localhost:$port/'#\" config/sites/$erste/config.yaml; grep -q '^dependencies:' config/sites/$erste/config.yaml || printf 'dependencies:\n  - %s\n' '$set' >> config/sites/$erste/config.yaml"
 
+  # „setup --create-site“ legt auf der Wurzelseite ein sys_template („Welcome to a default website …“) an. Es verdrängt
+  # das Sitepackage-Set, die Seite zeigt dann kein Sitepackage (und läuft bei 320 px quer). Verbergen, nicht löschen.
+  im "$v" php -r '
+    $pdo = new PDO("sqlite:" . (require "config/system/settings.php")["DB"]["Connections"]["Default"]["path"]);
+    $abfrage = $pdo->prepare("UPDATE sys_template SET hidden=1 WHERE config LIKE ?");
+    $abfrage->execute(["%Welcome to a default website%"]);
+    echo "Begrüßungs-Template verborgen: ", $abfrage->rowCount(), PHP_EOL;
+  '
+
   log "v$v: zweite Site (Wurzelseite 100, Basis http://127.0.0.1:$port/)"
   mkdir -p "v$v/config/sites/zweite-site"
   sed -e "s/__PORT__/$port/" -e "s#__SET__#$set#" seed/zweite-site.yaml > "v$v/config/sites/zweite-site/config.yaml"
@@ -60,7 +69,8 @@ einrichten() {
     printf "UPDATE pages SET backend_layout='pagets__CaminoStartpage' WHERE uid=100;\nUPDATE pages SET backend_layout='pagets__CaminoContentpage' WHERE uid IN (101,102,103);\n" >> "v$v/var/seiten.sql"
   fi
   im "$v" php -r '
-    $db = glob("var/sqlite/*.sqlite")[0];
+    // Die Datei aus der Konfiguration, nicht die erste in var/sqlite: nach einem Neuaufsetzen liegen dort alte.
+    $db = (require "config/system/settings.php")["DB"]["Connections"]["Default"]["path"];
     $pdo = new PDO("sqlite:" . $db);
     $pdo->exec(file_get_contents("var/seiten.sql"));
     echo "Seiten in der Datenbank: ", $pdo->query("select count(*) from pages")->fetchColumn(), PHP_EOL;
