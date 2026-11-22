@@ -1,0 +1,9 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>Blättern als gewöhnliche Links, oben und unten: bei zwanzig Zeilen mit je zwei Haltepunkten wären es sonst vierzig Tab-Drücke bis „Weitere laden“.</f:comment>
+<f:if condition="{frueherUri} || {weiterUri}">
+    <p>
+        <f:if condition="{frueherUri}"><a class="btn btn-default" href="{frueherUri}#fundstellen"><f:translate key="befunde.frueher" extensionName="Barrierepruefung" /></a></f:if>
+        <f:if condition="{weiterUri}"><a class="btn btn-default" href="{weiterUri}#fundstellen"><f:translate key="befunde.weiter" extensionName="Barrierepruefung" /></a></f:if>
+    </p>
+</f:if>
+</html>

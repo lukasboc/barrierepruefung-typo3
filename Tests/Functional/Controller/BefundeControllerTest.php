@@ -257,7 +257,10 @@ final class BefundeControllerTest extends FunctionalTestCase
         self::assertStringContainsString('Fundstellen 21 bis 40 von 267', $html);
         // Reparaturhinweis der Regel und ein Rückweg.
         self::assertStringContainsString('Erhöhen Sie den Kontrast', $html);
-        self::assertCount(1, $this->suche($html, '//a[contains(@href,"seite=3")][contains(normalize-space(.),"Weitere laden")]'));
+        // Oben und unten: sonst brauchte „Weitere laden“ per Tastatur vierzig Tab-Drücke.
+        $weitere = $this->suche($html, '//a[contains(@href,"seite=3")][contains(normalize-space(.),"Weitere laden")]');
+        self::assertCount(2, $weitere);
+        self::assertLessThan(strpos($html, '<table'), strpos($html, 'Weitere laden'), 'ein Link vor der Tabelle');
         self::assertCount(1, $this->suche($html, '//a[contains(normalize-space(.),"Zurück zur Liste")]'));
         // Nur die Fundstelle der ersten Seite hat ein Kopfzeilenmuster; Stellen mit Selektor in code.
         self::assertGreaterThan(0, count($this->suche($html, '//table//th[@scope="col"]')));
@@ -276,7 +279,7 @@ final class BefundeControllerTest extends FunctionalTestCase
 
         self::assertStringContainsString('Fundstellen 261 bis 267 von 267', $html);
         self::assertStringNotContainsString('Weitere laden', $html);
-        self::assertCount(1, $this->suche($html, '//a[contains(@href,"seite=13")][contains(normalize-space(.),"Frühere")]'));
+        self::assertCount(2, $this->suche($html, '//a[contains(@href,"seite=13")][contains(normalize-space(.),"Frühere")]'));
     }
 
     #[Test]

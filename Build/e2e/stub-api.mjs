@@ -51,6 +51,17 @@ function antwort(name, pfad) {
   return inhalt;
 }
 
+// Fundstellen blättern wie der Dienst: offset/limit aus der Adresse; die aufgenommenen Einträge wiederholen sich, bis `meta.total` erreicht ist.
+function blaettern(body, url) {
+  const limit = Math.max(1, Math.min(100, Number(url.searchParams.get('limit') ?? body.meta.limit)));
+  const offset = Math.max(0, Number(url.searchParams.get('offset') ?? 0));
+  const vorlage = body.data;
+  const bis = Math.min(offset + limit, body.meta.total);
+  body.data = [];
+  for (let i = offset; i < bis; i++) body.data.push({ ...vorlage[i % vorlage.length] });
+  Object.assign(body.meta, { limit, offset });
+}
+
 function senden(res, status, body, kopf = {}) {
   const text = body === undefined ? '' : JSON.stringify(body);
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', ...kopf });
@@ -89,6 +100,7 @@ createServer(async (req, res) => {
   if (!treffer) return senden(res, 404, { title: 'Nicht gefunden', status: 404 }, { 'Content-Type': 'application/problem+json' });
 
   const body = antwort(treffer[2], pfad);
+  if (treffer[2] === 'findings-regel') blaettern(body, url);
   const etag = `"${createHash('sha1').update(JSON.stringify(body)).digest('hex')}"`;
   if (req.method === 'GET') {
     if (req.headers['if-none-match'] === etag) { res.writeHead(304, { ETag: etag }); return res.end(); }
