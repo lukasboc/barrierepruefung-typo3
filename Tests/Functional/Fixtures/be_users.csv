@@ -1,0 +1,4 @@
+"be_users"
+,"uid","pid","username","password","admin","usergroup","lang","options","db_mountpoints","realName"
+,1,0,"admin","$argon2i$v=19$m=65536,t=16,p=1$dummy$dummy",1,"","de",0,"","Ada Admin"
+,2,0,"redakteurin","$argon2i$v=19$m=65536,t=16,p=1$dummy$dummy",0,"1","de",3,"","Rita Redakteurin"

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:barrierepruefung/Resources/Private/Language/locallang.xlf" product-name="barrierepruefung">
+		<header/>
+		<body>
+			<trans-unit id="sitewahl.knopf">
+				<source>Site: %s</source>
+			</trans-unit>
+			<trans-unit id="sitewahl.titel">
+				<source>Choose the site</source>
+			</trans-unit>
+			<trans-unit id="aktion.pruefen">
+				<source>Check now</source>
+			</trans-unit>
+			<trans-unit id="aktion.aktualisieren">
+				<source>Refresh status</source>
+			</trans-unit>
+			<trans-unit id="keineSite">
+				<source>No site is available to you here. This module lists the sites whose root page lies in your web mount.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.ueberschrift">
+				<source>Connect site</source>
+			</trans-unit>
+			<trans-unit id="verbinden.einleitung">
+				<source>This site is not connected to barrierepruefung.de yet. Add the website in the service and create a token in its “Embedding” tab; then enter the website ID and the token here.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.nur_admin">
+				<source>This site is not connected yet. An administrator can connect it.</source>
+			</trans-unit>
+			<trans-unit id="fehler.neu_verbinden.titel">
+				<source>Connect again</source>
+			</trans-unit>
+			<trans-unit id="fehler.neu_verbinden">
+				<source>The connection must be established again: the stored token can no longer be decrypted, usually because the encryptionKey of this installation has changed.</source>
+			</trans-unit>
+			<trans-unit id="neu_verbinden.admin">
+				<source>Enter the token again below; a new one can be created in the “Embedding” tab of the website in the service.</source>
+			</trans-unit>
+			<trans-unit id="neu_verbinden.redaktion">
+				<source>Ask an administrator to connect the site again.</source>
+			</trans-unit>
+			<trans-unit id="feld.dienst_url">
+				<source>API address</source>
+			</trans-unit>
+			<trans-unit id="feld.dienst_url.hilfe">
+				<source>Usually https://barrierepruefung.de/api/v1.</source>
+			</trans-unit>
+			<trans-unit id="feld.site_id">
+				<source>Website ID</source>
+			</trans-unit>
+			<trans-unit id="feld.site_id.hilfe">
+				<source>Shown in the “Embedding” tab of the website in the service.</source>
+			</trans-unit>
+			<trans-unit id="feld.api_token">
+				<source>Token</source>
+			</trans-unit>
+			<trans-unit id="feld.api_token.hilfe">
+				<source>Stored encrypted and never shown again.</source>
+			</trans-unit>
+			<trans-unit id="knopf.verbinden">
+				<source>Connect</source>
+			</trans-unit>
+			<trans-unit id="verbinden.erfolg">
+				<source>Connected. This site is now connected to its website in the service; the proofs for the domain are served from now on.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.felder">
+				<source>Not connected. Please check the marked fields.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.dienst_adresse_ungueltig">
+				<source>Enter the address of the API, for example https://barrierepruefung.de/api/v1.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.dienst_unsicher">
+				<source>The address of the API must start with https://.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.nicht_erreichbar">
+				<source>The service cannot be reached at %1$s. Check the address.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.site_id_ungueltig">
+				<source>The website ID consists of letters and digits; copy it from the “Embedding” tab.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.token_fehlt">
+				<source>Paste the token from the “Embedding” tab of the website in the service.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.schluessel_fehlt">
+				<source>Not connected: this installation has no encryptionKey, so the token cannot be stored securely. Set one under Admin Tools → Settings (SYS/encryptionKey).</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.adresse_ohne_host">
+				<source>Not connected: the site has no complete address (%1$s). Enter a base with a host in the site configuration, for example https://www.example.org/.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.adresse_abweichend">
+				<source>Not connected: the addresses do not belong together. This site has the address %1$s, the website in the service %2$s. Choose the website in the service with the same address, or adjust the base of the site.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.api">
+				<source>Not connected. The service reports: %1$s</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.api_allgemein">
+				<source>Check the website ID and the token.</source>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.unbekannt">
+				<source>Not connected (%1$s).</source>
+			</trans-unit>
+			<trans-unit id="fehler.ueberschrift">
+				<source>The status could not be retrieved</source>
+			</trans-unit>
+			<trans-unit id="fehler.recht_erloschen">
+				<source>The release for this token has lapsed. Ask an administrator in the service to grant the release in the “Embedding” tab again.</source>
+			</trans-unit>
+			<trans-unit id="fehler.nicht_erreichbar">
+				<source>The service cannot be reached. Try again later with “Refresh status”.</source>
+			</trans-unit>
+			<trans-unit id="fehler.status_401">
+				<source>The service no longer accepts the token. Connect the site again with a new token.</source>
+			</trans-unit>
+			<trans-unit id="fehler.status_404">
+				<source>The service does not know this website (any more). Check the website ID or connect the site again.</source>
+			</trans-unit>
+			<trans-unit id="fehler.status_429">
+				<source>Too many requests in a short time. Wait a minute, then refresh the status.</source>
+			</trans-unit>
+			<trans-unit id="fehler.status_5xx">
+				<source>The service has a temporary fault. Try again later.</source>
+			</trans-unit>
+			<trans-unit id="fehler.nicht_verbunden">
+				<source>This site is not connected.</source>
+			</trans-unit>
+			<trans-unit id="zustand.verbindung">
+				<source>Connection</source>
+			</trans-unit>
+			<trans-unit id="zustand.domain">
+				<source>Domain</source>
+			</trans-unit>
+			<trans-unit id="zustand.kontingent">
+				<source>Page quota</source>
+			</trans-unit>
+			<trans-unit id="zustand.letzte">
+				<source>Latest check</source>
+			</trans-unit>
+			<trans-unit id="zustand.erklaerung">
+				<source>Statement</source>
+			</trans-unit>
+			<trans-unit id="wort.verbunden">
+				<source>connected</source>
+			</trans-unit>
+			<trans-unit id="seit">
+				<source>since %s</source>
+			</trans-unit>
+			<trans-unit id="am">
+				<source>on %s</source>
+			</trans-unit>
+			<trans-unit id="domain.bestaetigt">
+				<source>confirmed</source>
+			</trans-unit>
+			<trans-unit id="domain.nicht_bestaetigt">
+				<source>not confirmed</source>
+			</trans-unit>
+			<trans-unit id="domain.erklaerung">
+				<source>Until the domain is confirmed, the service does not check the site. This site already serves the proofs; select “Confirm domain”.</source>
+			</trans-unit>
+			<trans-unit id="knopf.bestaetigen">
+				<source>Confirm domain</source>
+			</trans-unit>
+			<trans-unit id="domain.pfad">
+				<source>This site lies under a path (%s). The service looks for the proof file only at the root of the host, so here the domain can only be confirmed via the meta element of the start page.</source>
+			</trans-unit>
+			<trans-unit id="kontingent.begrenzt">
+				<source>%1$s of %2$s pages</source>
+			</trans-unit>
+			<trans-unit id="kontingent.unbegrenzt">
+				<source>%1$s pages, unlimited</source>
+			</trans-unit>
+			<trans-unit id="kontingent.zeitraum">
+				<source>in the period until %s</source>
+			</trans-unit>
+			<trans-unit id="lauf.status.completed">
+				<source>completed</source>
+			</trans-unit>
+			<trans-unit id="lauf.status.partial">
+				<source>partly completed</source>
+			</trans-unit>
+			<trans-unit id="lauf.status.failed">
+				<source>failed</source>
+			</trans-unit>
+			<trans-unit id="lauf.status.unbekannt">
+				<source>unknown</source>
+			</trans-unit>
+			<trans-unit id="letzte.befunde">
+				<source>%s open findings</source>
+			</trans-unit>
+			<trans-unit id="letzte.bericht">
+				<source>Open the report in the service</source>
+			</trans-unit>
+			<trans-unit id="letzte.keine">
+				<source>No check yet. Start the first one with “Check now”.</source>
+			</trans-unit>
+			<trans-unit id="laufend.seit">
+				<source>Check running since %s. Refresh the status to see the progress.</source>
+			</trans-unit>
+			<trans-unit id="laufend.ohne_zeit">
+				<source>A check is running. Refresh the status to see the progress.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.veroeffentlicht">
+				<source>published</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.veraltet">
+				<source>outdated</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.keine">
+				<source>not published yet</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.unbekannt">
+				<source>The status of the statement could not be retrieved.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.stand">
+				<source>as of %s</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.fassung">
+				<source>(version %s)</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.veraltet.hinweis">
+				<source>A newer check found different defects; release a new version in the service.</source>
+			</trans-unit>
+			<trans-unit id="erklaerung.oeffnen">
+				<source>View the published statement</source>
+			</trans-unit>
+			<trans-unit id="trennen.ueberschrift">
+				<source>Disconnect</source>
+			</trans-unit>
+			<trans-unit id="trennen.text">
+				<source>Afterwards this site no longer serves the proofs for the domain, and this module can no longer start checks. The website in the service and its results remain.</source>
+			</trans-unit>
+			<trans-unit id="trennen.knopf">
+				<source>Disconnect</source>
+			</trans-unit>
+			<trans-unit id="trennen.erfolg">
+				<source>The connection is disconnected. The website in the service remains.</source>
+			</trans-unit>
+			<trans-unit id="bestaetigen.erfolg.meta_tag">
+				<source>The domain is confirmed (via the meta element of the start page).</source>
+			</trans-unit>
+			<trans-unit id="bestaetigen.erfolg.file">
+				<source>The domain is confirmed (via the proof file).</source>
+			</trans-unit>
+			<trans-unit id="bestaetigen.fehler">
+				<source>The domain is not confirmed yet. %s</source>
+			</trans-unit>
+			<trans-unit id="nachweis.methode.meta_tag">
+				<source>Meta element</source>
+			</trans-unit>
+			<trans-unit id="nachweis.methode.file">
+				<source>Proof file</source>
+			</trans-unit>
+			<trans-unit id="nachweis.seite_nicht_erreichbar">
+				<source>the start page could not be reached.</source>
+			</trans-unit>
+			<trans-unit id="nachweis.meta_tag_nicht_gefunden">
+				<source>the meta element is missing on the start page (is a cache or proxy in between?).</source>
+			</trans-unit>
+			<trans-unit id="nachweis.datei_nicht_erreichbar">
+				<source>the file could not be retrieved.</source>
+			</trans-unit>
+			<trans-unit id="nachweis.token_nicht_gefunden">
+				<source>the value found does not match.</source>
+			</trans-unit>
+			<trans-unit id="nachweis.ungueltige_adresse">
+				<source>the address of the website in the service is not valid.</source>
+			</trans-unit>
+			<trans-unit id="nachweis.nicht_erreichbar">
+				<source>the service could not be reached.</source>
+			</trans-unit>
+			<trans-unit id="nachweis.unbekannt">
+				<source>no reason given.</source>
+			</trans-unit>
+			<trans-unit id="pruefen.erfolg">
+				<source>The check has started. Depending on the size it takes a few minutes; “Refresh status” shows the progress.</source>
+			</trans-unit>
+			<trans-unit id="pruefen.laeuft_bereits">
+				<source>A check is already running; no second one was started.</source>
+			</trans-unit>
+			<trans-unit id="pruefen.fehler">
+				<source>The check was not started.</source>
+			</trans-unit>
+			<trans-unit id="pruefen.ohne_schluessel">
+				<source>The check was not started because the form has expired. Reload the overview and select “Check now” again.</source>
+			</trans-unit>
+			<trans-unit id="aktualisieren.info">
+				<source>Status retrieved at %s.</source>
+			</trans-unit>
+			<trans-unit id="verboten">
+				<source>You may not perform this action for this site.</source>
+			</trans-unit>
+			<trans-unit id="format.datum">
+				<source>Y-m-d</source>
+			</trans-unit>
+			<trans-unit id="format.zeit">
+				<source>H:i</source>
+			</trans-unit>
+			<trans-unit id="format.tausender">
+				<source>,</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

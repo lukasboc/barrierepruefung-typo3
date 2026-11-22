@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="EXT:barrierepruefung/Resources/Private/Language/locallang.xlf" product-name="barrierepruefung">
+		<header/>
+		<body>
+			<trans-unit id="sitewahl.knopf">
+				<source>Site: %s</source>
+				<target>Site: %s</target>
+			</trans-unit>
+			<trans-unit id="sitewahl.titel">
+				<source>Choose the site</source>
+				<target>Site wählen</target>
+			</trans-unit>
+			<trans-unit id="aktion.pruefen">
+				<source>Check now</source>
+				<target>Jetzt prüfen</target>
+			</trans-unit>
+			<trans-unit id="aktion.aktualisieren">
+				<source>Refresh status</source>
+				<target>Status aktualisieren</target>
+			</trans-unit>
+			<trans-unit id="keineSite">
+				<source>No site is available to you here. This module lists the sites whose root page lies in your web mount.</source>
+				<target>Ihnen ist hier keine Site zugänglich. Das Modul zeigt die Sites, deren Wurzelseite in Ihrem Web-Mount liegt.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.ueberschrift">
+				<source>Connect site</source>
+				<target>Site verbinden</target>
+			</trans-unit>
+			<trans-unit id="verbinden.einleitung">
+				<source>This site is not connected to barrierepruefung.de yet. Add the website in the service and create a token in its “Embedding” tab; then enter the website ID and the token here.</source>
+				<target>Diese Site ist noch nicht mit barrierepruefung.de verbunden. Legen Sie die Website im Dienst an und erzeugen Sie dort im Reiter „Einbindung“ ein Token; tragen Sie dann Website-Kennung und Token hier ein.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.nur_admin">
+				<source>This site is not connected yet. An administrator can connect it.</source>
+				<target>Diese Site ist noch nicht verbunden. Eine Administratorin oder ein Administrator kann sie verbinden.</target>
+			</trans-unit>
+			<trans-unit id="fehler.neu_verbinden.titel">
+				<source>Connect again</source>
+				<target>Neu verbinden</target>
+			</trans-unit>
+			<trans-unit id="fehler.neu_verbinden">
+				<source>The connection must be established again: the stored token can no longer be decrypted, usually because the encryptionKey of this installation has changed.</source>
+				<target>Die Verbindung muss neu hergestellt werden: Der gespeicherte Token lässt sich nicht mehr entschlüsseln, meist weil der encryptionKey der Installation gewechselt wurde.</target>
+			</trans-unit>
+			<trans-unit id="neu_verbinden.admin">
+				<source>Enter the token again below; a new one can be created in the “Embedding” tab of the website in the service.</source>
+				<target>Fügen Sie das Token unten erneut ein; ein neues erzeugen Sie im Dienst im Reiter „Einbindung“ der Website.</target>
+			</trans-unit>
+			<trans-unit id="neu_verbinden.redaktion">
+				<source>Ask an administrator to connect the site again.</source>
+				<target>Bitten Sie eine Administratorin oder einen Administrator, die Site neu zu verbinden.</target>
+			</trans-unit>
+			<trans-unit id="feld.dienst_url">
+				<source>API address</source>
+				<target>Adresse der API</target>
+			</trans-unit>
+			<trans-unit id="feld.dienst_url.hilfe">
+				<source>Usually https://barrierepruefung.de/api/v1.</source>
+				<target>In der Regel https://barrierepruefung.de/api/v1.</target>
+			</trans-unit>
+			<trans-unit id="feld.site_id">
+				<source>Website ID</source>
+				<target>Website-Kennung</target>
+			</trans-unit>
+			<trans-unit id="feld.site_id.hilfe">
+				<source>Shown in the “Embedding” tab of the website in the service.</source>
+				<target>Steht im Dienst im Reiter „Einbindung“ der Website.</target>
+			</trans-unit>
+			<trans-unit id="feld.api_token">
+				<source>Token</source>
+				<target>Token</target>
+			</trans-unit>
+			<trans-unit id="feld.api_token.hilfe">
+				<source>Stored encrypted and never shown again.</source>
+				<target>Wird verschlüsselt gespeichert und nicht wieder angezeigt.</target>
+			</trans-unit>
+			<trans-unit id="knopf.verbinden">
+				<source>Connect</source>
+				<target>Verbinden</target>
+			</trans-unit>
+			<trans-unit id="verbinden.erfolg">
+				<source>Connected. This site is now connected to its website in the service; the proofs for the domain are served from now on.</source>
+				<target>Verbunden. Diese Site ist jetzt mit ihrer Website im Dienst verbunden; die Nachweise für die Domain werden ab sofort ausgeliefert.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.felder">
+				<source>Not connected. Please check the marked fields.</source>
+				<target>Nicht verbunden. Bitte prüfen Sie die markierten Felder.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.dienst_adresse_ungueltig">
+				<source>Enter the address of the API, for example https://barrierepruefung.de/api/v1.</source>
+				<target>Geben Sie die Adresse der API an, zum Beispiel https://barrierepruefung.de/api/v1.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.dienst_unsicher">
+				<source>The address of the API must start with https://.</source>
+				<target>Die Adresse der API muss mit https:// beginnen.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.nicht_erreichbar">
+				<source>The service cannot be reached at %1$s. Check the address.</source>
+				<target>Der Dienst ist unter %1$s nicht erreichbar. Prüfen Sie die Adresse.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.site_id_ungueltig">
+				<source>The website ID consists of letters and digits; copy it from the “Embedding” tab.</source>
+				<target>Die Website-Kennung besteht aus Buchstaben und Ziffern; übernehmen Sie sie aus dem Reiter „Einbindung“.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.token_fehlt">
+				<source>Paste the token from the “Embedding” tab of the website in the service.</source>
+				<target>Fügen Sie das Token aus dem Reiter „Einbindung“ der Website im Dienst ein.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.schluessel_fehlt">
+				<source>Not connected: this installation has no encryptionKey, so the token cannot be stored securely. Set one under Admin Tools → Settings (SYS/encryptionKey).</source>
+				<target>Nicht verbunden: Diese Installation hat keinen encryptionKey; ohne ihn lässt sich das Token nicht sicher speichern. Legen Sie ihn unter Admin Tools → Settings fest (SYS/encryptionKey).</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.adresse_ohne_host">
+				<source>Not connected: the site has no complete address (%1$s). Enter a base with a host in the site configuration, for example https://www.example.org/.</source>
+				<target>Nicht verbunden: Die Site hat keine vollständige Adresse (%1$s). Tragen Sie in der Site-Konfiguration eine Basis mit Host ein, zum Beispiel https://www.stadt.de/.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.adresse_abweichend">
+				<source>Not connected: the addresses do not belong together. This site has the address %1$s, the website in the service %2$s. Choose the website in the service with the same address, or adjust the base of the site.</source>
+				<target>Nicht verbunden: Die Adressen gehören nicht zusammen. Diese Site hat die Adresse %1$s, die Website im Dienst %2$s. Wählen Sie im Dienst die Website mit derselben Adresse oder passen Sie die Basis der Site an.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.api">
+				<source>Not connected. The service reports: %1$s</source>
+				<target>Nicht verbunden. Der Dienst meldet: %1$s</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.api_allgemein">
+				<source>Check the website ID and the token.</source>
+				<target>Prüfen Sie Website-Kennung und Token.</target>
+			</trans-unit>
+			<trans-unit id="verbinden.fehler.unbekannt">
+				<source>Not connected (%1$s).</source>
+				<target>Nicht verbunden (%1$s).</target>
+			</trans-unit>
+			<trans-unit id="fehler.ueberschrift">
+				<source>The status could not be retrieved</source>
+				<target>Der Stand ließ sich nicht abrufen</target>
+			</trans-unit>
+			<trans-unit id="fehler.recht_erloschen">
+				<source>The release for this token has lapsed. Ask an administrator in the service to grant the release in the “Embedding” tab again.</source>
+				<target>Die Freigabe für dieses Token ist erloschen. Bitten Sie eine Administratorin oder einen Administrator im Dienst, die Freigabe im Reiter „Einbindung“ neu zu erteilen.</target>
+			</trans-unit>
+			<trans-unit id="fehler.nicht_erreichbar">
+				<source>The service cannot be reached. Try again later with “Refresh status”.</source>
+				<target>Der Dienst ist nicht erreichbar. Versuchen Sie es später mit „Status aktualisieren“ erneut.</target>
+			</trans-unit>
+			<trans-unit id="fehler.status_401">
+				<source>The service no longer accepts the token. Connect the site again with a new token.</source>
+				<target>Der Dienst nimmt das Token nicht mehr an. Die Site muss mit einem neuen Token neu verbunden werden.</target>
+			</trans-unit>
+			<trans-unit id="fehler.status_404">
+				<source>The service does not know this website (any more). Check the website ID or connect the site again.</source>
+				<target>Der Dienst kennt diese Website nicht (mehr). Prüfen Sie die Website-Kennung oder verbinden Sie die Site neu.</target>
+			</trans-unit>
+			<trans-unit id="fehler.status_429">
+				<source>Too many requests in a short time. Wait a minute, then refresh the status.</source>
+				<target>Zu viele Anfragen in kurzer Zeit. Warten Sie eine Minute und aktualisieren Sie dann den Status.</target>
+			</trans-unit>
+			<trans-unit id="fehler.status_5xx">
+				<source>The service has a temporary fault. Try again later.</source>
+				<target>Der Dienst hat gerade eine Störung. Versuchen Sie es später erneut.</target>
+			</trans-unit>
+			<trans-unit id="fehler.nicht_verbunden">
+				<source>This site is not connected.</source>
+				<target>Diese Site ist nicht verbunden.</target>
+			</trans-unit>
+			<trans-unit id="zustand.verbindung">
+				<source>Connection</source>
+				<target>Verbindung</target>
+			</trans-unit>
+			<trans-unit id="zustand.domain">
+				<source>Domain</source>
+				<target>Domain</target>
+			</trans-unit>
+			<trans-unit id="zustand.kontingent">
+				<source>Page quota</source>
+				<target>Kontingent</target>
+			</trans-unit>
+			<trans-unit id="zustand.letzte">
+				<source>Latest check</source>
+				<target>Letzte Prüfung</target>
+			</trans-unit>
+			<trans-unit id="zustand.erklaerung">
+				<source>Statement</source>
+				<target>Erklärung</target>
+			</trans-unit>
+			<trans-unit id="wort.verbunden">
+				<source>connected</source>
+				<target>verbunden</target>
+			</trans-unit>
+			<trans-unit id="seit">
+				<source>since %s</source>
+				<target>seit %s</target>
+			</trans-unit>
+			<trans-unit id="am">
+				<source>on %s</source>
+				<target>am %s</target>
+			</trans-unit>
+			<trans-unit id="domain.bestaetigt">
+				<source>confirmed</source>
+				<target>bestätigt</target>
+			</trans-unit>
+			<trans-unit id="domain.nicht_bestaetigt">
+				<source>not confirmed</source>
+				<target>nicht bestätigt</target>
+			</trans-unit>
+			<trans-unit id="domain.erklaerung">
+				<source>Until the domain is confirmed, the service does not check the site. This site already serves the proofs; select “Confirm domain”.</source>
+				<target>Solange die Domain nicht bestätigt ist, prüft der Dienst die Site nicht. Die Nachweise liefert diese Site bereits aus; wählen Sie „Domain bestätigen“.</target>
+			</trans-unit>
+			<trans-unit id="knopf.bestaetigen">
+				<source>Confirm domain</source>
+				<target>Domain bestätigen</target>
+			</trans-unit>
+			<trans-unit id="domain.pfad">
+				<source>This site lies under a path (%s). The service looks for the proof file only at the root of the host, so here the domain can only be confirmed via the meta element of the start page.</source>
+				<target>Diese Site liegt unter einem Pfad (%s). Der Dienst sucht die Nachweisdatei nur am Wurzelpfad des Hosts; bestätigt werden kann die Domain hier deshalb nur über das Meta-Element der Startseite.</target>
+			</trans-unit>
+			<trans-unit id="kontingent.begrenzt">
+				<source>%1$s of %2$s pages</source>
+				<target>%1$s von %2$s Seiten</target>
+			</trans-unit>
+			<trans-unit id="kontingent.unbegrenzt">
+				<source>%1$s pages, unlimited</source>
+				<target>%1$s Seiten, unbegrenzt</target>
+			</trans-unit>
+			<trans-unit id="kontingent.zeitraum">
+				<source>in the period until %s</source>
+				<target>im Zeitraum bis %s</target>
+			</trans-unit>
+			<trans-unit id="lauf.status.completed">
+				<source>completed</source>
+				<target>abgeschlossen</target>
+			</trans-unit>
+			<trans-unit id="lauf.status.partial">
+				<source>partly completed</source>
+				<target>teilweise abgeschlossen</target>
+			</trans-unit>
+			<trans-unit id="lauf.status.failed">
+				<source>failed</source>
+				<target>fehlgeschlagen</target>
+			</trans-unit>
+			<trans-unit id="lauf.status.unbekannt">
+				<source>unknown</source>
+				<target>unbekannt</target>
+			</trans-unit>
+			<trans-unit id="letzte.befunde">
+				<source>%s open findings</source>
+				<target>%s offene Befunde</target>
+			</trans-unit>
+			<trans-unit id="letzte.bericht">
+				<source>Open the report in the service</source>
+				<target>Bericht im Dienst öffnen</target>
+			</trans-unit>
+			<trans-unit id="letzte.keine">
+				<source>No check yet. Start the first one with “Check now”.</source>
+				<target>Noch keine Prüfung. Die erste starten Sie mit „Jetzt prüfen“.</target>
+			</trans-unit>
+			<trans-unit id="laufend.seit">
+				<source>Check running since %s. Refresh the status to see the progress.</source>
+				<target>Prüfung läuft seit %s. Aktualisieren Sie den Status, um den Fortschritt zu sehen.</target>
+			</trans-unit>
+			<trans-unit id="laufend.ohne_zeit">
+				<source>A check is running. Refresh the status to see the progress.</source>
+				<target>Eine Prüfung läuft. Aktualisieren Sie den Status, um den Fortschritt zu sehen.</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.veroeffentlicht">
+				<source>published</source>
+				<target>veröffentlicht</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.veraltet">
+				<source>outdated</source>
+				<target>veraltet</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.keine">
+				<source>not published yet</source>
+				<target>noch nicht veröffentlicht</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.unbekannt">
+				<source>The status of the statement could not be retrieved.</source>
+				<target>Der Stand der Erklärung ließ sich nicht abrufen.</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.stand">
+				<source>as of %s</source>
+				<target>Stand %s</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.fassung">
+				<source>(version %s)</source>
+				<target>(Fassung %s)</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.veraltet.hinweis">
+				<source>A newer check found different defects; release a new version in the service.</source>
+				<target>Eine neuere Prüfung hat andere Mängel ergeben; geben Sie im Dienst eine neue Fassung frei.</target>
+			</trans-unit>
+			<trans-unit id="erklaerung.oeffnen">
+				<source>View the published statement</source>
+				<target>Veröffentlichte Erklärung ansehen</target>
+			</trans-unit>
+			<trans-unit id="trennen.ueberschrift">
+				<source>Disconnect</source>
+				<target>Verbindung trennen</target>
+			</trans-unit>
+			<trans-unit id="trennen.text">
+				<source>Afterwards this site no longer serves the proofs for the domain, and this module can no longer start checks. The website in the service and its results remain.</source>
+				<target>Danach liefert diese Site keine Nachweise für die Domain mehr aus, und das Modul kann keine Prüfung mehr starten. Die Website im Dienst und ihre Ergebnisse bleiben bestehen.</target>
+			</trans-unit>
+			<trans-unit id="trennen.knopf">
+				<source>Disconnect</source>
+				<target>Verbindung trennen</target>
+			</trans-unit>
+			<trans-unit id="trennen.erfolg">
+				<source>The connection is disconnected. The website in the service remains.</source>
+				<target>Die Verbindung ist getrennt. Die Website im Dienst bleibt bestehen.</target>
+			</trans-unit>
+			<trans-unit id="bestaetigen.erfolg.meta_tag">
+				<source>The domain is confirmed (via the meta element of the start page).</source>
+				<target>Die Domain ist bestätigt (über das Meta-Element der Startseite).</target>
+			</trans-unit>
+			<trans-unit id="bestaetigen.erfolg.file">
+				<source>The domain is confirmed (via the proof file).</source>
+				<target>Die Domain ist bestätigt (über die Nachweisdatei).</target>
+			</trans-unit>
+			<trans-unit id="bestaetigen.fehler">
+				<source>The domain is not confirmed yet. %s</source>
+				<target>Die Domain ist noch nicht bestätigt. %s</target>
+			</trans-unit>
+			<trans-unit id="nachweis.methode.meta_tag">
+				<source>Meta element</source>
+				<target>Meta-Element</target>
+			</trans-unit>
+			<trans-unit id="nachweis.methode.file">
+				<source>Proof file</source>
+				<target>Nachweisdatei</target>
+			</trans-unit>
+			<trans-unit id="nachweis.seite_nicht_erreichbar">
+				<source>the start page could not be reached.</source>
+				<target>Die Startseite war nicht erreichbar.</target>
+			</trans-unit>
+			<trans-unit id="nachweis.meta_tag_nicht_gefunden">
+				<source>the meta element is missing on the start page (is a cache or proxy in between?).</source>
+				<target>Das Meta-Element fehlt auf der Startseite (liegt ein Cache oder Proxy dazwischen?).</target>
+			</trans-unit>
+			<trans-unit id="nachweis.datei_nicht_erreichbar">
+				<source>the file could not be retrieved.</source>
+				<target>Die Datei war nicht abrufbar.</target>
+			</trans-unit>
+			<trans-unit id="nachweis.token_nicht_gefunden">
+				<source>the value found does not match.</source>
+				<target>Der gefundene Wert passt nicht.</target>
+			</trans-unit>
+			<trans-unit id="nachweis.ungueltige_adresse">
+				<source>the address of the website in the service is not valid.</source>
+				<target>Die Adresse der Website im Dienst ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="nachweis.nicht_erreichbar">
+				<source>the service could not be reached.</source>
+				<target>Der Dienst war nicht erreichbar.</target>
+			</trans-unit>
+			<trans-unit id="nachweis.unbekannt">
+				<source>no reason given.</source>
+				<target>Ohne Angabe eines Grundes.</target>
+			</trans-unit>
+			<trans-unit id="pruefen.erfolg">
+				<source>The check has started. Depending on the size it takes a few minutes; “Refresh status” shows the progress.</source>
+				<target>Die Prüfung ist gestartet. Sie dauert je nach Umfang einige Minuten; „Status aktualisieren“ zeigt den Fortschritt.</target>
+			</trans-unit>
+			<trans-unit id="pruefen.laeuft_bereits">
+				<source>A check is already running; no second one was started.</source>
+				<target>Es läuft bereits eine Prüfung; eine zweite wurde nicht gestartet.</target>
+			</trans-unit>
+			<trans-unit id="pruefen.fehler">
+				<source>The check was not started.</source>
+				<target>Die Prüfung wurde nicht gestartet.</target>
+			</trans-unit>
+			<trans-unit id="pruefen.ohne_schluessel">
+				<source>The check was not started because the form has expired. Reload the overview and select “Check now” again.</source>
+				<target>Die Prüfung wurde nicht gestartet, weil das Formular abgelaufen ist. Laden Sie die Übersicht neu und wählen Sie erneut „Jetzt prüfen“.</target>
+			</trans-unit>
+			<trans-unit id="aktualisieren.info">
+				<source>Status retrieved at %s.</source>
+				<target>Stand um %s abgerufen.</target>
+			</trans-unit>
+			<trans-unit id="verboten">
+				<source>You may not perform this action for this site.</source>
+				<target>Diese Aktion dürfen Sie für diese Site nicht ausführen.</target>
+			</trans-unit>
+			<trans-unit id="format.datum">
+				<source>Y-m-d</source>
+				<target>d.m.Y</target>
+			</trans-unit>
+			<trans-unit id="format.zeit">
+				<source>H:i</source>
+				<target>H:i</target>
+			</trans-unit>
+			<trans-unit id="format.tausender">
+				<source>,</source>
+				<target>.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,13 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>Rückmeldung der letzten Aktion (PRG), einmal gezeigt. Fehler als role="alert", alles andere als role="status".</f:comment>
+<f:if condition="{rueckmeldung.text}">
+    <div class="callout {rueckmeldung.klasse}" role="{rueckmeldung.rolle}">
+        <div class="callout-icon">
+            <span class="icon-emphasized"><core:icon identifier="{rueckmeldung.symbol}" size="small" /></span>
+        </div>
+        <div class="callout-content">
+            <div class="callout-body"><p>{rueckmeldung.text}</p></div>
+        </div>
+    </div>
+</f:if>
+</html>

@@ -1,0 +1,34 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+<f:section name="Content">
+    <h1>{modultitel} – {siteName}</h1>
+    <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung}" />
+
+    <f:if condition="{neuVerbinden}">
+        <div class="callout callout-warning">
+            <div class="callout-content">
+                <div class="callout-title"><f:translate key="fehler.neu_verbinden.titel" extensionName="Barrierepruefung" /></div>
+                <div class="callout-body">
+                    <p><f:translate key="fehler.neu_verbinden" extensionName="Barrierepruefung" /></p>
+                    <p><f:translate key="{f:if(condition: istAdmin, then: 'neu_verbinden.admin', else: 'neu_verbinden.redaktion')}" extensionName="Barrierepruefung" /></p>
+                </div>
+            </div>
+        </div>
+    </f:if>
+
+    <f:if condition="{istAdmin}">
+        <f:then>
+            <h2><f:translate key="verbinden.ueberschrift" extensionName="Barrierepruefung" /></h2>
+            <f:if condition="!{neuVerbinden}">
+                <p><f:translate key="verbinden.einleitung" extensionName="Barrierepruefung" /></p>
+            </f:if>
+            <f:render partial="Verbindungsformular" arguments="{site: site, werte: werte, felder: felder}" />
+        </f:then>
+        <f:else>
+            <f:if condition="!{neuVerbinden}">
+                <p><f:translate key="verbinden.nur_admin" extensionName="Barrierepruefung" /></p>
+            </f:if>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

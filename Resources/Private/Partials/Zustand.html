@@ -1,0 +1,76 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>Der Stand als Beschreibungsliste. Jeder Zustand steht als Wort, das badge trägt denselben Text.</f:comment>
+<dl class="row">
+    <dt class="col-sm-3"><f:translate key="zustand.verbindung" extensionName="Barrierepruefung" /></dt>
+    <dd class="col-sm-9">
+        <span class="badge badge-success"><f:translate key="wort.verbunden" extensionName="Barrierepruefung" /></span>
+        <f:translate key="seit" arguments="{0: stand.verbunden.seit}" extensionName="Barrierepruefung" />
+    </dd>
+
+    <dt class="col-sm-3"><f:translate key="zustand.domain" extensionName="Barrierepruefung" /></dt>
+    <dd class="col-sm-9">
+        <f:if condition="{stand.domain.bestaetigt}">
+            <f:then>
+                <span class="badge badge-success"><f:translate key="domain.bestaetigt" extensionName="Barrierepruefung" /></span>
+                <f:if condition="{stand.domain.am}"><f:translate key="am" arguments="{0: stand.domain.am}" extensionName="Barrierepruefung" /></f:if>
+            </f:then>
+            <f:else>
+                <span class="badge badge-warning"><f:translate key="domain.nicht_bestaetigt" extensionName="Barrierepruefung" /></span>
+                <p class="mt-2"><f:translate key="domain.erklaerung" extensionName="Barrierepruefung" /></p>
+                <form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.bestaetigen')}" id="barrierepruefung-bestaetigen">
+                    <input type="hidden" name="site" value="{site.identifier}">
+                    <button type="submit" class="btn btn-default btn-sm"><f:translate key="knopf.bestaetigen" extensionName="Barrierepruefung" /></button>
+                </form>
+            </f:else>
+        </f:if>
+        <f:if condition="{stand.domain.pfad}">
+            <p class="mt-2"><f:translate key="domain.pfad" arguments="{0: stand.domain.pfad}" extensionName="Barrierepruefung" /></p>
+        </f:if>
+    </dd>
+
+    <f:if condition="{stand.kontingent}">
+        <dt class="col-sm-3"><f:translate key="zustand.kontingent" extensionName="Barrierepruefung" /></dt>
+        <dd class="col-sm-9">
+            <f:if condition="{stand.kontingent.grenze}">
+                <f:then><f:translate key="kontingent.begrenzt" arguments="{0: stand.kontingent.genutzt, 1: stand.kontingent.grenze}" extensionName="Barrierepruefung" /></f:then>
+                <f:else><f:translate key="kontingent.unbegrenzt" arguments="{0: stand.kontingent.genutzt}" extensionName="Barrierepruefung" /></f:else>
+            </f:if>
+            <f:if condition="{stand.kontingent.bis}"><f:translate key="kontingent.zeitraum" arguments="{0: stand.kontingent.bis}" extensionName="Barrierepruefung" /></f:if>
+        </dd>
+    </f:if>
+
+    <f:if condition="{stand.erklaerung}">
+        <dt class="col-sm-3"><f:translate key="zustand.letzte" extensionName="Barrierepruefung" /></dt>
+        <dd class="col-sm-9">
+            <f:if condition="{stand.letzte}">
+                <f:then>
+                    <span class="badge badge-{stand.letzte.abzeichen}">{stand.letzte.wort}</span>
+                    <f:if condition="{stand.letzte.am}"><f:translate key="am" arguments="{0: stand.letzte.am}" extensionName="Barrierepruefung" /></f:if><f:if condition="{stand.letzte.befunde}">, <f:translate key="letzte.befunde" arguments="{0: stand.letzte.befunde}" extensionName="Barrierepruefung" /></f:if>
+                    <f:if condition="{stand.letzte.bericht}"><br><a href="{stand.letzte.bericht}"><f:translate key="letzte.bericht" extensionName="Barrierepruefung" /></a></f:if>
+                </f:then>
+                <f:else><f:translate key="letzte.keine" extensionName="Barrierepruefung" /></f:else>
+            </f:if>
+        </dd>
+
+        <dt class="col-sm-3"><f:translate key="zustand.erklaerung" extensionName="Barrierepruefung" /></dt>
+        <dd class="col-sm-9">
+            <f:switch expression="{stand.erklaerung.zustand}">
+                <f:case value="veroeffentlicht">
+                    <f:if condition="{stand.erklaerung.veraltet}">
+                        <f:then><span class="badge badge-warning"><f:translate key="erklaerung.veraltet" extensionName="Barrierepruefung" /></span></f:then>
+                        <f:else><span class="badge badge-success"><f:translate key="erklaerung.veroeffentlicht" extensionName="Barrierepruefung" /></span></f:else>
+                    </f:if>
+                    <f:if condition="{stand.erklaerung.stand}"><f:translate key="erklaerung.stand" arguments="{0: stand.erklaerung.stand}" extensionName="Barrierepruefung" /></f:if>
+                    <f:if condition="{stand.erklaerung.fassung}"><f:translate key="erklaerung.fassung" arguments="{0: stand.erklaerung.fassung}" extensionName="Barrierepruefung" /></f:if>
+                    <f:if condition="{stand.erklaerung.veraltet}"><p class="mt-2"><f:translate key="erklaerung.veraltet.hinweis" extensionName="Barrierepruefung" /></p></f:if>
+                    <f:if condition="{stand.erklaerung.adresse}"><br><a href="{stand.erklaerung.adresse}"><f:translate key="erklaerung.oeffnen" extensionName="Barrierepruefung" /></a></f:if>
+                </f:case>
+                <f:case value="keine">
+                    <span class="badge badge-default"><f:translate key="erklaerung.keine" extensionName="Barrierepruefung" /></span>
+                </f:case>
+                <f:defaultCase><f:translate key="erklaerung.unbekannt" extensionName="Barrierepruefung" /></f:defaultCase>
+            </f:switch>
+        </dd>
+    </f:if>
+</dl>
+</html>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf" product-name="barrierepruefung">
+		<header/>
+		<body>
+			<trans-unit id="barrierepruefung.title">
+				<source>Accessibility</source>
+				<target>Barrierefreiheit</target>
+			</trans-unit>
+			<trans-unit id="barrierepruefung.description">
+				<source>Check a site with barrierepruefung.de, confirm its domain and follow the way to the accessibility statement.</source>
+				<target>Prüfen Sie eine Site mit barrierepruefung.de, bestätigen Sie ihre Domain und gehen Sie den Weg zur Erklärung zur Barrierefreiheit.</target>
+			</trans-unit>
+			<trans-unit id="barrierepruefung.shortDescription">
+				<source>Checks and accessibility statement</source>
+				<target>Prüfung und Erklärung zur Barrierefreiheit</target>
+			</trans-unit>
+			<trans-unit id="uebersicht.title">
+				<source>Overview</source>
+				<target>Übersicht</target>
+			</trans-unit>
+			<trans-unit id="uebersicht.description">
+				<source>Connection, domain, page quota and the latest check of the selected site.</source>
+				<target>Verbindung, Domain, Seitenkontingent und letzte Prüfung der gewählten Site.</target>
+			</trans-unit>
+			<trans-unit id="uebersicht.shortDescription">
+				<source>Connection and status</source>
+				<target>Verbindung und Stand</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

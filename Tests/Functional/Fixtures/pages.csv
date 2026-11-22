@@ -1,0 +1,5 @@
+"pages"
+,"uid","pid","title","slug","doktype","is_siteroot","perms_userid","perms_groupid","perms_user","perms_group","perms_everybody"
+,1,0,"Stadt","/",1,1,1,1,31,31,0
+,2,0,"Bad Beispiel","/",1,1,1,0,31,0,0
+,3,0,"Museum","/",1,1,1,0,31,0,0

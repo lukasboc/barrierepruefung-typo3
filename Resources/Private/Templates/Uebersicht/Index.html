@@ -1,0 +1,73 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+<f:section name="Content">
+    <f:if condition="{keineSite}">
+        <f:then>
+            <h1>{modultitel}</h1>
+            <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung}" />
+            <p><f:translate key="keineSite" extensionName="Barrierepruefung" /></p>
+        </f:then>
+        <f:else>
+            <h1>{modultitel} – {siteName}</h1>
+            <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung}" />
+
+            <f:if condition="{fehler}">
+                <div class="callout callout-danger" role="alert">
+                    <div class="callout-icon">
+                        <span class="icon-emphasized"><core:icon identifier="actions-close" size="small" /></span>
+                    </div>
+                    <div class="callout-content">
+                        <div class="callout-title"><f:translate key="fehler.ueberschrift" extensionName="Barrierepruefung" /></div>
+                        <div class="callout-body">
+                            <f:if condition="{fehler.detail}"><p>{fehler.detail}</p></f:if>
+                            <f:if condition="{fehler.hinweis}"><p>{fehler.hinweis}</p></f:if>
+                        </div>
+                    </div>
+                </div>
+            </f:if>
+
+            <f:if condition="{stand.laufend}">
+                <div class="callout callout-info">
+                    <div class="callout-icon">
+                        <span class="icon-emphasized"><core:icon identifier="actions-info" size="small" /></span>
+                    </div>
+                    <div class="callout-content">
+                        <div class="callout-body">
+                            <p>
+                                <f:if condition="{stand.laufend.seit}">
+                                    <f:then><f:translate key="laufend.seit" arguments="{0: stand.laufend.seit}" extensionName="Barrierepruefung" /></f:then>
+                                    <f:else><f:translate key="laufend.ohne_zeit" extensionName="Barrierepruefung" /></f:else>
+                                </f:if>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </f:if>
+
+            <f:render partial="Zustand" arguments="{stand: stand, site: site}" />
+
+            <f:comment>Ziele der Knöpfe im Docheader: ein Formular je Aktion, der Schlüssel entsteht bei jeder Anzeige neu.</f:comment>
+            <form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.pruefen')}" id="barrierepruefung-pruefen">
+                <input type="hidden" name="site" value="{site.identifier}">
+                <input type="hidden" name="idempotency_key" value="{idempotencyKey}">
+            </form>
+            <form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.aktualisieren')}" id="barrierepruefung-aktualisieren">
+                <input type="hidden" name="site" value="{site.identifier}">
+            </form>
+
+            <f:if condition="{istAdmin}">
+                <f:if condition="{verbindungsformular}">
+                    <h2><f:translate key="verbinden.ueberschrift" extensionName="Barrierepruefung" /></h2>
+                    <f:render partial="Verbindungsformular" arguments="{site: site, werte: werte, felder: felder}" />
+                </f:if>
+                <h2><f:translate key="trennen.ueberschrift" extensionName="Barrierepruefung" /></h2>
+                <p><f:translate key="trennen.text" extensionName="Barrierepruefung" /></p>
+                <form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.trennen')}" id="barrierepruefung-trennen">
+                    <input type="hidden" name="site" value="{site.identifier}">
+                    <button type="submit" class="btn btn-default"><f:translate key="trennen.knopf" extensionName="Barrierepruefung" /></button>
+                </form>
+            </f:if>
+        </f:else>
+    </f:if>
+</f:section>
+</html>
