@@ -1,0 +1,6 @@
+.. This file is included at the top of every page; it keeps shared roles in one place.
+
+.. role:: php(code)
+   :language: php
+.. role:: yaml(code)
+   :language: yaml
