@@ -1,0 +1,79 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+<f:section name="Content">
+    <f:if condition="{zustand} == 'keineSite'">
+        <f:then>
+            <h1>{modultitel}</h1>
+            <p><f:translate key="keineSite" extensionName="Barrierepruefung" /></p>
+        </f:then>
+        <f:else>
+            <h1>{modultitel} – {siteName}</h1>
+
+            <f:switch expression="{zustand}">
+                <f:case value="nichtVerbunden">
+                    <f:render partial="Befunde/Hinweis" arguments="{klasse: 'callout-info', symbol: 'actions-info', textSchluessel: 'befunde.nicht_verbunden', uebersichtUri: uebersichtUri}" />
+                </f:case>
+                <f:case value="neuVerbinden">
+                    <f:render partial="Befunde/Hinweis" arguments="{klasse: 'callout-warning', symbol: 'actions-exclamation', textSchluessel: 'fehler.neu_verbinden', uebersichtUri: uebersichtUri}" />
+                </f:case>
+                <f:case value="fehler">
+                    <f:render partial="Befunde/Fehler" arguments="{titel: 'befunde.fehler.ueberschrift', fehler: fehler}" />
+                    <p><a class="btn btn-default" href="{uebersichtUri}"><f:translate key="befunde.zur_uebersicht" extensionName="Barrierepruefung" /></a></p>
+                </f:case>
+                <f:case value="keinLauf">
+                    <p><f:translate key="befunde.kein_lauf" extensionName="Barrierepruefung" /></p>
+                    <f:comment>Derselbe Weg wie in der Übersicht: Schlüssel aus der Anzeige, Redirect danach (PRG).</f:comment>
+                    <form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.pruefen')}" id="barrierepruefung-pruefen">
+                        <input type="hidden" name="site" value="{site.identifier}">
+                        <input type="hidden" name="idempotency_key" value="{idempotencyKey}">
+                        <button type="submit" class="btn btn-primary"><f:translate key="aktion.pruefen" extensionName="Barrierepruefung" /></button>
+                    </form>
+                </f:case>
+                <f:case value="laeuft">
+                    <div class="callout callout-info" role="status">
+                        <div class="callout-icon"><span class="icon-emphasized"><core:icon identifier="actions-info" size="small" /></span></div>
+                        <div class="callout-content"><div class="callout-body"><p><f:translate key="befunde.laeuft" extensionName="Barrierepruefung" /></p></div></div>
+                    </div>
+                </f:case>
+                <f:case value="sauber">
+                    <h2><f:translate key="befunde.ueberschrift" extensionName="Barrierepruefung" /></h2>
+                    <p><f:translate key="befunde.sauber" extensionName="Barrierepruefung" /></p>
+                    <f:render partial="Befunde/ImDienst" arguments="{bericht: bericht}" />
+                </f:case>
+                <f:case value="liste">
+                    <h2><f:translate key="befunde.ueberschrift" extensionName="Barrierepruefung" /></h2>
+                    <p><f:translate key="befunde.einleitung" arguments="{0: am}" extensionName="Barrierepruefung" /></p>
+                    <div class="table-fit">
+                        <table class="table table-striped table-hover">
+                            <caption class="visually-hidden"><f:translate key="befunde.tabelle.beschriftung" extensionName="Barrierepruefung" /></caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col"><f:translate key="befunde.spalte.regel" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.spalte.grad" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.spalte.kriterium" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.spalte.vorkommen" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.spalte.seiten" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.spalte.mehr" extensionName="Barrierepruefung" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <f:for each="{regeln}" as="regel">
+                                    <tr>
+                                        <th scope="row">{regel.titel}</th>
+                                        <td><span class="badge badge-{regel.abzeichen}">{regel.grad}</span></td>
+                                        <td>{regel.kriterien}</td>
+                                        <td>{regel.vorkommen}</td>
+                                        <td>{regel.seiten}</td>
+                                        <td><a href="{regel.detailUri}"><f:translate key="befunde.details" extensionName="Barrierepruefung" /><span class="visually-hidden">: {regel.titel}</span></a></td>
+                                    </tr>
+                                </f:for>
+                            </tbody>
+                        </table>
+                    </div>
+                    <f:render partial="Befunde/ImDienst" arguments="{bericht: bericht}" />
+                </f:case>
+            </f:switch>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

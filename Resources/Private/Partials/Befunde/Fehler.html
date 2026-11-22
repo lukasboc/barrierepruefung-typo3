@@ -1,0 +1,13 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>Fehler des Dienstes: sein Detail in der Sprache der Backend-Person und ein Hinweis, was zu tun ist.</f:comment>
+<div class="callout callout-danger" role="alert">
+    <div class="callout-icon"><span class="icon-emphasized"><core:icon identifier="actions-close" size="small" /></span></div>
+    <div class="callout-content">
+        <div class="callout-title"><f:translate key="{titel}" extensionName="Barrierepruefung" /></div>
+        <div class="callout-body">
+            <f:if condition="{fehler.detail}"><p>{fehler.detail}</p></f:if>
+            <f:if condition="{fehler.hinweis}"><p>{fehler.hinweis}</p></f:if>
+        </div>
+    </div>
+</div>
+</html>

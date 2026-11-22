@@ -27,6 +27,18 @@
 				<source>Connection and status</source>
 				<target>Verbindung und Stand</target>
 			</trans-unit>
+			<trans-unit id="befunde.title">
+				<source>Findings</source>
+				<target>Befunde</target>
+			</trans-unit>
+			<trans-unit id="befunde.description">
+				<source>Open binding findings of the latest check, per rule, with their occurrences.</source>
+				<target>Offene, verbindliche Befunde der letzten Prüfung je Regel, mit ihren Fundstellen.</target>
+			</trans-unit>
+			<trans-unit id="befunde.shortDescription">
+				<source>Open findings</source>
+				<target>Offene Befunde</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

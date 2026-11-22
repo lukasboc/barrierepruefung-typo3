@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Lubomedia\Barrierepruefung\Controller\BefundeController;
 use Lubomedia\Barrierepruefung\Controller\UebersichtController;
 
 /*
@@ -55,6 +56,23 @@ return [
             'aktualisieren' => [
                 'target' => UebersichtController::class . '::aktualisieren',
                 'methods' => ['POST'],
+            ],
+        ],
+    ],
+    'barrierepruefung_befunde' => [
+        'parent' => 'barrierepruefung',
+        'access' => 'user',
+        'workspaces' => 'live',
+        'path' => '/module/barrierepruefung/befunde',
+        'iconIdentifier' => 'barrierepruefung-modul',
+        'labels' => [
+            'title' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:befunde.title',
+            'description' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:befunde.description',
+            'shortDescription' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:befunde.shortDescription',
+        ],
+        'routes' => [
+            '_default' => [
+                'target' => BefundeController::class . '::index',
             ],
         ],
     ],

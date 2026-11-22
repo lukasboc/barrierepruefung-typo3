@@ -21,6 +21,15 @@
 			<trans-unit id="uebersicht.shortDescription">
 				<source>Connection and status</source>
 			</trans-unit>
+			<trans-unit id="befunde.title">
+				<source>Findings</source>
+			</trans-unit>
+			<trans-unit id="befunde.description">
+				<source>Open binding findings of the latest check, per rule, with their occurrences.</source>
+			</trans-unit>
+			<trans-unit id="befunde.shortDescription">
+				<source>Open findings</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

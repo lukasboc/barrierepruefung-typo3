@@ -303,6 +303,138 @@
 			<trans-unit id="inhalt.nicht_verfuegbar">
 				<source>The accessibility statement cannot be shown at the moment. Please try again later.</source>
 			</trans-unit>
+			<trans-unit id="befunde.nicht_verbunden">
+				<source>This site is not connected to barrierepruefung.de yet, so there are no findings to show.</source>
+			</trans-unit>
+			<trans-unit id="befunde.zur_uebersicht">
+				<source>Go to the overview</source>
+			</trans-unit>
+			<trans-unit id="befunde.kein_lauf">
+				<source>There is no check result for this site yet. Start the first check.</source>
+			</trans-unit>
+			<trans-unit id="befunde.laeuft">
+				<source>The first check is running. Once it has finished, the findings appear here; open this page again later.</source>
+			</trans-unit>
+			<trans-unit id="befunde.sauber">
+				<source>The latest check found no open findings.</source>
+			</trans-unit>
+			<trans-unit id="befunde.fehler.ueberschrift">
+				<source>The findings could not be retrieved</source>
+			</trans-unit>
+			<trans-unit id="befunde.ueberschrift">
+				<source>Open findings</source>
+			</trans-unit>
+			<trans-unit id="befunde.einleitung">
+				<source>Open binding findings of the check on %s. Fix them in TYPO3, then start a new check.</source>
+			</trans-unit>
+			<trans-unit id="befunde.datum_unbekannt">
+				<source>an unknown date</source>
+			</trans-unit>
+			<trans-unit id="befunde.tabelle.beschriftung">
+				<source>Open findings by rule</source>
+			</trans-unit>
+			<trans-unit id="befunde.spalte.regel">
+				<source>Rule</source>
+			</trans-unit>
+			<trans-unit id="befunde.spalte.grad">
+				<source>Severity</source>
+			</trans-unit>
+			<trans-unit id="befunde.spalte.kriterium">
+				<source>Success criterion</source>
+			</trans-unit>
+			<trans-unit id="befunde.spalte.vorkommen">
+				<source>Occurrences</source>
+			</trans-unit>
+			<trans-unit id="befunde.spalte.seiten">
+				<source>Affected pages</source>
+			</trans-unit>
+			<trans-unit id="befunde.spalte.mehr">
+				<source>More information</source>
+			</trans-unit>
+			<trans-unit id="befunde.details">
+				<source>Details</source>
+			</trans-unit>
+			<trans-unit id="schweregrad.critical">
+				<source>Critical</source>
+			</trans-unit>
+			<trans-unit id="schweregrad.serious">
+				<source>Serious</source>
+			</trans-unit>
+			<trans-unit id="schweregrad.moderate">
+				<source>Moderate</source>
+			</trans-unit>
+			<trans-unit id="schweregrad.minor">
+				<source>Minor</source>
+			</trans-unit>
+			<trans-unit id="schweregrad.unbekannt">
+				<source>Unknown</source>
+			</trans-unit>
+			<trans-unit id="befunde.im_dienst">
+				<source>Open in the service</source>
+			</trans-unit>
+			<trans-unit id="befunde.im_dienst.hinweis">
+				<source>Screenshots of the occurrences are in the full report in the service, which asks you to sign in first.</source>
+			</trans-unit>
+			<trans-unit id="befunde.regel.zurueck">
+				<source>Back to the list</source>
+			</trans-unit>
+			<trans-unit id="befunde.regel.fehlt">
+				<source>This rule is not among the open findings of the latest check.</source>
+			</trans-unit>
+			<trans-unit id="befunde.regel.fehler.ueberschrift">
+				<source>The occurrences could not be retrieved</source>
+			</trans-unit>
+			<trans-unit id="befunde.regel.hinweis">
+				<source>How to fix it</source>
+			</trans-unit>
+			<trans-unit id="befunde.regel.umfang">
+				<source>%1$s occurrences on %2$s pages.</source>
+			</trans-unit>
+			<trans-unit id="befunde.regel.kriterium">
+				<source>Success criterion: %s.</source>
+			</trans-unit>
+			<trans-unit id="befunde.stellen.ueberschrift">
+				<source>Occurrences</source>
+			</trans-unit>
+			<trans-unit id="befunde.stellen.zaehler">
+				<source>Occurrences %1$s to %2$s of %3$s.</source>
+			</trans-unit>
+			<trans-unit id="befunde.stellen.keine">
+				<source>This rule has no occurrences in the latest check.</source>
+			</trans-unit>
+			<trans-unit id="befunde.stellen.beschriftung">
+				<source>Occurrences of the rule</source>
+			</trans-unit>
+			<trans-unit id="befunde.stelle.seite">
+				<source>Page</source>
+			</trans-unit>
+			<trans-unit id="befunde.stelle.stelle">
+				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="befunde.stelle.messung">
+				<source>Measurement</source>
+			</trans-unit>
+			<trans-unit id="befunde.stelle.begruendung">
+				<source>Reason</source>
+			</trans-unit>
+			<trans-unit id="befunde.stelle.ganze_seite">
+				<source>The entire page</source>
+			</trans-unit>
+			<trans-unit id="befunde.stelle.zustand">
+				<source>Visible only after: %s</source>
+			</trans-unit>
+			<trans-unit id="befunde.stelle.ausschnitt">
+				<source>HTML excerpt</source>
+			</trans-unit>
+			<trans-unit id="befunde.weiter">
+				<source>Load more</source>
+			</trans-unit>
+			<trans-unit id="befunde.frueher">
+				<source>Earlier occurrences</source>
+			</trans-unit>
+			<trans-unit id="letzte.befunde_ansehen">
+				<source>Show findings</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

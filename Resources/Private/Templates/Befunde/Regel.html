@@ -1,0 +1,93 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+<f:section name="Content">
+    <h1>{modultitel} – {siteName}</h1>
+    <p><a class="btn btn-default" href="{listeUri}"><f:translate key="befunde.regel.zurueck" extensionName="Barrierepruefung" /></a></p>
+
+    <f:if condition="{zustand} == 'regelFehlt'">
+        <f:then>
+            <div class="callout callout-warning" role="status">
+                <div class="callout-content"><div class="callout-body"><p><f:translate key="befunde.regel.fehlt" extensionName="Barrierepruefung" /></p></div></div>
+            </div>
+        </f:then>
+        <f:else>
+            <h2>{regel.titel} <span class="badge badge-{regel.abzeichen}">{regel.grad}</span></h2>
+            <p>
+                <f:translate key="befunde.regel.umfang" arguments="{0: regel.vorkommen, 1: regel.seiten}" extensionName="Barrierepruefung" />
+                <f:if condition="{regel.kriterien}"><f:translate key="befunde.regel.kriterium" arguments="{0: regel.kriterien}" extensionName="Barrierepruefung" /></f:if>
+            </p>
+
+            <f:if condition="{regel.hinweis}">
+                <div class="callout callout-info">
+                    <div class="callout-content">
+                        <div class="callout-title"><f:translate key="befunde.regel.hinweis" extensionName="Barrierepruefung" /></div>
+                        <div class="callout-body"><p>{regel.hinweis}</p></div>
+                    </div>
+                </div>
+            </f:if>
+
+            <h3 id="fundstellen"><f:translate key="befunde.stellen.ueberschrift" extensionName="Barrierepruefung" /></h3>
+            <f:switch expression="{zustand}">
+                <f:case value="fehler">
+                    <f:render partial="Befunde/Fehler" arguments="{titel: 'befunde.regel.fehler.ueberschrift', fehler: fehler}" />
+                </f:case>
+                <f:case value="keineStellen">
+                    <p><f:translate key="befunde.stellen.keine" extensionName="Barrierepruefung" /></p>
+                </f:case>
+                <f:case value="stellen">
+                    <p><f:translate key="befunde.stellen.zaehler" arguments="{0: von, 1: bis, 2: gesamt}" extensionName="Barrierepruefung" /></p>
+                    <div class="table-fit">
+                        <table class="table table-striped table-hover">
+                            <caption class="visually-hidden"><f:translate key="befunde.stellen.beschriftung" extensionName="Barrierepruefung" /></caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col"><f:translate key="befunde.stelle.seite" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.stelle.stelle" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.stelle.messung" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="befunde.stelle.begruendung" extensionName="Barrierepruefung" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <f:for each="{stellen}" as="stelle">
+                                    <tr>
+                                        <th scope="row">
+                                            <f:if condition="{stelle.seiteLink}">
+                                                <f:then><a href="{stelle.seiteLink}">{stelle.seite}</a></f:then>
+                                                <f:else>{stelle.seite}</f:else>
+                                            </f:if>
+                                        </th>
+                                        <td>
+                                            <f:if condition="{stelle.selektor}">
+                                                <f:then><code>{stelle.selektor}</code></f:then>
+                                                <f:else><f:translate key="befunde.stelle.ganze_seite" extensionName="Barrierepruefung" /></f:else>
+                                            </f:if>
+                                            <f:if condition="{stelle.zustand}"><br><f:translate key="befunde.stelle.zustand" arguments="{0: stelle.zustand}" extensionName="Barrierepruefung" /></f:if>
+                                            <f:if condition="{stelle.darstellung}"><br>{stelle.darstellung}</f:if>
+                                            <f:if condition="{stelle.ausschnitt}">
+                                                <details class="mt-2">
+                                                    <summary><f:translate key="befunde.stelle.ausschnitt" extensionName="Barrierepruefung" /></summary>
+                                                    <pre class="mt-2"><code>{stelle.ausschnitt}</code></pre>
+                                                </details>
+                                            </f:if>
+                                        </td>
+                                        <td>
+                                            {stelle.messung}
+                                            <f:if condition="{stelle.farben}"><f:if condition="{stelle.messung}"><br></f:if>{stelle.farben}</f:if>
+                                        </td>
+                                        <td>{stelle.begruendung}</td>
+                                    </tr>
+                                </f:for>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        <f:if condition="{frueherUri}"><a class="btn btn-default" href="{frueherUri}#fundstellen"><f:translate key="befunde.frueher" extensionName="Barrierepruefung" /></a></f:if>
+                        <f:if condition="{weiterUri}"><a class="btn btn-default" href="{weiterUri}#fundstellen"><f:translate key="befunde.weiter" extensionName="Barrierepruefung" /></a></f:if>
+                    </p>
+                </f:case>
+            </f:switch>
+            <f:render partial="Befunde/ImDienst" arguments="{bericht: bericht}" />
+        </f:else>
+    </f:if>
+</f:section>
+</html>

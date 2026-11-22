@@ -315,6 +315,7 @@ final class UebersichtController
                 'abzeichen' => ['completed' => 'success', 'partial' => 'warning', 'failed' => 'danger'][$status] ?? 'default',
                 'am' => $am !== null ? $this->datum($am) : null,
                 'hatBefunde' => is_int($letzte['open_findings'] ?? null),
+                'beheben' => is_int($letzte['open_findings'] ?? null) && $letzte['open_findings'] > 0,
                 'befunde' => is_int($letzte['open_findings'] ?? null) ? $this->zahl($letzte['open_findings']) : null,
                 'bericht' => $this->adresse($letzte['report_url'] ?? null),
             ];
