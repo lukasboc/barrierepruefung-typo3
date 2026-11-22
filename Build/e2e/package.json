@@ -3,7 +3,16 @@
   "private": true,
   "type": "module",
   "description": "Ende-zu-Ende-Läufe gegen die lokalen TYPO3-Instanzen",
-  "scripts": { "rauchtest": "node rauchtest.mjs", "attrappe": "node stub-api.mjs", "modul-uebersicht": "node modul-uebersicht.mjs", "modul-befunde": "node modul-befunde.mjs" },
+  "scripts": {
+    "rauchtest": "node rauchtest.mjs",
+    "attrappe": "node stub-api.mjs",
+    "modul-uebersicht": "node modul-uebersicht.mjs",
+    "modul-befunde": "node modul-befunde.mjs",
+    "test": "node --test axe.test.mjs tastatur.test.mjs",
+    "test:axe": "node --test axe.test.mjs",
+    "test:tastatur": "node --test tastatur.test.mjs",
+    "modul-erklaerung": "node modul-erklaerung.mjs"
+  },
   "dependencies": {
     "@axe-core/playwright": "4.14.0",
     "playwright": "1.65.1"
