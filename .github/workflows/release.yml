@@ -41,11 +41,13 @@ jobs:
           echo "fassung=$fassung" >> "$GITHUB_OUTPUT"
       - name: Beschreibung aus dem CHANGELOG
         id: kommentar
+        env:
+          FASSUNG: ${{ steps.version.outputs.fassung }}
         run: |
           # Abschnitt der Fassung aus CHANGELOG.md (TER-Kommentar); fehlt er, bricht der Lauf ab.
-          abschnitt=$(awk -v v="${{ steps.version.outputs.fassung }}" '$0 ~ "^## " v "( |$)" {a=1; next} /^## / {a=0} a' CHANGELOG.md | sed '/^$/N;/^\n$/D')
+          abschnitt=$(awk -v v="$FASSUNG" '$0 ~ "^## " v "( |$)" {a=1; next} /^## / {a=0} a' CHANGELOG.md | sed '/^$/N;/^\n$/D')
           if [ -z "$abschnitt" ]; then
-            echo "::error::CHANGELOG.md hat keinen Abschnitt für ${{ steps.version.outputs.fassung }}."
+            echo "::error::CHANGELOG.md hat keinen Abschnitt für $FASSUNG."
             exit 1
           fi
           {
@@ -60,8 +62,36 @@ jobs:
           tools: composer:v2
       - name: Tailor installieren
         run: composer global require typo3/tailor --prefer-dist --no-progress
+      - name: Archiv bauen (git archive, .gitattributes entscheidet wie bei Packagist)
+        env:
+          FASSUNG: ${{ steps.version.outputs.fassung }}
+        run: |
+          git archive --format=zip -o "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip" HEAD
+          unzip -l "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip"
+      - name: Archivinhalt prüfen
+        env:
+          FASSUNG: ${{ steps.version.outputs.fassung }}
+        run: |
+          # Entwicklungsdateien dürfen nicht ins öffentliche TER-Archiv.
+          inhalt=$(unzip -Z1 "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip")
+          if echo "$inhalt" | grep -Eiq '(^|/)(CLAUDE\.md|\.github/|Build/|Tests/Unit|Tests/Functional|\.php-cs-fixer|phpstan|node_modules/|package(-lock)?\.json)'; then
+            echo "::error::Das Archiv enthält Entwicklungsdateien:"
+            echo "$inhalt" | grep -Ei '(^|/)(CLAUDE\.md|\.github/|Build/|Tests/Unit|Tests/Functional|\.php-cs-fixer|phpstan|node_modules/|package(-lock)?\.json)'
+            exit 1
+          fi
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - name: Tailor installieren
+        run: composer global require typo3/tailor --prefer-dist --no-progress
       - name: Ins TER hochladen
+        env:
+          FASSUNG: ${{ steps.version.outputs.fassung }}
+          KOMMENTAR: ${{ steps.kommentar.outputs.text }}
         run: |
           "$(composer global config bin-dir --absolute --quiet)/tailor" ter:publish \
-            --comment "${{ steps.kommentar.outputs.text }}" \
-            "${{ steps.version.outputs.fassung }}" barrierepruefung
+            --artefact "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip" \
+            --comment "$KOMMENTAR" \
+            "$FASSUNG" barrierepruefung
