@@ -68,6 +68,19 @@ Der Dienst läuft auf `http://127.0.0.1:8001`, aus den Containern erreichbar als
 `php artisan tinker --execute="require '<datei>';"` (nicht `tinker <datei>`, das hängt). Das Token mit
 Plugin-Rechten kommt aus dem Reiter „Einbindung" der Website und gehört nie in eines der Repositorys.
 
+Die Abnahme gegen den echten Dienst automatisiert `Build/e2e/abnahme.mjs` (verbinden, Domain bestätigen, „Jetzt prüfen“,
+veröffentlichte Erklärung im Element, Rückfall bei nicht erreichbarem Dienst). Der Dienst lehnt `localhost` ab; abgenommen
+wird deshalb über die zweite Site (`127.0.0.1:<Port>`). Token und Kennung nur per Umgebung:
+
+```sh
+ABNAHME_TOKEN=… ABNAHME_SITE_ID=… ABNAHME_WARTEN=300 node abnahme.mjs v13   # oder v14
+```
+
+Der Lauf im Dienst wird nur dann fertig, wenn dort Queue-Worker und Scanner-Worker laufen (Scanner mit
+`SCANNER_ALLOW_PRIVATE_HOSTS=1`); ohne sie genügt die Prüfung, dass der Lauf angelegt wurde (`ABNAHME_WARTEN=0`). Die
+Website im Dienst braucht eine veröffentlichte Erklärung (Weg über die API: docs/08 des Dienstes). Den Ausfall stellt das Skript
+mit einem Durchreicher auf Port 8092 nach, der Dienst selbst wird nicht angehalten.
+
 ## Wenn die Einrichtung mittendrin abbricht
 
 `lokal.sh` schreibt als letzten Schritt die Marke `v<Fassung>/config/.einrichtung-fertig`. Fehlt sie, gilt die
