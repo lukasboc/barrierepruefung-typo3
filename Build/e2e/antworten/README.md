@@ -3,7 +3,7 @@
 Die Dateien sind GET-Antworten des lokalen Dienstes (`http://127.0.0.1:8001/api/v1`), bereinigt:
 Website-Kennung `01STUBSITE0000000000000000`, Prüflauf `01STUBSCAN0000000000000000`,
 `base_url` `http://localhost:8089`, Dienst-Adresse `https://dienst.example`, keine Token,
-keine echten Adressen oder Namen. `scan-start.json` und `publish.json` sind von Hand nach
+keine echten Adressen oder Namen. `scan-start.json`, `verify.json` und `publish.json` sind von Hand nach
 `docs/08` des Dienstes geschrieben (`"_von_hand": true`): echte Aufrufe würden den Dienst verändern.
 
 ## Neu aufnehmen

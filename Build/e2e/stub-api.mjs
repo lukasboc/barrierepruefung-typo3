@@ -11,7 +11,7 @@ const port = Number(process.argv[2] ?? process.env.STUB_PORT ?? 8091);
 const laden = (name) => JSON.parse(readFileSync(join(verzeichnis, `${name}.json`), 'utf8'));
 const ohneHinweis = (o) => { const { _von_hand, ...rest } = o; return rest; };
 
-const zustand = { ausfall: false, version: null, anfragen: [] };
+const zustand = { ausfall: false, version: null, unbestaetigt: false, anfragen: [] };
 
 const routen = [
   ['GET', /^\/sites\/[^/]+$/, 'site'],
@@ -25,12 +25,25 @@ const routen = [
   ['GET', /^\/scans\/[^/]+\/findings$/, 'findings'],
   ['GET', /^\/scans\/[^/]+\/findings\/[^/]+$/, 'findings-regel'],
   ['GET', /^\/scans\/[^/]+\/manual-checks$/, 'manual-checks'],
+  ['POST', /^\/sites\/[^/]+\/verify$/, 'verify', 200],
   ['POST', /^\/sites\/[^/]+\/scans$/, 'scan-start', 202],
   ['POST', /^\/sites\/[^/]+\/declaration\/publish$/, 'publish', 201],
 ];
 
-function antwort(name) {
-  const inhalt = ohneHinweis(laden(name));
+// Zweite Website für die 14.3-Instanz: der Adressabgleich vergleicht den Port mit (localhost:8089 ≠ :8090).
+const SITE_14 = '01STUBSITE0000000000000014';
+
+function antwort(name, pfad) {
+  let inhalt = ohneHinweis(laden(name));
+  if (pfad.includes(SITE_14)) {
+    inhalt = JSON.parse(JSON.stringify(inhalt).replaceAll('http://localhost:8089', 'http://localhost:8090').replaceAll('01STUBSITE0000000000000000', SITE_14));
+  }
+  // Bis zum ersten POST …/verify meldet die Website „nicht bestätigt“ (Schalter /__stub/unbestaetigt).
+  if (name === 'site' && zustand.unbestaetigt) {
+    inhalt.data.verified = false;
+    inhalt.data.verified_at = null;
+  }
+  if (name === 'verify') zustand.unbestaetigt = false;
   if (zustand.version !== null) {
     if (name === 'declaration') inhalt.declaration.version = zustand.version;
     if (name === 'publish') inhalt.data.version = zustand.version;
@@ -59,9 +72,10 @@ createServer(async (req, res) => {
     let daten = {};
     try { daten = text ? JSON.parse(text) : {}; } catch { return senden(res, 400, { fehler: 'kein JSON' }); }
     if (aktion === 'ausfall' && req.method === 'POST') { zustand.ausfall = Boolean(daten.an); return senden(res, 200, { ausfall: zustand.ausfall }); }
+    if (aktion === 'unbestaetigt' && req.method === 'POST') { zustand.unbestaetigt = Boolean(daten.an); return senden(res, 200, { unbestaetigt: zustand.unbestaetigt }); }
     if (aktion === 'fassung' && req.method === 'POST') { zustand.version = Number(daten.version); return senden(res, 200, { version: zustand.version }); }
     if (aktion === 'anfragen' && req.method === 'GET') return senden(res, 200, zustand.anfragen);
-    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
+    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.unbestaetigt = false; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
     return senden(res, 404, { fehler: 'unbekannt' });
   }
 
@@ -74,7 +88,7 @@ createServer(async (req, res) => {
   const treffer = routen.find(([m, muster]) => m === req.method && muster.test(pfad));
   if (!treffer) return senden(res, 404, { title: 'Nicht gefunden', status: 404 }, { 'Content-Type': 'application/problem+json' });
 
-  const body = antwort(treffer[2]);
+  const body = antwort(treffer[2], pfad);
   const etag = `"${createHash('sha1').update(JSON.stringify(body)).digest('hex')}"`;
   if (req.method === 'GET') {
     if (req.headers['if-none-match'] === etag) { res.writeHead(304, { ETag: etag }); return res.end(); }

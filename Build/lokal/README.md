@@ -42,8 +42,9 @@ node rauchtest.mjs           # ok v13 / ok v14
 ```
 
 Schalter: `POST /__stub/ausfall {"an": true}` (alles 503), `POST /__stub/fassung {"version": 5}` (Version der
-veröffentlichten Erklärung), `GET /__stub/anfragen` (aufgezeichnete Anfragen mit Kopfzeilen und Rumpf),
-`POST /__stub/zuruecksetzen`. Die Antworten stehen in `Build/e2e/antworten/` (Herkunft: dort `README.md`).
+veröffentlichten Erklärung), `POST /__stub/unbestaetigt {"an": true}` (Website gilt bis zum nächsten `POST …/verify` als nicht bestätigt), `GET /__stub/anfragen` (aufgezeichnete Anfragen mit Kopfzeilen und Rumpf),
+`POST /__stub/zuruecksetzen`. Website-Kennung für 13.4: `01STUBSITE0000000000000000` (`base_url` `http://localhost:8089`),
+für 14.3: `01STUBSITE0000000000000014` (dieselben Antworten mit `http://localhost:8090`) – der Adressabgleich vergleicht den Port. Die Antworten stehen in `Build/e2e/antworten/` (Herkunft: dort `README.md`).
 
 ## Gegen den echten lokalen Dienst
 

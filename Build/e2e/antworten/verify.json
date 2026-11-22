@@ -1,0 +1,16 @@
+{
+  "_von_hand": true,
+  "data": {
+    "verified": true,
+    "method": "meta_tag",
+    "failure_reason": null,
+    "site": {
+      "id": "01STUBSITE0000000000000000",
+      "base_url": "http://localhost:8089",
+      "verified": true,
+      "verified_at": "2026-11-21T10:00:00+00:00",
+      "schedule": "none",
+      "next_run_at": null
+    }
+  }
+}
