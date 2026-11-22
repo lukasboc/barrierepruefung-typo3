@@ -114,7 +114,8 @@ for (const inst of instanzen) {
     await attrappe('ausfall', { an: true });
     console.log('  Befehl: ' + abgleichen(inst).split('\n').pop());
     frame = await modulOeffnen(page, inst.basis, MODUL);
-    pruefe(await frame.locator('.callout-warning').count() === 1 && /Zuletzt erreichbar am|Last reachable on/.test(await frame.locator('.callout-warning').innerText()), 'Ausfall: „Zuletzt erreichbar am …“');
+    const warnungen = await frame.locator('.callout-warning').allInnerTexts();
+    pruefe(warnungen.length === 1 && /Zuletzt erreichbar am|Last reachable on/.test(warnungen[0]), 'Ausfall: „Zuletzt erreichbar am …“' + (warnungen.length === 1 && /Zuletzt erreichbar am|Last reachable on/.test(warnungen[0]) ? '' : ` – gefunden: ${JSON.stringify(warnungen)}`));
     pruefe(/Grund|Reason/.test(await frame.locator('.callout-warning').innerText()), 'Ausfall: Grund steht dabei');
     pruefe(await frame.locator('dd .badge:has-text("veröffentlicht"), dd .badge:has-text("published")').count() === 1, 'Ausfall: die letzte gute Fassung bleibt „veröffentlicht“');
     await page.screenshot({ path: `${ERGEBNISSE}erklaerung-${inst.name}-ausfall-hell.png` });

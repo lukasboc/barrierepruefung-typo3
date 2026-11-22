@@ -6,12 +6,12 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
-import { attrappe } from './hilfen.mjs';
+import { attrappe, verbundenSein } from './hilfen.mjs';
 import { einordnen, beschreibung } from './bekannt.mjs';
 
 const INSTANZEN = [
-  { name: 'v13', basis: 'http://localhost:8089' },
-  { name: 'v14', basis: 'http://localhost:8090' },
+  { name: 'v13', basis: 'http://localhost:8089', siteId: '01STUBSITE0000000000000000', container: 'barrierepruefung-lokal-v13-1' },
+  { name: 'v14', basis: 'http://localhost:8090', siteId: '01STUBSITE0000000000000014', container: 'barrierepruefung-lokal-v14-1' },
 ].filter((i) => !process.env.INSTANZ || i.name === process.env.INSTANZ);
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
@@ -20,6 +20,7 @@ let browser;
 before(async () => {
   await attrappe('zuruecksetzen', {});
   browser = await chromium.launch();
+  for (const inst of INSTANZEN) await verbundenSein(browser, inst);
 });
 after(async () => { await browser?.close(); });
 

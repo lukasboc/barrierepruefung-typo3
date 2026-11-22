@@ -135,3 +135,29 @@ export function typo3Befehl(inst, ...argumente) {
   }
   return execFileSync('docker', ['exec', '-w', '/var/www/projekt', inst.container, 'vendor/bin/typo3', ...argumente], { encoding: 'utf8' }).trim();
 }
+
+// Stellt sicher, dass die Hauptsite der Instanz mit der Attrappe verbunden ist (über die Oberfläche, wie die
+// Modulläufe) und ihre Erklärung abgerufen wurde. Ohne das hat das Inhaltselement nichts auszugeben.
+export async function verbundenSein(browser, inst) {
+  const kontext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await kontext.newPage();
+  try {
+    await anmelden(page, inst.basis);
+    let frame = await modulOeffnen(page, inst.basis, 'barrierepruefung_uebersicht');
+    const host = new URL(inst.basis).host;
+    if (!(await frame.locator('h1').innerText()).includes(host)) {
+      await frame.locator('.module-docheader .dropdown-toggle').first().click();
+      frame = await neuGeladen(page, () => frame.locator(`.dropdown-menu a:has-text("${host}")`).first().click());
+    }
+    if (await frame.locator('#barrierepruefung-verbinden').count()) {
+      await frame.fill('#barrierepruefung-dienst-url', AUS_DEM_CONTAINER);
+      await frame.fill('#barrierepruefung-site-id', inst.siteId);
+      await frame.fill('#barrierepruefung-token', 'beliebiges-token-der-attrappe');
+      frame = await neuGeladen(page, () => frame.locator('#barrierepruefung-verbinden button[type=submit]').click());
+      if (!(await frame.locator('dl').count())) throw new Error('Verbinden über die Oberfläche gelang nicht');
+    }
+  } finally {
+    await kontext.close();
+  }
+  typo3Befehl(inst, 'barrierepruefung:aktualisieren');
+}
