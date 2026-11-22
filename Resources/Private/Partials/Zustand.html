@@ -46,7 +46,7 @@
                 <f:then>
                     <span class="badge badge-{stand.letzte.abzeichen}">{stand.letzte.wort}</span>
                     <f:if condition="{stand.letzte.am}"><f:translate key="am" arguments="{0: stand.letzte.am}" extensionName="Barrierepruefung" /></f:if><f:if condition="{stand.letzte.befunde}">, <f:translate key="letzte.befunde" arguments="{0: stand.letzte.befunde}" extensionName="Barrierepruefung" /></f:if>
-                    <f:if condition="{stand.letzte.bericht}"><br><a href="{stand.letzte.bericht}"><f:translate key="letzte.bericht" extensionName="Barrierepruefung" /></a></f:if>
+                    <f:if condition="{stand.letzte.bericht}"><br><a class="text-decoration-underline" href="{stand.letzte.bericht}"><f:translate key="letzte.bericht" extensionName="Barrierepruefung" /></a></f:if>
                 </f:then>
                 <f:else><f:translate key="letzte.keine" extensionName="Barrierepruefung" /></f:else>
             </f:if>
@@ -63,7 +63,7 @@
                     <f:if condition="{stand.erklaerung.stand}"><f:translate key="erklaerung.stand" arguments="{0: stand.erklaerung.stand}" extensionName="Barrierepruefung" /></f:if>
                     <f:if condition="{stand.erklaerung.fassung}"><f:translate key="erklaerung.fassung" arguments="{0: stand.erklaerung.fassung}" extensionName="Barrierepruefung" /></f:if>
                     <f:if condition="{stand.erklaerung.veraltet}"><p class="mt-2"><f:translate key="erklaerung.veraltet.hinweis" extensionName="Barrierepruefung" /></p></f:if>
-                    <f:if condition="{stand.erklaerung.adresse}"><br><a href="{stand.erklaerung.adresse}"><f:translate key="erklaerung.oeffnen" extensionName="Barrierepruefung" /></a></f:if>
+                    <f:if condition="{stand.erklaerung.adresse}"><br><a class="text-decoration-underline" href="{stand.erklaerung.adresse}"><f:translate key="erklaerung.oeffnen" extensionName="Barrierepruefung" /></a></f:if>
                 </f:case>
                 <f:case value="keine">
                     <span class="badge badge-default"><f:translate key="erklaerung.keine" extensionName="Barrierepruefung" /></span>

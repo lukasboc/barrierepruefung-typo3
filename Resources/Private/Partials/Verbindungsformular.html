@@ -3,12 +3,14 @@
     Formular „Verbinden“, nur für Admins. Das Token-Feld heißt api_token: ein Feld „token“ überschriebe den
     Routen-Token, mit dem TYPO3 die Anfrage prüft. Fehler je Feld über aria-describedby und aria-invalid.
 </f:comment>
-<form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.verbinden')}" id="barrierepruefung-verbinden" novalidate>
+<form method="post" action="{f:be.uri(route: 'barrierepruefung_uebersicht.verbinden')}" id="barrierepruefung-verbinden" class="row" novalidate>
+    <div class="col-lg-8">
     <input type="hidden" name="site" value="{site.identifier}">
     <f:render section="Feld" arguments="{name: 'dienst_url', id: 'barrierepruefung-dienst-url', typ: 'url', wert: werte.dienst_url, fehler: felder.dienst_url, autocomplete: 'url'}" />
     <f:render section="Feld" arguments="{name: 'site_id', id: 'barrierepruefung-site-id', typ: 'text', wert: werte.site_id, fehler: felder.site_id, autocomplete: 'off'}" />
     <f:render section="Feld" arguments="{name: 'api_token', id: 'barrierepruefung-token', typ: 'password', wert: '', fehler: felder.api_token, autocomplete: 'off'}" />
     <button type="submit" class="btn btn-primary"><f:translate key="knopf.verbinden" extensionName="Barrierepruefung" /></button>
+    </div>
 </form>
 
 <f:section name="Feld">
