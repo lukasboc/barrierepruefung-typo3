@@ -16,6 +16,9 @@ use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\RequestInterface;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
 use TYPO3\CMS\Core\Configuration\SiteWriter;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\Writer\FileWriter;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -35,6 +38,9 @@ final class InhaltselementTest extends FunctionalTestCase
      */
     protected array $configurationToUseInTestInstance = [
         'SYS' => ['caching' => ['cacheConfigurations' => ['pages' => ['backend' => Typo3DatabaseBackend::class]]]],
+        'LOG' => ['Lubomedia' => ['Barrierepruefung' => ['writerConfiguration' => [
+            LogLevel::ERROR => [FileWriter::class => ['logFile' => 'typo3temp/var/log/barrierepruefung-test.log']],
+        ]]]],
         'HTTP' => ['proxy' => 'http://127.0.0.1:9', 'connect_timeout' => 1],
     ];
 
@@ -422,6 +428,9 @@ final class InhaltselementTest extends FunctionalTestCase
 
         $html = $this->seite();
 
+        $protokoll = (string)file_get_contents(Environment::getPublicPath() . '/typo3temp/var/log/barrierepruefung-test.log');
+        self::assertStringContainsString('Erklärung nicht lesbar', $protokoll, 'Die Fehlkonfiguration bleibt nicht unsichtbar.');
+        self::assertStringNotContainsString('tok-123', $protokoll);
         self::assertStringContainsString('Version 4, Stand', $html, 'Die letzte Fassung aus der Registry bleibt sichtbar.');
         self::assertLessThanOrEqual(time() + Abruf::RUECKFALL_SEKUNDEN, $this->seitenAblauf());
     }

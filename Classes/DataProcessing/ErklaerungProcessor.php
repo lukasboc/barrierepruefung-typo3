@@ -10,6 +10,8 @@ use Lubomedia\Barrierepruefung\Erklaerung\Fassung;
 use Lubomedia\Barrierepruefung\Erklaerung\Fragment;
 use Lubomedia\Barrierepruefung\Verbindung\Verbindung;
 use Lubomedia\Barrierepruefung\Verbindung\Verbindungen;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -26,8 +28,10 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
  * Fassung genau sie aus dem Seitencache wirft. Ohne gute Fassung lebt die Seite nur kurz im Cache:
  * sonst stünde nach einem Ausfall beim allerersten Abruf 24 h lang „nicht verfügbar“ da.
  */
-final class ErklaerungProcessor implements DataProcessorInterface
+final class ErklaerungProcessor implements DataProcessorInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     private const SPRACHDATEI = 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang.xlf:';
 
     public function __construct(
@@ -97,10 +101,13 @@ final class ErklaerungProcessor implements DataProcessorInterface
     {
         try {
             return $this->abruf->fassung($verbindung);
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            // Nie ein Token oder dessen verschlüsselte Form in den Kontext: nur die Ausnahme selbst.
+            $this->logger?->error('Erklärung nicht lesbar', ['exception' => $e, 'site' => $verbindung->siteIdentifier]);
             try {
                 return $this->abruf->stand($verbindung->siteId)->mitAblauf(time() + Abruf::RUECKFALL_SEKUNDEN);
-            } catch (\Throwable) {
+            } catch (\Throwable $e) {
+                $this->logger?->error('Erklärung auch aus der Registry nicht lesbar', ['exception' => $e, 'site' => $verbindung->siteIdentifier]);
                 return new Fassung(null, Fassung::KEINE, null, null, null, time() + Abruf::RUECKFALL_SEKUNDEN);
             }
         }
