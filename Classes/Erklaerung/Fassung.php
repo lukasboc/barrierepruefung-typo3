@@ -35,7 +35,7 @@ final readonly class Fassung
 
     public function mitAblauf(int $gueltigBis): self
     {
-        return new self($this->erklaerung, $this->zustand, $this->abgerufenAm, $this->letzterFehlerAm, $this->letzterFehler, $gueltigBis, $this->neu);
+        return new self($this->erklaerung, $this->zustand, $this->abgerufenAm, $this->letzterFehlerAm, $this->letzterFehler, $gueltigBis, $this->neu, $this->letzterStatus);
     }
 
     /**
