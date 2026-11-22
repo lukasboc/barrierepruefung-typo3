@@ -723,6 +723,338 @@
 				<source>The page was not created. Most likely you lack the right to create pages and content elements under the start page of this site.</source>
 				<target>Die Seite wurde nicht angelegt. Meist fehlt Ihnen das Recht, unter der Startseite dieser Site Seiten und Inhaltselemente anzulegen.</target>
 			</trans-unit>
+			<trans-unit id="weg.ueberschrift">
+				<source>Way to the statement</source>
+				<target>Weg zur Erklärung</target>
+			</trans-unit>
+			<trans-unit id="weg.nicht_verbunden">
+				<source>This site is not connected yet. Connect it to barrierepruefung.de in the overview; the steps to the statement will then appear here.</source>
+				<target>Diese Site ist noch nicht verbunden. Verbinden Sie sie in der Übersicht mit barrierepruefung.de; dann stehen hier die Schritte zur Erklärung.</target>
+			</trans-unit>
+			<trans-unit id="weg.fehler.titel">
+				<source>The steps could not be retrieved</source>
+				<target>Die Schritte ließen sich nicht abrufen</target>
+			</trans-unit>
+			<trans-unit id="weg.nicht_unterstuetzt">
+				<source>The service at this address does not offer the way to the statement through the API yet. Complete the steps in the service.</source>
+				<target>Der Dienst unter dieser Adresse bietet den Weg zur Erklärung noch nicht über die API an. Erledigen Sie die Schritte im Dienst.</target>
+			</trans-unit>
+			<trans-unit id="weg.kein_lauf">
+				<source>The statement is based on a finished check. There is none for this site yet; start one in the overview.</source>
+				<target>Die Erklärung beruht auf einer abgeschlossenen Prüfung. Für diese Site gibt es noch keine; starten Sie sie in der Übersicht.</target>
+			</trans-unit>
+			<trans-unit id="weg.dokument">
+				<source>Document</source>
+				<target>Dokument</target>
+			</trans-unit>
+			<trans-unit id="weg.veroeffentlicht">
+				<source>Published</source>
+				<target>Veröffentlicht</target>
+			</trans-unit>
+			<trans-unit id="weg.fassung">
+				<source>version %1$s of %2$s</source>
+				<target>Fassung %1$s vom %2$s</target>
+			</trans-unit>
+			<trans-unit id="weg.stand">
+				<source>Progress</source>
+				<target>Stand</target>
+			</trans-unit>
+			<trans-unit id="weg.erledigt">
+				<source>%1$s of %2$s steps done</source>
+				<target>%1$s von %2$s Schritten erledigt</target>
+			</trans-unit>
+			<trans-unit id="weg.tabelle.beschriftung">
+				<source>Steps to the statement, in order</source>
+				<target>Schritte zur Erklärung, in ihrer Reihenfolge</target>
+			</trans-unit>
+			<trans-unit id="weg.spalte.nummer">
+				<source>No.</source>
+				<target>Nr.</target>
+			</trans-unit>
+			<trans-unit id="weg.spalte.schritt">
+				<source>Step</source>
+				<target>Schritt</target>
+			</trans-unit>
+			<trans-unit id="weg.spalte.zustand">
+				<source>Status</source>
+				<target>Zustand</target>
+			</trans-unit>
+			<trans-unit id="weg.spalte.offen">
+				<source>Still open</source>
+				<target>Was noch fehlt</target>
+			</trans-unit>
+			<trans-unit id="weg.nichts_offen">
+				<source>nothing</source>
+				<target>nichts</target>
+			</trans-unit>
+			<trans-unit id="weg.zustand.erledigt">
+				<source>done</source>
+				<target>erledigt</target>
+			</trans-unit>
+			<trans-unit id="weg.zustand.offen">
+				<source>open</source>
+				<target>offen</target>
+			</trans-unit>
+			<trans-unit id="weg.zustand.spaeter">
+				<source>filled in before publishing</source>
+				<target>wird vor der Freigabe erfasst</target>
+			</trans-unit>
+			<trans-unit id="weg.zustand.unbekannt">
+				<source>unknown</source>
+				<target>unbekannt</target>
+			</trans-unit>
+			<trans-unit id="weg.naechster">
+				<source>Next step: %s</source>
+				<target>Nächster Schritt: %s</target>
+			</trans-unit>
+			<trans-unit id="weg.alles_erledigt">
+				<source>All steps are done.</source>
+				<target>Alle Schritte sind erledigt.</target>
+			</trans-unit>
+			<trans-unit id="weg.befunde_bewerten">
+				<source>Findings that are not a defect, will not be fixed or would be a disproportionate burden are assessed in the service, where the screenshots are. These assessments shape the text of the statement.</source>
+				<target>Befunde, die kein Mangel sind, nicht behoben werden oder eine unverhältnismäßige Belastung wären, bewerten Sie im Dienst, wo die Belegbilder liegen. Diese Bewertungen prägen den Text der Erklärung.</target>
+			</trans-unit>
+			<trans-unit id="weg.befunde_bewerten.link">
+				<source>Assess findings in the service</source>
+				<target>Befunde im Dienst bewerten</target>
+			</trans-unit>
+			<trans-unit id="weg.zur_uebersicht">
+				<source>Back to all steps</source>
+				<target>Zurück zu allen Schritten</target>
+			</trans-unit>
+			<trans-unit id="weg.im_dienst">
+				<source>Complete this step in the service</source>
+				<target>Diesen Schritt im Dienst erledigen</target>
+			</trans-unit>
+			<trans-unit id="weg.im_dienst_beheben">
+				<source>Fix this in the service</source>
+				<target>Im Dienst beheben</target>
+			</trans-unit>
+			<trans-unit id="weg.unbekannt">
+				<source>This version of the extension does not know this step yet. It can be completed in the service.</source>
+				<target>Diese Fassung der Extension kennt den Schritt noch nicht. Er lässt sich im Dienst erledigen.</target>
+			</trans-unit>
+			<trans-unit id="weg.schritt.nicht_abrufbar">
+				<source>This step could not be retrieved</source>
+				<target>Dieser Schritt ließ sich nicht abrufen</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefung.erledigt">
+				<source>The check the statement is based on has finished.</source>
+				<target>Die Prüfung, auf der die Erklärung beruht, ist abgeschlossen.</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefung.offen">
+				<source>A finished check is needed before the statement can be published. Start it in the overview with “Check now”.</source>
+				<target>Vor der Veröffentlichung braucht es eine abgeschlossene Prüfung. Starten Sie sie in der Übersicht mit „Jetzt prüfen“.</target>
+			</trans-unit>
+			<trans-unit id="weg.domain.erledigt">
+				<source>The domain is confirmed.</source>
+				<target>Die Domain ist bestätigt.</target>
+			</trans-unit>
+			<trans-unit id="weg.domain.offen">
+				<source>The domain is not confirmed yet. The extension serves the proof itself; confirm the domain in the overview.</source>
+				<target>Die Domain ist noch nicht bestätigt. Den Nachweis liefert die Extension selbst aus; bestätigen Sie die Domain in der Übersicht.</target>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.titel">
+				<source>This token may not prepare the statement</source>
+				<target>Dieses Token darf die Erklärung nicht vorbereiten</target>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.recht_fehlt">
+				<source>The form appears here once the token has the right to prepare and publish the statement. An administrator of the organisation grants it in the service, in the “Embedding” tab of the website. Until then, the steps can be completed in the service.</source>
+				<target>Das Formular erscheint hier, sobald das Token das Recht hat, die Erklärung vorzubereiten und zu veröffentlichen. Eine Administratorin oder ein Administrator der Organisation erteilt es im Dienst im Reiter „Einbindung“ der Website. Bis dahin lassen sich die Schritte im Dienst erledigen.</target>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.recht_erloschen">
+				<source>The right of this token has lapsed: the person who granted it may no longer publish. An administrator of the organisation has to grant it again in the service, in the “Embedding” tab of the website.</source>
+				<target>Das Recht dieses Tokens ist erloschen: Die Person, die es erteilt hat, darf nicht mehr veröffentlichen. Eine Administratorin oder ein Administrator der Organisation muss es im Dienst im Reiter „Einbindung“ der Website neu erteilen.</target>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.konto_geschlossen">
+				<source>The account of the organisation in the service is closed. While it is closed, the statement cannot be prepared.</source>
+				<target>Das Konto der Organisation im Dienst ist geschlossen. Solange es geschlossen ist, lässt sich die Erklärung nicht vorbereiten.</target>
+			</trans-unit>
+			<trans-unit id="weg.fehler.felder">
+				<source>Not saved. Please check the marked entries.</source>
+				<target>Nicht gespeichert. Bitte prüfen Sie die markierten Angaben.</target>
+			</trans-unit>
+			<trans-unit id="weg.fehler.nicht_gespeichert">
+				<source>Not saved.</source>
+				<target>Nicht gespeichert.</target>
+			</trans-unit>
+			<trans-unit id="weg.gespeichert">
+				<source>Saved.</source>
+				<target>Gespeichert.</target>
+			</trans-unit>
+			<trans-unit id="weg.gespeichert.weiter">
+				<source>Saved. Next step: %s</source>
+				<target>Gespeichert. Nächster Schritt: %s</target>
+			</trans-unit>
+			<trans-unit id="weg.pflicht">
+				<source>(required)</source>
+				<target>(Pflichtangabe)</target>
+			</trans-unit>
+			<trans-unit id="weg.speichern">
+				<source>Save</source>
+				<target>Speichern</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.einleitung">
+				<source>No machine can fully assess these requirements. These are the questions that have to be answered before the statement can be published.</source>
+				<target>Diese Anforderungen kann keine Maschine abschließend beurteilen. Es sind die Fragen, die vor der Veröffentlichung beantwortet sein müssen.</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.katalog">
+				<source>The service holds further questions, one for each success criterion. A criterion nobody has assessed is named as not assessed in the statement.</source>
+				<target>Im Dienst stehen weitere Fragen, eine je Erfolgskriterium. Ein Kriterium, das niemand beurteilt hat, nennt die Erklärung als nicht beurteilt.</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.katalog.link">
+				<source>Answer the remaining questions in the service</source>
+				<target>Weitere Fragen im Dienst beantworten</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.keine">
+				<source>No question holds up publication.</source>
+				<target>Keine Frage hält die Veröffentlichung auf.</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.kriterium">
+				<source>Success criterion %s</source>
+				<target>Erfolgskriterium %s</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.frage">
+				<source>Answer</source>
+				<target>Antwort</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.veraltet.wort">
+				<source>answer again</source>
+				<target>neu beantworten</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.veraltet">
+				<source>This check measured something that contradicts the answer from the previous check.</source>
+				<target>Diese Prüfung hat etwas gemessen, das der Antwort aus der vorigen Prüfung widerspricht.</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.uebernommen">
+				<source>Taken over from the previous check.</source>
+				<target>Aus der vorigen Prüfung übernommen.</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.speichern">
+				<source>Save answers</source>
+				<target>Antworten speichern</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.unveraendert">
+				<source>No answer was changed, so nothing was sent.</source>
+				<target>Keine Antwort wurde geändert, deshalb wurde nichts gesendet.</target>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.ohne_lauf">
+				<source>Not saved: the form did not name the check. Open the step again from the list of steps.</source>
+				<target>Nicht gespeichert: Das Formular nannte die Prüfung nicht. Öffnen Sie den Schritt erneut aus der Liste der Schritte.</target>
+			</trans-unit>
+			<trans-unit id="weg.stelle.name">
+				<source>Name of the declaring body</source>
+				<target>Name der erklärenden Stelle</target>
+			</trans-unit>
+			<trans-unit id="weg.stelle.name.geerbt">
+				<source>Leave empty to use “%s”. This name appears in the published statement.</source>
+				<target>Leer lassen, um „%s“ zu verwenden. Dieser Name steht in der veröffentlichten Erklärung.</target>
+			</trans-unit>
+			<trans-unit id="weg.stelle.name.hilfe">
+				<source>This name appears in the published statement.</source>
+				<target>Dieser Name steht in der veröffentlichten Erklärung.</target>
+			</trans-unit>
+			<trans-unit id="weg.stelle.art">
+				<source>Type of body</source>
+				<target>Art der Stelle</target>
+			</trans-unit>
+			<trans-unit id="weg.stelle.land">
+				<source>Federal or state level</source>
+				<target>Bund oder Land</target>
+			</trans-unit>
+			<trans-unit id="weg.stelle.land.hilfe">
+				<source>Only for public bodies: does the body belong to the federal level or to a state? The law the statement refers to and the enforcement body depend on it.</source>
+				<target>Nur für öffentliche Stellen: Gehört die Stelle zum Bund oder zu einem Land? Davon hängen das Recht, auf das sich die Erklärung beruft, und die Durchsetzungsstelle ab.</target>
+			</trans-unit>
+			<trans-unit id="weg.stelle.land.waehlen">
+				<source>Please choose</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.nicht_gefragt">
+				<source>This question does not arise for this website.</source>
+				<target>Diese Frage stellt sich für diese Website nicht.</target>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.nur_mit_diensten">
+				<source>Only if you ticked a service above</source>
+				<target>Nur, wenn Sie oben eine Dienstleistung angekreuzt haben</target>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.klein">
+				<source>Size of the business</source>
+				<target>Größe des Unternehmens</target>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.ergebnis">
+				<source>Current result</source>
+				<target>Derzeitiges Ergebnis</target>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.beantwortet">
+				<source>Answered on %s.</source>
+				<target>Beantwortet am %s.</target>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.speichern">
+				<source>Save answer</source>
+				<target>Antwort speichern</target>
+			</trans-unit>
+			<trans-unit id="weg.angaben.einleitung">
+				<source>These details cannot be derived from a check; only you know them. They appear in the statement.</source>
+				<target>Diese Angaben ergeben sich nicht aus der Prüfung; nur Sie kennen sie. Sie stehen in der Erklärung.</target>
+			</trans-unit>
+			<trans-unit id="weg.angaben.stelle">
+				<source>Competent enforcement body</source>
+				<target>Zuständige Durchsetzungsstelle</target>
+			</trans-unit>
+			<trans-unit id="weg.angaben.stelle.hilfe">
+				<source>Pre-filled by the service for your jurisdiction; for public bodies according to the federal or state level. Please check.</source>
+				<target>Vom Dienst für Ihren Rechtsraum vorbelegt, bei öffentlichen Stellen nach Bund oder Land. Bitte prüfen Sie die Angaben.</target>
+			</trans-unit>
+			<trans-unit id="weg.angaben.speichern">
+				<source>Save details</source>
+				<target>Angaben speichern</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.contact">
+				<source>Contact for reporting barriers</source>
+				<target>Kontakt für Meldungen zu Barrieren</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.contact.hilfe">
+				<source>An e-mail address, a phone number or a form where people can report barriers on this website.</source>
+				<target>Eine E-Mail-Adresse, eine Telefonnummer oder ein Formular, über das Barrieren auf dieser Website gemeldet werden können.</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.alternatives">
+				<source>Accessible alternatives</source>
+				<target>Barrierefreie Alternativen</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.alternatives.hilfe">
+				<source>How can people get content that is not accessible yet? For example by phone or as a document on request.</source>
+				<target>Wie kommen Menschen an Inhalte, die noch nicht barrierefrei sind? Zum Beispiel telefonisch oder als Dokument auf Anfrage.</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.dgs_ls_url">
+				<source>Explanations in sign language and easy-to-read language</source>
+				<target>Erläuterungen in Gebärdensprache und Leichter Sprache</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.dgs_ls_url.hilfe">
+				<source>Address of the page with these explanations. They belong on your home page; the statement links to them.</source>
+				<target>Adresse der Seite mit diesen Erläuterungen. Sie gehören auf Ihre Startseite; die Erklärung verlinkt sie.</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.service_description">
+				<source>Description of the service</source>
+				<target>Beschreibung der Dienstleistung</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.service_description.hilfe">
+				<source>What do you offer, and what do people need to know to use it?</source>
+				<target>Was bieten Sie an, und was muss man wissen, um es zu nutzen?</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.enforcement_body_name">
+				<source>Name of the body</source>
+				<target>Name der Stelle</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.enforcement_body_address">
+				<source>Address</source>
+				<target>Anschrift</target>
+			</trans-unit>
+			<trans-unit id="weg.angabe.enforcement_body_url">
+				<source>Website</source>
+				<target>Website</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

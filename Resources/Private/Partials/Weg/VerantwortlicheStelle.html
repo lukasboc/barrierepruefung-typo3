@@ -1,0 +1,43 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    „Wer erklärt“: die Arten samt Erläuterung kommen vom Dienst, ebenso die Länder für „Bund oder Land“. Eine leere
+    Länderliste heißt: der Rechtsraum kennt die Frage nicht – dann gibt es kein Feld, und subdivision wird nicht gesendet.
+    Ohne Skript lässt sich das Feld nicht an die Art koppeln; es steht deshalb da und sagt, für wen es gilt.
+</f:comment>
+<form method="post" action="{f:be.uri(route: 'barrierepruefung_weg.stelle')}" id="barrierepruefung-stelle" class="row" novalidate>
+    <div class="col-lg-8">
+        <input type="hidden" name="site" value="{site.identifier}">
+        <f:render partial="Weg/Feld" arguments="{feld: formular.name}" />
+
+        <fieldset class="mb-3" id="{formular.art.id}"<f:if condition="{formular.art.hinweis}"> aria-describedby="{formular.art.id}-hilfe"</f:if>>
+            <legend class="form-label fs-6"><f:translate key="weg.stelle.art" extensionName="Barrierepruefung" /></legend>
+            <f:if condition="{formular.art.hinweis}"><div class="form-text mt-0 mb-2" id="{formular.art.id}-hilfe">{formular.art.hinweis}</div></f:if>
+            <f:for each="{formular.art.optionen}" as="option">
+                <div class="form-check mb-2">
+                    <input class="form-check-input{f:if(condition: formular.art.fehler, then: ' is-invalid')}" type="radio" name="applies_to" id="{option.id}" value="{option.wert}"<f:if condition="{option.gewaehlt}"> checked</f:if> aria-describedby="{option.beschrieben}"<f:if condition="{formular.art.fehler}"> aria-invalid="true"</f:if><f:if condition="{option.fokus}"> autofocus</f:if>>
+                    <label class="form-check-label" for="{option.id}">{option.beschriftung}</label>
+                    <div class="form-text mt-0" id="{option.id}-erlaeuterung">{option.erlaeuterung}</div>
+                </div>
+            </f:for>
+            <f:if condition="{formular.art.fehler}"><div class="invalid-feedback d-block" id="{formular.art.id}-fehler">{formular.art.fehler}</div></f:if>
+        </fieldset>
+
+        <f:if condition="{formular.land}">
+            <input type="hidden" name="subdivision_gezeigt" value="1">
+            <div class="form-group mb-3">
+                <label class="form-label" for="{formular.land.id}"><f:translate key="weg.stelle.land" extensionName="Barrierepruefung" /><f:if condition="{formular.land.pflicht}"> <f:translate key="weg.pflicht" extensionName="Barrierepruefung" /></f:if></label>
+                <div class="form-text mt-0 mb-1" id="{formular.land.id}-hilfe"><f:translate key="weg.stelle.land.hilfe" extensionName="Barrierepruefung" /></div>
+                <select class="form-select{f:if(condition: formular.land.fehler, then: ' is-invalid')}" id="{formular.land.id}" name="subdivision" aria-describedby="{formular.land.beschrieben}"<f:if condition="{formular.land.pflicht}"> aria-required="true"</f:if><f:if condition="{formular.land.fehler}"> aria-invalid="true"</f:if><f:if condition="{formular.land.fokus}"> autofocus</f:if>>
+                    <option value=""<f:if condition="{formular.land.keinesGewaehlt}"> selected</f:if>><f:translate key="weg.stelle.land.waehlen" extensionName="Barrierepruefung" /></option>
+                    <f:for each="{formular.land.laender}" as="land">
+                        <option value="{land.wert}"<f:if condition="{land.gewaehlt}"> selected</f:if>>{land.beschriftung}</option>
+                    </f:for>
+                </select>
+                <f:if condition="{formular.land.fehler}"><div class="invalid-feedback d-block" id="{formular.land.id}-fehler">{formular.land.fehler}</div></f:if>
+            </div>
+        </f:if>
+
+        <button type="submit" class="btn btn-primary"><f:translate key="weg.speichern" extensionName="Barrierepruefung" /></button>
+    </div>
+</form>
+</html>

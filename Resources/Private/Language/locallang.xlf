@@ -543,6 +543,255 @@
 			<trans-unit id="seite.fehler">
 				<source>The page was not created. Most likely you lack the right to create pages and content elements under the start page of this site.</source>
 			</trans-unit>
+			<trans-unit id="weg.ueberschrift">
+				<source>Way to the statement</source>
+			</trans-unit>
+			<trans-unit id="weg.nicht_verbunden">
+				<source>This site is not connected yet. Connect it to barrierepruefung.de in the overview; the steps to the statement will then appear here.</source>
+			</trans-unit>
+			<trans-unit id="weg.fehler.titel">
+				<source>The steps could not be retrieved</source>
+			</trans-unit>
+			<trans-unit id="weg.nicht_unterstuetzt">
+				<source>The service at this address does not offer the way to the statement through the API yet. Complete the steps in the service.</source>
+			</trans-unit>
+			<trans-unit id="weg.kein_lauf">
+				<source>The statement is based on a finished check. There is none for this site yet; start one in the overview.</source>
+			</trans-unit>
+			<trans-unit id="weg.dokument">
+				<source>Document</source>
+			</trans-unit>
+			<trans-unit id="weg.veroeffentlicht">
+				<source>Published</source>
+			</trans-unit>
+			<trans-unit id="weg.fassung">
+				<source>version %1$s of %2$s</source>
+			</trans-unit>
+			<trans-unit id="weg.stand">
+				<source>Progress</source>
+			</trans-unit>
+			<trans-unit id="weg.erledigt">
+				<source>%1$s of %2$s steps done</source>
+			</trans-unit>
+			<trans-unit id="weg.tabelle.beschriftung">
+				<source>Steps to the statement, in order</source>
+			</trans-unit>
+			<trans-unit id="weg.spalte.nummer">
+				<source>No.</source>
+			</trans-unit>
+			<trans-unit id="weg.spalte.schritt">
+				<source>Step</source>
+			</trans-unit>
+			<trans-unit id="weg.spalte.zustand">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="weg.spalte.offen">
+				<source>Still open</source>
+			</trans-unit>
+			<trans-unit id="weg.nichts_offen">
+				<source>nothing</source>
+			</trans-unit>
+			<trans-unit id="weg.zustand.erledigt">
+				<source>done</source>
+			</trans-unit>
+			<trans-unit id="weg.zustand.offen">
+				<source>open</source>
+			</trans-unit>
+			<trans-unit id="weg.zustand.spaeter">
+				<source>filled in before publishing</source>
+			</trans-unit>
+			<trans-unit id="weg.zustand.unbekannt">
+				<source>unknown</source>
+			</trans-unit>
+			<trans-unit id="weg.naechster">
+				<source>Next step: %s</source>
+			</trans-unit>
+			<trans-unit id="weg.alles_erledigt">
+				<source>All steps are done.</source>
+			</trans-unit>
+			<trans-unit id="weg.befunde_bewerten">
+				<source>Findings that are not a defect, will not be fixed or would be a disproportionate burden are assessed in the service, where the screenshots are. These assessments shape the text of the statement.</source>
+			</trans-unit>
+			<trans-unit id="weg.befunde_bewerten.link">
+				<source>Assess findings in the service</source>
+			</trans-unit>
+			<trans-unit id="weg.zur_uebersicht">
+				<source>Back to all steps</source>
+			</trans-unit>
+			<trans-unit id="weg.im_dienst">
+				<source>Complete this step in the service</source>
+			</trans-unit>
+			<trans-unit id="weg.im_dienst_beheben">
+				<source>Fix this in the service</source>
+			</trans-unit>
+			<trans-unit id="weg.unbekannt">
+				<source>This version of the extension does not know this step yet. It can be completed in the service.</source>
+			</trans-unit>
+			<trans-unit id="weg.schritt.nicht_abrufbar">
+				<source>This step could not be retrieved</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefung.erledigt">
+				<source>The check the statement is based on has finished.</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefung.offen">
+				<source>A finished check is needed before the statement can be published. Start it in the overview with “Check now”.</source>
+			</trans-unit>
+			<trans-unit id="weg.domain.erledigt">
+				<source>The domain is confirmed.</source>
+			</trans-unit>
+			<trans-unit id="weg.domain.offen">
+				<source>The domain is not confirmed yet. The extension serves the proof itself; confirm the domain in the overview.</source>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.titel">
+				<source>This token may not prepare the statement</source>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.recht_fehlt">
+				<source>The form appears here once the token has the right to prepare and publish the statement. An administrator of the organisation grants it in the service, in the “Embedding” tab of the website. Until then, the steps can be completed in the service.</source>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.recht_erloschen">
+				<source>The right of this token has lapsed: the person who granted it may no longer publish. An administrator of the organisation has to grant it again in the service, in the “Embedding” tab of the website.</source>
+			</trans-unit>
+			<trans-unit id="weg.ohne_recht.konto_geschlossen">
+				<source>The account of the organisation in the service is closed. While it is closed, the statement cannot be prepared.</source>
+			</trans-unit>
+			<trans-unit id="weg.fehler.felder">
+				<source>Not saved. Please check the marked entries.</source>
+			</trans-unit>
+			<trans-unit id="weg.fehler.nicht_gespeichert">
+				<source>Not saved.</source>
+			</trans-unit>
+			<trans-unit id="weg.gespeichert">
+				<source>Saved.</source>
+			</trans-unit>
+			<trans-unit id="weg.gespeichert.weiter">
+				<source>Saved. Next step: %s</source>
+			</trans-unit>
+			<trans-unit id="weg.pflicht">
+				<source>(required)</source>
+			</trans-unit>
+			<trans-unit id="weg.speichern">
+				<source>Save</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.einleitung">
+				<source>No machine can fully assess these requirements. These are the questions that have to be answered before the statement can be published.</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.katalog">
+				<source>The service holds further questions, one for each success criterion. A criterion nobody has assessed is named as not assessed in the statement.</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.katalog.link">
+				<source>Answer the remaining questions in the service</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.keine">
+				<source>No question holds up publication.</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.kriterium">
+				<source>Success criterion %s</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.frage">
+				<source>Answer</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.veraltet.wort">
+				<source>answer again</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.veraltet">
+				<source>This check measured something that contradicts the answer from the previous check.</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.uebernommen">
+				<source>Taken over from the previous check.</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.speichern">
+				<source>Save answers</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.unveraendert">
+				<source>No answer was changed, so nothing was sent.</source>
+			</trans-unit>
+			<trans-unit id="weg.pruefschritte.ohne_lauf">
+				<source>Not saved: the form did not name the check. Open the step again from the list of steps.</source>
+			</trans-unit>
+			<trans-unit id="weg.stelle.name">
+				<source>Name of the declaring body</source>
+			</trans-unit>
+			<trans-unit id="weg.stelle.name.geerbt">
+				<source>Leave empty to use “%s”. This name appears in the published statement.</source>
+			</trans-unit>
+			<trans-unit id="weg.stelle.name.hilfe">
+				<source>This name appears in the published statement.</source>
+			</trans-unit>
+			<trans-unit id="weg.stelle.art">
+				<source>Type of body</source>
+			</trans-unit>
+			<trans-unit id="weg.stelle.land">
+				<source>Federal or state level</source>
+			</trans-unit>
+			<trans-unit id="weg.stelle.land.hilfe">
+				<source>Only for public bodies: does the body belong to the federal level or to a state? The law the statement refers to and the enforcement body depend on it.</source>
+			</trans-unit>
+			<trans-unit id="weg.stelle.land.waehlen">
+				<source>Please choose</source>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.nicht_gefragt">
+				<source>This question does not arise for this website.</source>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.nur_mit_diensten">
+				<source>Only if you ticked a service above</source>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.klein">
+				<source>Size of the business</source>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.ergebnis">
+				<source>Current result</source>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.beantwortet">
+				<source>Answered on %s.</source>
+			</trans-unit>
+			<trans-unit id="weg.betroffenheit.speichern">
+				<source>Save answer</source>
+			</trans-unit>
+			<trans-unit id="weg.angaben.einleitung">
+				<source>These details cannot be derived from a check; only you know them. They appear in the statement.</source>
+			</trans-unit>
+			<trans-unit id="weg.angaben.stelle">
+				<source>Competent enforcement body</source>
+			</trans-unit>
+			<trans-unit id="weg.angaben.stelle.hilfe">
+				<source>Pre-filled by the service for your jurisdiction; for public bodies according to the federal or state level. Please check.</source>
+			</trans-unit>
+			<trans-unit id="weg.angaben.speichern">
+				<source>Save details</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.contact">
+				<source>Contact for reporting barriers</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.contact.hilfe">
+				<source>An e-mail address, a phone number or a form where people can report barriers on this website.</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.alternatives">
+				<source>Accessible alternatives</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.alternatives.hilfe">
+				<source>How can people get content that is not accessible yet? For example by phone or as a document on request.</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.dgs_ls_url">
+				<source>Explanations in sign language and easy-to-read language</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.dgs_ls_url.hilfe">
+				<source>Address of the page with these explanations. They belong on your home page; the statement links to them.</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.service_description">
+				<source>Description of the service</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.service_description.hilfe">
+				<source>What do you offer, and what do people need to know to use it?</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.enforcement_body_name">
+				<source>Name of the body</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.enforcement_body_address">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="weg.angabe.enforcement_body_url">
+				<source>Website</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -1,0 +1,113 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    Übersicht des Wegs zur Erklärung: dieselben Schritte, dieselbe Reihenfolge und dieselben Wörter, wie der Dienst sie
+    liefert (path.steps). Die Reihenfolge ist Teil der Aussage, deshalb nummeriert; der Zustand steht als Wort im badge.
+    Der eine hervorgehobene Knopf nennt das echte Ziel des nächsten offenen Schritts, nie ein bloßes „Weiter“.
+</f:comment>
+<f:layout name="Module" />
+<f:section name="Content">
+    <f:if condition="{zustand} == 'keineSite'">
+        <f:then>
+            <h1>{modultitel}</h1>
+            <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung}" />
+            <p><f:translate key="keineSite" extensionName="Barrierepruefung" /></p>
+        </f:then>
+        <f:else>
+            <h1>{modultitel} – {siteName}</h1>
+            <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung}" />
+            <h2><f:translate key="weg.ueberschrift" extensionName="Barrierepruefung" /></h2>
+
+            <f:switch expression="{zustand}">
+                <f:case value="nichtVerbunden">
+                    <f:render partial="Befunde/Hinweis" arguments="{klasse: 'callout-info', symbol: 'actions-info', textSchluessel: 'weg.nicht_verbunden', uebersichtUri: uebersichtUri}" />
+                </f:case>
+                <f:case value="neuVerbinden">
+                    <f:render partial="Befunde/Hinweis" arguments="{klasse: 'callout-warning', symbol: 'actions-exclamation', textSchluessel: 'fehler.neu_verbinden', uebersichtUri: uebersichtUri}" />
+                </f:case>
+                <f:case value="fehler">
+                    <f:render partial="Befunde/Fehler" arguments="{titel: 'weg.fehler.titel', fehler: fehler}" />
+                </f:case>
+                <f:case value="keinLauf">
+                    <p><f:translate key="weg.kein_lauf" extensionName="Barrierepruefung" /></p>
+                    <p><a class="btn btn-default" href="{uebersichtUri}"><f:translate key="befunde.zur_uebersicht" extensionName="Barrierepruefung" /></a></p>
+                </f:case>
+                <f:defaultCase>
+                    <f:if condition="{recht.darf}"><f:else><f:render partial="Weg/OhneRecht" arguments="{stand: recht.stand}" /></f:else></f:if>
+
+                    <dl class="row">
+                        <f:if condition="{dokument.titel}">
+                            <dt class="col-sm-3"><f:translate key="weg.dokument" extensionName="Barrierepruefung" /></dt>
+                            <dd class="col-sm-9">
+                                {dokument.titel}
+                                <f:if condition="{dokument.erklaerung}"><p class="form-text mt-1 mb-0">{dokument.erklaerung}</p></f:if>
+                            </dd>
+                        </f:if>
+                        <f:if condition="{veroeffentlicht}">
+                            <dt class="col-sm-3"><f:translate key="weg.veroeffentlicht" extensionName="Barrierepruefung" /></dt>
+                            <dd class="col-sm-9">
+                                <f:if condition="{veroeffentlicht.veraltet}">
+                                    <f:then><span class="badge badge-warning"><f:translate key="erklaerung.veraltet" extensionName="Barrierepruefung" /></span></f:then>
+                                    <f:else><span class="badge badge-success"><f:translate key="erklaerung.veroeffentlicht" extensionName="Barrierepruefung" /></span></f:else>
+                                </f:if>
+                                <f:translate key="weg.fassung" arguments="{0: veroeffentlicht.fassung, 1: veroeffentlicht.am}" extensionName="Barrierepruefung" />
+                            </dd>
+                        </f:if>
+                        <dt class="col-sm-3"><f:translate key="weg.stand" extensionName="Barrierepruefung" /></dt>
+                        <dd class="col-sm-9"><f:translate key="weg.erledigt" arguments="{0: erledigt, 1: gesamt}" extensionName="Barrierepruefung" /></dd>
+                    </dl>
+
+                    <div class="table-fit">
+                        <table class="table table-striped" id="barrierepruefung-schritte">
+                            <caption class="visually-hidden"><f:translate key="weg.tabelle.beschriftung" extensionName="Barrierepruefung" /></caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col"><f:translate key="weg.spalte.nummer" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="weg.spalte.schritt" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="weg.spalte.zustand" extensionName="Barrierepruefung" /></th>
+                                    <th scope="col"><f:translate key="weg.spalte.offen" extensionName="Barrierepruefung" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <f:for each="{schritte}" as="schritt" iteration="i">
+                                    <tr>
+                                        <td>{i.cycle}</td>
+                                        <th scope="row"><a class="d-inline-block py-1 text-decoration-underline" href="{f:be.uri(route: 'barrierepruefung_weg', parameters: {site: site.identifier, schritt: schritt.schluessel})}">{schritt.titel}</a></th>
+                                        <td><span class="badge badge-{schritt.abzeichen}">{schritt.wort}</span></td>
+                                        <td>
+                                            <f:if condition="{schritt.gruende}">
+                                                <f:then>
+                                                    <ul class="mb-0 ps-3">
+                                                        <f:for each="{schritt.gruende}" as="grund"><li>{grund}</li></f:for>
+                                                    </ul>
+                                                </f:then>
+                                                <f:else><span aria-hidden="true">–</span><span class="visually-hidden"><f:translate key="weg.nichts_offen" extensionName="Barrierepruefung" /></span></f:else>
+                                            </f:if>
+                                        </td>
+                                    </tr>
+                                </f:for>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <f:if condition="{naechster}">
+                        <f:then>
+                            <p><a class="btn btn-primary" href="{f:be.uri(route: 'barrierepruefung_weg', parameters: {site: site.identifier, schritt: naechster.schluessel})}"><f:translate key="weg.naechster" arguments="{0: naechster.titel}" extensionName="Barrierepruefung" /></a></p>
+                        </f:then>
+                        <f:else>
+                            <p><f:translate key="weg.alles_erledigt" extensionName="Barrierepruefung" /></p>
+                        </f:else>
+                    </f:if>
+
+                    <f:comment>Kein Schritt und kein Blocker, prägt aber den Text: das Bewerten bleibt im Dienst, weil es die Belegbilder braucht.</f:comment>
+                    <f:if condition="{lauf.befunde}">
+                        <p class="form-text">
+                            <f:translate key="weg.befunde_bewerten" extensionName="Barrierepruefung" />
+                            <a class="d-inline-block py-1 text-decoration-underline" href="{lauf.befunde}"><f:translate key="weg.befunde_bewerten.link" extensionName="Barrierepruefung" /></a>
+                        </p>
+                    </f:if>
+                </f:defaultCase>
+            </f:switch>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

@@ -1,0 +1,55 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    Die Fragen, die die Veröffentlichung sperren (der Standard von /manual-checks); den ganzen Katalog gibt es im Dienst
+    (meta.web_url). Ein Formular für alle, der Dienst speichert alle oder keine. Antworten, Titel, Beschreibung und Beleg
+    kommen vom Dienst; mitgeschickt werden nur geänderte Fragen (vorher_* trägt den angezeigten Stand).
+</f:comment>
+<p><f:translate key="weg.pruefschritte.einleitung" extensionName="Barrierepruefung" /></p>
+<f:if condition="{formular.webUrl}">
+    <p class="form-text">
+        <f:translate key="weg.pruefschritte.katalog" extensionName="Barrierepruefung" />
+        <a class="d-inline-block py-1 text-decoration-underline" href="{formular.webUrl}"><f:translate key="weg.pruefschritte.katalog.link" extensionName="Barrierepruefung" /></a>
+    </p>
+</f:if>
+<f:if condition="{formular.fragen}">
+    <f:then>
+        <form method="post" action="{f:be.uri(route: 'barrierepruefung_weg.pruefschritte')}" id="barrierepruefung-pruefschritte" novalidate>
+            <input type="hidden" name="site" value="{site.identifier}">
+            <input type="hidden" name="scan" value="{lauf.id}">
+            <f:for each="{formular.fragen}" as="frage">
+                <div class="mb-4">
+                    <h3 id="{frage.titelId}">{frage.titel}</h3>
+                    <f:if condition="{frage.kriterien}"><p class="form-text mt-0"><f:translate key="weg.pruefschritte.kriterium" arguments="{0: frage.kriterien}" extensionName="Barrierepruefung" /></p></f:if>
+                    <f:if condition="{frage.beschreibung}"><p>{frage.beschreibung}</p></f:if>
+                    <f:if condition="{frage.beleg}"><p class="form-text">{frage.beleg}</p></f:if>
+                    <f:if condition="{frage.veraltet}">
+                        <f:then><p><span class="badge badge-warning"><f:translate key="weg.pruefschritte.veraltet.wort" extensionName="Barrierepruefung" /></span> <f:translate key="weg.pruefschritte.veraltet" extensionName="Barrierepruefung" /></p></f:then>
+                        <f:else><f:if condition="{frage.uebernommen}"><p class="form-text"><f:translate key="weg.pruefschritte.uebernommen" extensionName="Barrierepruefung" /></p></f:if></f:else>
+                    </f:if>
+                    <input type="hidden" name="checks[{frage.id}][vorher_antwort]" value="{frage.vorherAntwort}">
+                    <input type="hidden" name="checks[{frage.id}][vorher_notiz]" value="{frage.vorherNotiz}">
+                    <fieldset class="mb-3" id="{frage.antwortId}">
+                        <legend class="form-label fs-6"><f:translate key="weg.pruefschritte.frage" extensionName="Barrierepruefung" /><span class="visually-hidden">: {frage.titel}</span></legend>
+                        <f:for each="{frage.optionen}" as="option">
+                            <div class="form-check">
+                                <input class="form-check-input{f:if(condition: frage.antwortFehler, then: ' is-invalid')}" type="radio" name="checks[{frage.id}][answer]" id="{option.id}" value="{option.wert}"<f:if condition="{option.gewaehlt}"> checked</f:if><f:if condition="{frage.antwortFehler}"> aria-invalid="true" aria-describedby="{frage.antwortId}-fehler"</f:if><f:if condition="{option.fokus}"> autofocus</f:if>>
+                                <label class="form-check-label" for="{option.id}">{option.wort}</label>
+                            </div>
+                        </f:for>
+                        <f:if condition="{frage.antwortFehler}"><div class="invalid-feedback d-block" id="{frage.antwortId}-fehler">{frage.antwortFehler}</div></f:if>
+                    </fieldset>
+                    <div class="form-group">
+                        <label class="form-label" for="{frage.notiz.id}">{formular.notizHinweis}<span class="visually-hidden"> ({frage.titel})</span></label>
+                        <textarea class="form-control{f:if(condition: frage.notiz.fehler, then: ' is-invalid')}" id="{frage.notiz.id}" name="{frage.notiz.name}" rows="2"<f:if condition="{frage.notiz.beschrieben}"> aria-describedby="{frage.notiz.beschrieben}"</f:if><f:if condition="{frage.notiz.fehler}"> aria-invalid="true"</f:if><f:if condition="{frage.notiz.fokus}"> autofocus</f:if>>{frage.notiz.wert}</textarea>
+                        <f:if condition="{frage.notiz.fehler}"><div class="invalid-feedback d-block" id="{frage.notiz.id}-fehler">{frage.notiz.fehler}</div></f:if>
+                    </div>
+                </div>
+            </f:for>
+            <button type="submit" class="btn btn-primary"><f:translate key="weg.pruefschritte.speichern" extensionName="Barrierepruefung" /></button>
+        </form>
+    </f:then>
+    <f:else>
+        <p><f:translate key="weg.pruefschritte.keine" extensionName="Barrierepruefung" /></p>
+    </f:else>
+</f:if>
+</html>

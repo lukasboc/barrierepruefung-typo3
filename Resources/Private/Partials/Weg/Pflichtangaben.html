@@ -1,0 +1,21 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    Pflichtangaben aus draft.fields: nur, was für die Dokumentart gilt (applies), mit required, max und type vom Dienst.
+    Die Beschriftungen sind die der Extension (die API nennt keine); einen unbekannten Schlüssel zeigt sie, wie er heißt.
+</f:comment>
+<p><f:translate key="weg.angaben.einleitung" extensionName="Barrierepruefung" /></p>
+<form method="post" action="{f:be.uri(route: 'barrierepruefung_weg.angaben')}" id="barrierepruefung-angaben" class="row" novalidate>
+    <div class="col-lg-8">
+        <input type="hidden" name="site" value="{site.identifier}">
+        <f:for each="{formular.uebrige}" as="feld"><f:render partial="Weg/Feld" arguments="{feld: feld}" /></f:for>
+        <f:if condition="{formular.stelle}">
+            <fieldset class="mb-3" aria-describedby="bp-durchsetzung-hilfe">
+                <legend class="form-label fs-6"><f:translate key="weg.angaben.stelle" extensionName="Barrierepruefung" /></legend>
+                <div class="form-text mt-0 mb-2" id="bp-durchsetzung-hilfe"><f:translate key="weg.angaben.stelle.hilfe" extensionName="Barrierepruefung" /></div>
+                <f:for each="{formular.stelle}" as="feld"><f:render partial="Weg/Feld" arguments="{feld: feld}" /></f:for>
+            </fieldset>
+        </f:if>
+        <button type="submit" class="btn btn-primary"><f:translate key="weg.angaben.speichern" extensionName="Barrierepruefung" /></button>
+    </div>
+</form>
+</html>

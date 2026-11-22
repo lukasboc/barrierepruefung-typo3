@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Lubomedia\Barrierepruefung\Controller\BefundeController;
 use Lubomedia\Barrierepruefung\Controller\ErklaerungController;
 use Lubomedia\Barrierepruefung\Controller\UebersichtController;
+use Lubomedia\Barrierepruefung\Controller\WegController;
 
 /*
  * Hauptgruppe `site` („Site Management“): in 13.4 und 14.3 derselbe Schlüssel. Das Modul selbst hat keine Route;
@@ -98,6 +99,39 @@ return [
             ],
             'abgleichen' => [
                 'target' => ErklaerungController::class . '::abgleichen',
+                'methods' => ['POST'],
+            ],
+        ],
+    ],
+    'barrierepruefung_weg' => [
+        'parent' => 'barrierepruefung',
+        'access' => 'user',
+        'workspaces' => 'live',
+        'path' => '/module/barrierepruefung/weg',
+        'iconIdentifier' => 'barrierepruefung-modul',
+        'labels' => [
+            'title' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:weg.title',
+            'description' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:weg.description',
+            'shortDescription' => 'LLL:EXT:barrierepruefung/Resources/Private/Language/locallang_mod.xlf:weg.shortDescription',
+        ],
+        'routes' => [
+            '_default' => [
+                'target' => WegController::class . '::index',
+            ],
+            'pruefschritte' => [
+                'target' => WegController::class . '::pruefschritte',
+                'methods' => ['POST'],
+            ],
+            'stelle' => [
+                'target' => WegController::class . '::stelle',
+                'methods' => ['POST'],
+            ],
+            'betroffenheit' => [
+                'target' => WegController::class . '::betroffenheit',
+                'methods' => ['POST'],
+            ],
+            'angaben' => [
+                'target' => WegController::class . '::angaben',
                 'methods' => ['POST'],
             ],
         ],

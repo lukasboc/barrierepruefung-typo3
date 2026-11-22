@@ -1,0 +1,79 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    Ein Schritt: der Weg zurück, Titel, Zustand als Wort und die Gründe des Dienstes, darunter das Formular – oder, ohne
+    Schreibrecht, der Satz mit dem Weg zum Recht. Solange der Schritt offen ist, steht auch der Weg in den Dienst da: der
+    Dienst kann einem bekannten Schritt einen Grund geben, für den es hier kein Feld gibt.
+</f:comment>
+<f:layout name="Module" />
+<f:section name="Content">
+    <f:if condition="{fehlerliste}"><f:be.pageRenderer includeJavaScriptModules="{0: '@lubomedia/barrierepruefung/formular-fokus.js'}" /></f:if>
+    <h1>{modultitel} – {siteName}</h1>
+    <p><a class="d-inline-block py-1 text-decoration-underline" href="{wegUri}"><f:translate key="weg.zur_uebersicht" extensionName="Barrierepruefung" /></a></p>
+    <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung, fehlerliste: fehlerliste}" />
+
+    <h2>{schritt.titel}</h2>
+    <dl class="row">
+        <dt class="col-sm-3"><f:translate key="weg.spalte.zustand" extensionName="Barrierepruefung" /></dt>
+        <dd class="col-sm-9"><span class="badge badge-{schritt.abzeichen}">{schritt.wort}</span></dd>
+        <f:if condition="{schritt.gruende}">
+            <dt class="col-sm-3"><f:translate key="weg.spalte.offen" extensionName="Barrierepruefung" /></dt>
+            <dd class="col-sm-9">
+                <ul class="mb-0 ps-3">
+                    <f:for each="{schritt.gruende}" as="grund"><li>{grund}</li></f:for>
+                </ul>
+            </dd>
+        </f:if>
+    </dl>
+
+    <f:switch expression="{ansicht}">
+        <f:case value="pruefung">
+            <f:if condition="{schritt.zustand} == 'erledigt'">
+                <f:then><p><f:translate key="weg.pruefung.erledigt" extensionName="Barrierepruefung" /></p></f:then>
+                <f:else>
+                    <p><f:translate key="weg.pruefung.offen" extensionName="Barrierepruefung" /></p>
+                    <p><a class="btn btn-default" href="{uebersichtUri}"><f:translate key="befunde.zur_uebersicht" extensionName="Barrierepruefung" /></a></p>
+                </f:else>
+            </f:if>
+            <f:if condition="{lauf.bericht}"><p><a class="d-inline-block py-1 text-decoration-underline" href="{lauf.bericht}"><f:translate key="letzte.bericht" extensionName="Barrierepruefung" /></a></p></f:if>
+        </f:case>
+        <f:case value="domain">
+            <f:if condition="{schritt.zustand} == 'erledigt'">
+                <f:then><p><f:translate key="weg.domain.erledigt" extensionName="Barrierepruefung" /></p></f:then>
+                <f:else>
+                    <p><f:translate key="weg.domain.offen" extensionName="Barrierepruefung" /></p>
+                    <p><a class="btn btn-default" href="{uebersichtUri}"><f:translate key="befunde.zur_uebersicht" extensionName="Barrierepruefung" /></a></p>
+                </f:else>
+            </f:if>
+        </f:case>
+        <f:case value="unbekannt">
+            <f:render partial="Weg/Unbekannt" arguments="{schritt: schritt}" />
+        </f:case>
+        <f:defaultCase>
+            <f:if condition="{recht.darf}">
+                <f:then>
+                    <f:if condition="{abruffehler}">
+                        <f:then><f:render partial="Befunde/Fehler" arguments="{titel: 'weg.schritt.nicht_abrufbar', fehler: abruffehler}" /></f:then>
+                        <f:else>
+                            <f:switch expression="{ansicht}">
+                                <f:case value="pruefschritte"><f:render partial="Weg/Pruefschritte" arguments="{formular: formular, site: site, lauf: lauf}" /></f:case>
+                                <f:case value="verantwortliche_stelle"><f:render partial="Weg/VerantwortlicheStelle" arguments="{formular: formular, site: site}" /></f:case>
+                                <f:case value="betroffenheit"><f:render partial="Weg/Betroffenheit" arguments="{formular: formular, site: site}" /></f:case>
+                                <f:defaultCase><f:render partial="Weg/Pflichtangaben" arguments="{formular: formular, site: site}" /></f:defaultCase>
+                            </f:switch>
+                        </f:else>
+                    </f:if>
+                </f:then>
+                <f:else><f:render partial="Weg/OhneRecht" arguments="{stand: recht.stand}" /></f:else>
+            </f:if>
+        </f:defaultCase>
+    </f:switch>
+
+    <f:if condition="{ansicht} != 'unbekannt'">
+        <f:if condition="{schritt.offen}">
+            <f:if condition="{schritt.webUrl}">
+                <p class="form-text"><a class="d-inline-block py-1 text-decoration-underline" href="{schritt.webUrl}"><f:translate key="weg.im_dienst" extensionName="Barrierepruefung" /></a></p>
+            </f:if>
+        </f:if>
+    </f:if>
+</f:section>
+</html>

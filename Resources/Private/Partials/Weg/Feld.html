@@ -1,0 +1,15 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    Ein Text- oder Adressfeld (mehrzeilig, wenn der Dienst mehr als 255 Zeichen erlaubt). Fehler über aria-invalid und
+    aria-describedby, autofocus nur am ersten fehlerhaften Feld der Seite (feld.fokus, im Controller bestimmt).
+</f:comment>
+<div class="form-group mb-3">
+    <label class="form-label" for="{feld.id}">{feld.beschriftung}<f:if condition="{feld.pflicht}"> <f:translate key="weg.pflicht" extensionName="Barrierepruefung" /></f:if></label>
+    <f:if condition="{feld.hinweis}"><div class="form-text mt-0 mb-1" id="{feld.id}-hilfe">{feld.hinweis}</div></f:if>
+    <f:if condition="{feld.art} == 'textarea'">
+        <f:then><textarea class="form-control{f:if(condition: feld.fehler, then: ' is-invalid')}" id="{feld.id}" name="{feld.name}" rows="3"<f:if condition="{feld.max}"> maxlength="{feld.max}"</f:if><f:if condition="{feld.pflicht}"> aria-required="true"</f:if><f:if condition="{feld.beschrieben}"> aria-describedby="{feld.beschrieben}"</f:if><f:if condition="{feld.fehler}"> aria-invalid="true"</f:if><f:if condition="{feld.fokus}"> autofocus</f:if>>{feld.wert}</textarea></f:then>
+        <f:else><input class="form-control{f:if(condition: feld.fehler, then: ' is-invalid')}" type="{feld.typ}" id="{feld.id}" name="{feld.name}" value="{feld.wert}" autocomplete="{feld.autocomplete}"<f:if condition="{feld.max}"> maxlength="{feld.max}"</f:if><f:if condition="{feld.pflicht}"> aria-required="true"</f:if><f:if condition="{feld.beschrieben}"> aria-describedby="{feld.beschrieben}"</f:if><f:if condition="{feld.fehler}"> aria-invalid="true"</f:if><f:if condition="{feld.fokus}"> autofocus</f:if>></f:else>
+    </f:if>
+    <f:if condition="{feld.fehler}"><div class="invalid-feedback d-block" id="{feld.id}-fehler">{feld.fehler}</div></f:if>
+</div>
+</html>

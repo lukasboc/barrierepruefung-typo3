@@ -39,6 +39,15 @@
 			<trans-unit id="erklaerung.shortDescription">
 				<source>Published statement</source>
 			</trans-unit>
+			<trans-unit id="weg.title">
+				<source>Way to the statement</source>
+			</trans-unit>
+			<trans-unit id="weg.description">
+				<source>The steps from the latest check to a published accessibility statement, with the forms the service asks for.</source>
+			</trans-unit>
+			<trans-unit id="weg.shortDescription">
+				<source>Steps to the statement</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -51,6 +51,18 @@
 				<source>Published statement</source>
 				<target>Veröffentlichte Erklärung</target>
 			</trans-unit>
+			<trans-unit id="weg.title">
+				<source>Way to the statement</source>
+				<target>Weg zur Erklärung</target>
+			</trans-unit>
+			<trans-unit id="weg.description">
+				<source>The steps from the latest check to a published accessibility statement, with the forms the service asks for.</source>
+				<target>Die Schritte von der letzten Prüfung bis zur veröffentlichten Erklärung, mit den Angaben, die der Dienst verlangt.</target>
+			</trans-unit>
+			<trans-unit id="weg.shortDescription">
+				<source>Steps to the statement</source>
+				<target>Schritte zur Erklärung</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -64,7 +64,7 @@ trait Modulaufrufe
 
     /**
      * @param array<string, string> $query
-     * @param array<string, string>|null $rumpf POST-Felder; null = GET
+     * @param array<string, mixed>|null $rumpf POST-Felder (verschachtelt wie $_POST); null = GET
      */
     private function aufrufen(string $route, array $query = [], ?array $rumpf = null): ResponseInterface
     {
@@ -105,7 +105,7 @@ trait Modulaufrufe
     }
 
     /**
-     * @param array<string, string>|null $rumpf
+     * @param array<string, mixed>|null $rumpf
      */
     private function anfrage(string $pfad, ?array $rumpf): ResponseInterface
     {

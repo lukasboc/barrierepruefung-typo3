@@ -1,5 +1,6 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
-<f:comment>Rückmeldung der letzten Aktion (PRG), einmal gezeigt. Fehler als role="alert", alles andere als role="status".</f:comment>
+<f:comment>Rückmeldung der letzten Aktion (PRG), einmal gezeigt. Fehler als role="alert", alles andere als role="status".
+    Optional fehlerliste: die Fehler je Feld, jeder mit Sprungmarke zu seinem Feld (wenn es das Feld auf der Seite gibt).</f:comment>
 <f:if condition="{rueckmeldung.text}">
     <div class="callout {rueckmeldung.klasse}" role="{rueckmeldung.rolle}">
         <div class="callout-icon">
@@ -8,6 +9,13 @@
         <div class="callout-content">
             <div class="callout-body">
                 <p>{rueckmeldung.text}</p>
+                <f:if condition="{fehlerliste}">
+                    <ul>
+                        <f:for each="{fehlerliste}" as="eintrag">
+                            <li><f:if condition="{eintrag.ziel}"><f:then><a class="text-decoration-underline" href="#{eintrag.ziel}">{eintrag.text}</a></f:then><f:else>{eintrag.text}</f:else></f:if></li>
+                        </f:for>
+                    </ul>
+                </f:if>
                 <f:if condition="{rueckmeldung.link}"><p><a class="text-decoration-underline" href="{rueckmeldung.link.uri}">{rueckmeldung.link.text}</a></p></f:if>
             </div>
         </div>
