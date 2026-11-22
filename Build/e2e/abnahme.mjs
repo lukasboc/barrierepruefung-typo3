@@ -15,7 +15,8 @@
 // wird geschlossen. Die Dienst-Website trägt als Adresse http://127.0.0.1:<Port der Instanz>.
 import { chromium } from 'playwright';
 import net from 'node:net';
-import { execFileSync } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
+import { promisify } from 'node:util';
 import { mkdirSync } from 'node:fs';
 import { anmelden, modulOeffnen, neuGeladen } from './hilfen.mjs';
 
@@ -47,7 +48,9 @@ const pruefe = (bedingung, satz) => {
   if (!bedingung) throw new Error(satz);
   console.log(`  ok ${satz}`);
 };
-const typo3 = (...befehl) => execFileSync(`${LOKAL}lokal.sh`, ['typo3', inst.fassung, ...befehl], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+// Asynchron, nicht execFileSync: der Durchreicher läuft in diesem Prozess, und ein blockierter Ereignisfluss ließe den
+// Befehl in der Instanz ins Leere fragen (Zeitlimit 3 s, Rückfall).
+const typo3 = async (...befehl) => (await promisify(execFile)(`${LOKAL}lokal.sh`, ['typo3', inst.fassung, ...befehl], { encoding: 'utf8' })).stdout;
 const sql = (abfrage) => {
   const php = '$p=new PDO("sqlite:".(require "config/system/settings.php")["DB"]["Connections"]["Default"]["path"]);$p->exec($argv[1]);';
   execFileSync('docker', ['compose', 'exec', '-T', `v${inst.fassung}`, 'php', '-r', php, '--', abfrage], { cwd: LOKAL, encoding: 'utf8' });
@@ -134,8 +137,8 @@ try {
   const fassung = erklaerung.daten.declaration.version;
   sql(`DELETE FROM tt_content WHERE pid=${inst.seite} AND CType='barrierepruefung_erklaerung'`);
   sql(`INSERT INTO tt_content (pid, colPos, CType, sys_language_uid, tx_barrierepruefung_teil, tx_barrierepruefung_ueberschrift, tx_barrierepruefung_stand, tstamp, crdate) VALUES (${inst.seite}, 0, 'barrierepruefung_erklaerung', 0, 'komplett', 2, 1, strftime('%s','now'), strftime('%s','now'))`);
-  console.log(`     ${typo3('barrierepruefung:aktualisieren').trim()}`);
-  typo3('cache:flush');
+  console.log(`     ${(await typo3('barrierepruefung:aktualisieren')).trim().replace(/\n/g, ' | ')}`);
+  await typo3('cache:flush');
   const lesen = async () => {
     const seite = await kontext.newPage();
     const antwort = await seite.goto(`${inst.echt}/barrierefreiheit`);
@@ -156,8 +159,8 @@ try {
 
   // --- Rückfall: Dienst für die Instanz nicht erreichbar ---
   await schliesseDurchreicher();
-  console.log(`     ${typo3('barrierepruefung:aktualisieren').trim()}`);
-  typo3('cache:flush');
+  console.log(`     ${(await typo3('barrierepruefung:aktualisieren')).trim().replace(/\n/g, ' | ')}`);
+  await typo3('cache:flush');
   const ausfall = await lesen();
   pruefe(ausfall.status === 200 && ausfall.element !== null, 'Dienst nicht erreichbar: Seite antwortet 200 und zeigt weiter die Erklärung');
   pruefe(ausfall.element.text === frisch.element.text && ausfall.element.stand === frisch.element.stand, 'Dienst nicht erreichbar: derselbe Text, dasselbe Datum wie vorher');
