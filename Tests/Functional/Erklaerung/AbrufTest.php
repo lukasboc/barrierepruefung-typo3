@@ -342,6 +342,31 @@ final class AbrufTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function reihenfolgeVonErfolgUndFehlerInDerselbenSekundeStehtImEintrag(): void
+    {
+        $jetzt = 1_763_110_800;
+        $basis = ['erklaerung' => self::erklaerung(), 'etag' => '"e"', 'abgerufen_am' => $jetzt, 'letzter_fehler' => 'Wartung', 'letzter_fehler_am' => $jetzt, 'letzter_status' => 503];
+
+        $this->get(Registry::class)->set(Abruf::REGISTRY, 'fassung_S1', $basis + ['rueckfall' => true]);
+        self::assertSame(Fassung::RUECKFALL, $this->abruf()->stand('S1')->zustand, 'Fehler nach dem Erfolg, gleiche Sekunde: Rückfall');
+
+        $this->get(Registry::class)->set(Abruf::REGISTRY, 'fassung_S1', $basis + ['rueckfall' => false]);
+        self::assertSame(Fassung::AKTUELL, $this->abruf()->stand('S1')->zustand, 'Erfolg nach dem Fehler, gleiche Sekunde: aktuell');
+    }
+
+    #[Test]
+    public function schreibtDieReihenfolgeBeiErfolgUndFehler(): void
+    {
+        $this->antworten = [new Response(503, ['Content-Type' => 'application/problem+json'], '{"status":503,"detail":"Wartung"}')];
+        $this->abruf()->auffrischen($this->verbindung());
+        self::assertTrue($this->registry()['rueckfall'] ?? null);
+
+        $this->antworten = [self::ok(self::erklaerung())];
+        $this->abruf()->auffrischen($this->verbindung());
+        self::assertFalse($this->registry()['rueckfall'] ?? null);
+    }
+
+    #[Test]
     public function registryOhneStatusLiestSichAlsNull(): void
     {
         $this->get(Registry::class)->set(Abruf::REGISTRY, 'fassung_S1', ['erklaerung' => self::erklaerung(), 'etag' => '"e"', 'abgerufen_am' => 1_763_110_800, 'letzter_fehler' => 'alt', 'letzter_fehler_am' => 1_763_111_000]);

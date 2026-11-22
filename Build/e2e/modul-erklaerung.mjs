@@ -112,7 +112,7 @@ for (const inst of instanzen) {
 
     // --- Ausfall des Dienstes: der Befehl merkt ihn, das Modul zeigt die letzte gute Fassung und den Grund ---
     await attrappe('ausfall', { an: true });
-    console.log('  Befehl: ' + abgleichen(inst).split('\n').pop());
+    console.log('  Befehl: ' + abgleichen(inst).split('\n').join(' | '));
     frame = await modulOeffnen(page, inst.basis, MODUL);
     const warnungen = await frame.locator('.callout-warning').allInnerTexts();
     pruefe(warnungen.length === 1 && /Zuletzt erreichbar am|Last reachable on/.test(warnungen[0]), 'Ausfall: „Zuletzt erreichbar am …“' + (warnungen.length === 1 && /Zuletzt erreichbar am|Last reachable on/.test(warnungen[0]) ? '' : ` – gefunden: ${JSON.stringify(warnungen)}`));
@@ -129,7 +129,7 @@ for (const inst of instanzen) {
 
     // --- Im Dienst ist nichts (mehr) veröffentlicht: 404 ---
     await attrappe('unveroeffentlicht', { an: true });
-    console.log('  Befehl: ' + abgleichen(inst).split('\n').pop());
+    console.log('  Befehl: ' + abgleichen(inst).split('\n').join(' | '));
     frame = await modulOeffnen(page, inst.basis, MODUL);
     const text404 = await frame.locator('.callout-info').innerText();
     pruefe(/Im Dienst ist derzeit keine Erklärung veröffentlicht|No statement is currently published/.test(text404), '404: „Im Dienst ist derzeit keine Erklärung veröffentlicht.“');

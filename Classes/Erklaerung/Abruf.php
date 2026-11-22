@@ -71,7 +71,9 @@ final class Abruf
 
         if ($erklaerung === null) {
             $zustand = Fassung::KEINE;
-        } elseif ($fehlerAm !== null && ($abgerufen === null || $fehlerAm > $abgerufen)) {
+        } elseif (is_bool($gespeichert['rueckfall'] ?? null) ? $gespeichert['rueckfall'] : ($fehlerAm !== null && ($abgerufen === null || $fehlerAm > $abgerufen))) {
+            // Die Reihenfolge steht ausdrücklich im Eintrag: ein Fehler in derselben Sekunde wie der letzte Erfolg
+            // ließe sich an den Zeitstempeln nicht mehr von „danach geheilt“ unterscheiden (Eintrag ohne `rueckfall`: Vergleich).
             $zustand = Fassung::RUECKFALL;
         } else {
             $zustand = Fassung::AKTUELL;
@@ -99,6 +101,7 @@ final class Abruf
 
         if ($antwort->status === 304 && $vorher !== null) {
             $gespeichert['abgerufen_am'] = $jetzt;
+            $gespeichert['rueckfall'] = false;
             $this->registry->set(self::REGISTRY, $this->registrySchluessel($v->siteId), $gespeichert);
 
             return $this->merken($v->siteId, new Fassung($vorher, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null), null, false, self::zahl($gespeichert['letzter_status'] ?? null)), $this->lebensdauer($antwort));
@@ -123,6 +126,7 @@ final class Abruf
             'letzter_fehler' => self::text($gespeichert['letzter_fehler'] ?? null),
             'letzter_fehler_am' => self::zahl($gespeichert['letzter_fehler_am'] ?? null),
             'letzter_status' => self::zahl($gespeichert['letzter_status'] ?? null),
+            'rueckfall' => false,
         ]);
 
         $fassung = new Fassung($neu, Fassung::AKTUELL, $jetzt, self::zahl($gespeichert['letzter_fehler_am'] ?? null), self::text($gespeichert['letzter_fehler'] ?? null), null, $geaendert, self::zahl($gespeichert['letzter_status'] ?? null));
@@ -139,6 +143,7 @@ final class Abruf
         $gespeichert['letzter_fehler'] = $fehler;
         $gespeichert['letzter_status'] = $status;
         $gespeichert['letzter_fehler_am'] = $jetzt;
+        $gespeichert['rueckfall'] = true;
         $this->registry->set(self::REGISTRY, $this->registrySchluessel($siteId), $gespeichert);
 
         $erklaerung = $this->erklaerungAus($gespeichert);
