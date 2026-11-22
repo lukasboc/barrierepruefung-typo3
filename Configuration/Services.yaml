@@ -32,3 +32,7 @@ services:
 
   Lubomedia\Barrierepruefung\Erklaerung\Abruf:
     public: true
+
+  # Öffentlich: TypoScript nennt den Processor beim Klassennamen, und der Kern sucht ihn im Container.
+  Lubomedia\Barrierepruefung\DataProcessing\ErklaerungProcessor:
+    public: true

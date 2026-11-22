@@ -395,6 +395,10 @@
 				<source>,</source>
 				<target>.</target>
 			</trans-unit>
+			<trans-unit id="inhalt.nicht_verfuegbar">
+				<source>The accessibility statement cannot be shown at the moment. Please try again later.</source>
+				<target>Die Erklärung zur Barrierefreiheit kann gerade nicht angezeigt werden. Bitte versuchen Sie es später noch einmal.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
