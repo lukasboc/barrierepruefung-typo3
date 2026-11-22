@@ -26,30 +26,45 @@ final class SeiteAnlegen
      */
     public function anlegen(Site $s): int
     {
-        $titel = $this->titel($s);
-        $daten = [
-            'pages' => ['NEW_seite' => ['pid' => $s->getRootPageId(), 'title' => $titel, 'doktype' => 1, 'hidden' => 1]],
-            'tt_content' => ['NEW_element' => ['pid' => 'NEW_seite', 'CType' => Fundorte::CTYPE, 'colPos' => 0, 'sys_language_uid' => 0]],
-        ];
+        // Zwei Läufe statt eines: Scheitert das Anlegen der Seite (kein Recht), löst der DataHandler 13.4 die Seite
+        // „NEW…“ für das Element nicht auf und meldet dafür eine PHP-Warnung. So kennt der zweite Lauf die echte uid.
+        $seite = $this->lauf(['pages' => ['NEW_seite' => ['pid' => $s->getRootPageId(), 'title' => $this->titel($s), 'doktype' => 1, 'hidden' => 1]]], 'NEW_seite');
+        try {
+            $this->lauf(['tt_content' => ['NEW_element' => ['pid' => $seite, 'CType' => Fundorte::CTYPE, 'colPos' => 0, 'sys_language_uid' => 0]]], 'NEW_element');
+        } catch (SeiteNichtAngelegt $e) {
+            // Keine leere Seite zurücklassen; gelingt auch das nicht, steht sie verborgen da und die Rückmeldung bleibt ein Fehler.
+            $aufraeumen = GeneralUtility::makeInstance(DataHandler::class);
+            $aufraeumen->start([], ['pages' => [$seite => ['delete' => 1]]]);
+            $aufraeumen->process_cmdmap();
 
-        $dh = GeneralUtility::makeInstance(DataHandler::class);
-        $dh->start($daten, []);
-        $dh->process_datamap();
-
-        $seite = $dh->substNEWwithIDs['NEW_seite'] ?? null;
-        $element = $dh->substNEWwithIDs['NEW_element'] ?? null;
-        if ($dh->errorLog !== [] || !is_int($seite) || !is_int($element)) {
-            file_put_contents('/private/tmp/claude-501/-Users-lukas-PhpstormProjects-web-accessibility-checker-web-accessibility-checker/da43beff-f97b-4301-b6a9-52fedab03c53/scratchpad/dh.log', json_encode([$dh->errorLog, $dh->substNEWwithIDs]));
-            throw new SeiteNichtAngelegt('Der DataHandler hat die Seite nicht angelegt: ' . implode(' | ', $dh->errorLog), 1763800301);
+            throw $e;
         }
 
         return $seite;
     }
 
+    /**
+     * @param array<string, array<string, array<string, mixed>>> $daten
+     */
+    private function lauf(array $daten, string $platzhalter): int
+    {
+        $dh = GeneralUtility::makeInstance(DataHandler::class);
+        $dh->start($daten, []);
+        $dh->process_datamap();
+
+        $uid = $dh->substNEWwithIDs[$platzhalter] ?? null;
+        if ($dh->errorLog !== [] || !is_int($uid)) {
+            throw new SeiteNichtAngelegt('Der DataHandler hat die Seite nicht angelegt: ' . implode(' | ', $dh->errorLog), 1763800301);
+        }
+
+        return $uid;
+    }
+
     /** Der Titel in der Standardsprache der Site, nicht in der Sprache der Backend-Person: die Seite gehört der Website. */
     public function titel(Site $s): string
     {
-        $titel = $this->sprachen->create($s->getDefaultLanguage()->getLocale())->sL(Modulrahmen::SPRACHDATEI . 'seite.titel');
+        // Nur der Sprachcode: 13.4 findet die Übersetzung unter „de-DE“ nicht (die Datei heißt `de.locallang.xlf`), 14.3 schon.
+        $titel = $this->sprachen->create($s->getDefaultLanguage()->getLocale()->getLanguageCode())->sL(Modulrahmen::SPRACHDATEI . 'seite.titel');
 
         return $titel !== '' ? $titel : 'Accessibility statement';
     }

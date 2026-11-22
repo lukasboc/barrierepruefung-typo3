@@ -11,7 +11,7 @@ const port = Number(process.argv[2] ?? process.env.STUB_PORT ?? 8091);
 const laden = (name) => JSON.parse(readFileSync(join(verzeichnis, `${name}.json`), 'utf8'));
 const ohneHinweis = (o) => { const { _von_hand, ...rest } = o; return rest; };
 
-const zustand = { ausfall: false, version: null, unbestaetigt: false, anfragen: [] };
+const zustand = { ausfall: false, version: null, unbestaetigt: false, unveroeffentlicht: false, anfragen: [] };
 
 const routen = [
   ['GET', /^\/sites\/[^/]+$/, 'site'],
@@ -84,9 +84,10 @@ createServer(async (req, res) => {
     try { daten = text ? JSON.parse(text) : {}; } catch { return senden(res, 400, { fehler: 'kein JSON' }); }
     if (aktion === 'ausfall' && req.method === 'POST') { zustand.ausfall = Boolean(daten.an); return senden(res, 200, { ausfall: zustand.ausfall }); }
     if (aktion === 'unbestaetigt' && req.method === 'POST') { zustand.unbestaetigt = Boolean(daten.an); return senden(res, 200, { unbestaetigt: zustand.unbestaetigt }); }
+    if (aktion === 'unveroeffentlicht' && req.method === 'POST') { zustand.unveroeffentlicht = Boolean(daten.an); return senden(res, 200, { unveroeffentlicht: zustand.unveroeffentlicht }); }
     if (aktion === 'fassung' && req.method === 'POST') { zustand.version = Number(daten.version); return senden(res, 200, { version: zustand.version }); }
     if (aktion === 'anfragen' && req.method === 'GET') return senden(res, 200, zustand.anfragen);
-    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.unbestaetigt = false; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
+    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.unbestaetigt = false; zustand.unveroeffentlicht = false; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
     return senden(res, 404, { fehler: 'unbekannt' });
   }
 
@@ -98,6 +99,9 @@ createServer(async (req, res) => {
   const pfad = url.pathname.slice('/api/v1'.length);
   const treffer = routen.find(([m, muster]) => m === req.method && muster.test(pfad));
   if (!treffer) return senden(res, 404, { title: 'Nicht gefunden', status: 404 }, { 'Content-Type': 'application/problem+json' });
+
+  // Noch nichts veröffentlicht (Schalter /__stub/unveroeffentlicht): die Erklärung gibt es nicht, der Rest antwortet wie sonst.
+  if (zustand.unveroeffentlicht && treffer[2] === 'declaration') return senden(res, 404, { title: 'Keine veröffentlichte Erklärung', status: 404, detail: 'Für diese Website ist keine Erklärung veröffentlicht.', reason: 'keine_erklaerung' }, { 'Content-Type': 'application/problem+json' });
 
   const body = antwort(treffer[2], pfad);
   if (treffer[2] === 'findings-regel') blaettern(body, url);
