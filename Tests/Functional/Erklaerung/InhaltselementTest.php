@@ -199,6 +199,20 @@ final class InhaltselementTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function sitepackageOhneLayoutDefaultBrichtDieSeiteNichtAb(): void
+    {
+        // Wie Camino: eigene Layout-Pfade, darin kein „Default“. Der Rückfall auf fluid_styled_content greift.
+        $this->verbinden();
+        $this->element();
+        $this->addTypoScriptToTemplateRecord(1, 'lib.contentElement.layoutRootPaths >' . LF . 'lib.contentElement.layoutRootPaths.10 = EXT:barrierepruefung/Resources/Private/Templates/');
+
+        $html = $this->seite();
+
+        self::assertStringContainsString('id="c10"', $html);
+        self::assertStringContainsString('<div class="a11y-erklaerung">', $html);
+    }
+
+    #[Test]
     public function standZeileMitTime(): void
     {
         $this->verbinden();

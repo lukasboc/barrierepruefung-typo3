@@ -1,8 +1,20 @@
 # Inhaltselement „Erklärung zur Barrierefreiheit“ (CType barrierepruefung_erklaerung).
-# Rahmen und Abstände kommen vom Sitepackage (Layout „Default“), der Inhalt ist reines HTML ohne Gestaltung.
+# Rahmen und Abstände kommen vom Sitepackage, der Inhalt ist reines HTML ohne Gestaltung.
 tt_content.barrierepruefung_erklaerung =< lib.contentElement
 tt_content.barrierepruefung_erklaerung {
     templateName = Erklaerung
     templateRootPaths.200 = EXT:barrierepruefung/Resources/Private/Templates/Inhalt/
+    # Rückfall mit der niedrigsten Priorität: ein Sitepackage ohne eigenes Layout „Default“ bekommt den Rahmen von
+    # fluid_styled_content, statt dass das Element die Seite abbricht. Ein eigenes „Default“ (Index 0 oder höher) gewinnt.
+    layoutRootPaths.-10 = EXT:fluid_styled_content/Resources/Private/Layouts/
+    partialRootPaths.-10 = EXT:fluid_styled_content/Resources/Private/Partials/
+    # Name des Rahmen-Layouts; ein Sitepackage mit anderem Namen setzt ihn hier.
+    variables.rahmen = TEXT
+    variables.rahmen.value = Default
     dataProcessing.10 = Lubomedia\Barrierepruefung\DataProcessing\ErklaerungProcessor
 }
+
+# Camino, das Standard-Sitepackage von 14.3, führt seinen Rahmen (Container, Abstände) als „Content/Default“.
+[traverse(site("configuration"), "dependencies") && "typo3/theme-camino" in traverse(site("configuration"), "dependencies")]
+    tt_content.barrierepruefung_erklaerung.variables.rahmen.value = Content/Default
+[END]
