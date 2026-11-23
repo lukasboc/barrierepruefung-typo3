@@ -12,6 +12,7 @@ use Lubomedia\Barrierepruefung\Verbindung\Verbindungen;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\SiteWriter;
@@ -443,6 +444,40 @@ final class FreigabeTest extends FunctionalTestCase
         $this->attrappe($antworten);
 
         self::assertNotSame($schluessel, $this->schluessel($this->html($this->folgen($antwort))));
+    }
+
+    #[Test]
+    public function offenerAusgangBleibtBeiSeinerSite(): void
+    {
+        // Zweite Site, mit dem Dienst verbunden; ihr Entwurf hat dieselbe Kennung und dieselbe nächste Fassung.
+        $this->get(SiteWriter::class)->write('b', [
+            'rootPageId' => 2,
+            'base' => 'https://gemeinde-b.de/',
+            'websiteTitle' => 'Gemeinde B',
+            'languages' => [['languageId' => 0, 'title' => 'Deutsch', 'locale' => 'de_DE.UTF-8', 'base' => '/']],
+        ]);
+        $this->verbinde();
+        $this->get(Verbindungen::class)->speichern(new Verbindung('b', '01SITEB', self::DIENST, Tresor::ausInstallation()->verschluesseln('tok-b'), $this->token('erlaubt'), 'meta-b', 'datei-b', 1762128000));
+        $antworten = $this->dienst();
+        foreach ($this->dienst() as $schluessel => $antwort) {
+            $antworten[str_replace('01SITEA', '01SITEB', $schluessel)] = $antwort;
+        }
+        $antworten['POST ' . self::API . 'sites/01SITEA/declaration/publish'] = $this->zeitueberlauf();
+        $this->attrappe($antworten);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::FREIGABE, ['site' => 'a']));
+        $schluessel = $this->schluessel($html);
+        $antwort = $this->formularAbsenden($html, 'barrierepruefung-freigabe');
+        self::assertStringContainsString('freigabe', $antwort->getHeaderLine('Location'), 'Ausgang offen');
+
+        // Statt der Freigabe von A öffnet die Person die von B: die gemerkte Rückmeldung wird dort gelesen. (Direkt über
+        // anfrage(): aufrufen() speichert die Sitzung des Testprozesses und löschte die Rückmeldung.)
+        $b = $this->html($this->anfrage((string)$this->get(UriBuilder::class)->buildUriFromRoute(self::FREIGABE, ['site' => 'b']), null));
+        self::assertCount(1, $this->suche($b, '//*[@role="alert"][contains(.,"ist deshalb offen")]'), 'die Rückmeldung von A kommt auf B an');
+        self::assertStringContainsString('Gemeinde B', $this->text($this->inhalt($b)));
+        self::assertSame(self::ETAG, $this->suche($b, '//input[@name="draft_etag"]')[0]->getAttribute('value'), 'gleiche Kennung wie bei A');
+        self::assertNotSame($schluessel, $this->schluessel($b), 'B bekommt nie den Schlüssel von A');
     }
 
     #[Test]

@@ -416,7 +416,7 @@ final class WegController
             'dokument' => is_string($dokument['title'] ?? null) ? $dokument['title'] : '',
             'formular' => $formular,
             'mitFormular' => $mitFormular,
-            'schluessel' => $mitFormular ? self::schluesselFuer($werte, $formular) : '',
+            'schluessel' => $mitFormular ? self::schluesselFuer($werte, $formular, $kennung) : '',
             'bereit' => $bereit,
             'wegBekannt' => $weg->ok(),
             'naechster' => $naechster,
@@ -509,7 +509,8 @@ final class WegController
                 'fehler',
                 trim($this->anzeige->t('weg.freigabe.unklar', (string)$fassung) . ' ' . $fehler['detail']),
                 [],
-                $werte + ['idempotency_key' => $schluessel, 'draft_etag' => $kennung, 'expected_version' => (string)$fassung],
+                // Die Rückmeldung gilt für die ganze Sitzung; der Schlüssel gehört zu genau dieser Site.
+                $werte + ['idempotency_key' => $schluessel, 'draft_etag' => $kennung, 'expected_version' => (string)$fassung, 'site' => $site->getIdentifier()],
             );
 
             return $this->zurFreigabe($site);
@@ -559,16 +560,21 @@ final class WegController
     }
 
     /**
-     * Der Schlüssel der Anzeige: derselbe wie beim letzten Versuch, wenn dessen Ausgang offen blieb und Entwurf und
-     * Fassung noch dieselben sind – sonst ein neuer. Ein neuer Entwurf ist eine neue Entscheidung und bekommt einen neuen.
+     * Der Schlüssel der Anzeige: derselbe wie beim letzten Versuch, wenn dessen Ausgang offen blieb und Site, Entwurf
+     * und Fassung noch dieselben sind – sonst ein neuer. Ein neuer Entwurf ist eine neue Entscheidung und bekommt einen
+     * neuen; eine andere Site nie den Schlüssel einer anderen (die Rückmeldung gilt für die ganze Sitzung).
      *
      * @param array<string, string> $werte   aus der Rückmeldung
      * @param array<string, mixed>  $formular
      */
-    private static function schluesselFuer(array $werte, array $formular): string
+    private static function schluesselFuer(array $werte, array $formular, string $site): string
     {
         $alt = $werte['idempotency_key'] ?? '';
-        if (preg_match(self::UUID, $alt) === 1 && ($werte['draft_etag'] ?? null) === $formular['etag'] && ($werte['expected_version'] ?? null) === (string)$formular['fassung']) {
+        if (preg_match(self::UUID, $alt) === 1
+            && ($werte['site'] ?? null) === $site
+            && ($werte['draft_etag'] ?? null) === $formular['etag']
+            && ($werte['expected_version'] ?? null) === (string)$formular['fassung']
+        ) {
             return $alt;
         }
 
