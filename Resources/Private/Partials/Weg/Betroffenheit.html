@@ -16,8 +16,10 @@
                     <f:for each="{formular.dienste.optionen}" as="option">
                         <div class="form-check mb-2">
                             <input class="form-check-input{f:if(condition: formular.dienste.fehler, then: ' is-invalid')}" type="checkbox" name="services[]" id="{option.id}" value="{option.wert}"<f:if condition="{option.gewaehlt}"> checked</f:if><f:if condition="{option.beschrieben}"> aria-describedby="{option.beschrieben}"</f:if><f:if condition="{formular.dienste.fehler}"> aria-invalid="true"</f:if><f:if condition="{option.fokus}"> autofocus</f:if>>
-                            <label class="form-check-label" for="{option.id}">{option.beschriftung}</label>
-                            <f:if condition="{option.fundstelle}"><div class="form-text mt-0" id="{option.id}-fundstelle">{option.fundstelle}</div></f:if>
+                            <div>
+                                <label class="form-check-label" for="{option.id}">{option.beschriftung}</label>
+                                <f:if condition="{option.fundstelle}"><div class="form-text mt-0" id="{option.id}-fundstelle">{option.fundstelle}</div></f:if>
+                            </div>
                         </div>
                     </f:for>
                     <f:if condition="{formular.dienste.fehler}"><div class="invalid-feedback d-block" id="{formular.dienste.id}-fehler">{formular.dienste.fehler}</div></f:if>
@@ -28,8 +30,10 @@
                         <legend class="form-label fs-6"><f:if condition="{formular.klein.nurMitDiensten}"><f:then><f:translate key="weg.betroffenheit.nur_mit_diensten" extensionName="Barrierepruefung" /></f:then><f:else><f:translate key="weg.betroffenheit.klein" extensionName="Barrierepruefung" /></f:else></f:if></legend>
                         <div class="form-check">
                             <input class="form-check-input{f:if(condition: formular.klein.fehler, then: ' is-invalid')}" type="checkbox" name="micro_enterprise" value="1" id="{formular.klein.id}"<f:if condition="{formular.klein.gewaehlt}"> checked</f:if><f:if condition="{formular.klein.beschrieben}"> aria-describedby="{formular.klein.beschrieben}"</f:if><f:if condition="{formular.klein.fehler}"> aria-invalid="true"</f:if><f:if condition="{formular.klein.fokus}"> autofocus</f:if>>
-                            <label class="form-check-label" for="{formular.klein.id}">{formular.klein.frage}</label>
-                            <f:if condition="{formular.klein.hinweis}"><div class="form-text mt-0" id="{formular.klein.id}-hilfe">{formular.klein.hinweis}</div></f:if>
+                            <div>
+                                <label class="form-check-label" for="{formular.klein.id}">{formular.klein.frage}</label>
+                                <f:if condition="{formular.klein.hinweis}"><div class="form-text mt-0" id="{formular.klein.id}-hilfe">{formular.klein.hinweis}</div></f:if>
+                            </div>
                         </div>
                         <f:if condition="{formular.klein.fehler}"><div class="invalid-feedback d-block" id="{formular.klein.id}-fehler">{formular.klein.fehler}</div></f:if>
                     </fieldset>

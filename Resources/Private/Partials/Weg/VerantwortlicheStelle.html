@@ -15,8 +15,10 @@
             <f:for each="{formular.art.optionen}" as="option">
                 <div class="form-check mb-2">
                     <input class="form-check-input{f:if(condition: formular.art.fehler, then: ' is-invalid')}" type="radio" name="applies_to" id="{option.id}" value="{option.wert}"<f:if condition="{option.gewaehlt}"> checked</f:if> aria-describedby="{option.beschrieben}"<f:if condition="{formular.art.fehler}"> aria-invalid="true"</f:if><f:if condition="{option.fokus}"> autofocus</f:if>>
-                    <label class="form-check-label" for="{option.id}">{option.beschriftung}</label>
-                    <div class="form-text mt-0" id="{option.id}-erlaeuterung">{option.erlaeuterung}</div>
+                    <div>
+                        <label class="form-check-label" for="{option.id}">{option.beschriftung}</label>
+                        <div class="form-text mt-0" id="{option.id}-erlaeuterung">{option.erlaeuterung}</div>
+                    </div>
                 </div>
             </f:for>
             <f:if condition="{formular.art.fehler}"><div class="invalid-feedback d-block" id="{formular.art.id}-fehler">{formular.art.fehler}</div></f:if>
