@@ -352,6 +352,99 @@ final class FreigabeTest extends FunctionalTestCase
         self::assertStringContainsString('nur einmal', $meldung[0]->textContent);
     }
 
+    /**
+     * Der Weg, wie er nach einer Freigabe ohne Antwort aussieht: veröffentlicht ist Fassung $fassung.
+     */
+    private function wegMitFassung(int $fassung): Response
+    {
+        $weg = $this->aufnahme('path');
+        $weg['data']['published']['version'] = $fassung;
+
+        return $this->json($weg);
+    }
+
+    private function zeitueberlauf(): Response
+    {
+        return $this->json(['message' => 'Gateway Timeout'], 504);
+    }
+
+    #[Test]
+    public function ohneAntwortAberVeroeffentlichtGiltAlsErfolg(): void
+    {
+        $this->verbinde();
+        $antworten = $this->dienst();
+        $antworten['POST ' . self::API . 'sites/01SITEA/declaration/publish'] = $this->zeitueberlauf();
+        $this->attrappe($antworten);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::FREIGABE, ['site' => 'a']));
+        // Die Fassung ist angelegt, nur die Antwort kam nicht an: der Weg nennt sie schon.
+        $antworten['GET ' . self::API . 'sites/01SITEA/declaration/path'] = $this->wegMitFassung(5);
+        $this->attrappe($antworten);
+
+        $antwort = $this->formularAbsenden($html, 'barrierepruefung-freigabe');
+
+        self::assertStringNotContainsString('freigabe', $antwort->getHeaderLine('Location'), 'zur Übersicht wie bei Erfolg');
+        self::assertCount(1, $this->anfragenAn('/declaration/path'), 'einmal nachgefragt');
+        self::assertCount(1, array_filter($this->anfragen, static fn(RequestInterface $a): bool => $a->getMethod() === 'GET' && $a->getUri()->getPath() === self::API . 'sites/01SITEA/declaration'), 'die Erklärung wird aufgefrischt');
+        $danach = $this->html($this->folgen($antwort));
+        self::assertCount(1, $this->suche($danach, '//*[@role="status"][contains(.,"Fassung 5 ist veröffentlicht")]'));
+        self::assertStringNotContainsString('Nicht veröffentlicht', $this->text($danach));
+    }
+
+    #[Test]
+    public function offenerAusgangBehaeltDenSchluessel(): void
+    {
+        $this->verbinde();
+        $antworten = $this->dienst();
+        $antworten['POST ' . self::API . 'sites/01SITEA/declaration/publish'] = $this->zeitueberlauf();
+        $this->attrappe($antworten);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::FREIGABE, ['site' => 'a']));
+        $schluessel = $this->schluessel($html);
+        // Der Weg steht noch bei Fassung 4: ob 5 entstanden ist, weiß niemand.
+        $antwort = $this->formularAbsenden($html, 'barrierepruefung-freigabe');
+        self::assertStringContainsString('freigabe', $antwort->getHeaderLine('Location'));
+
+        $danach = $this->html($this->folgen($antwort));
+        self::assertCount(1, $this->suche($danach, '//*[@role="alert"][contains(.,"ob Fassung 5 veröffentlicht ist, ist deshalb offen")]'), 'der Ausgang heißt offen');
+        self::assertStringNotContainsString('Nicht veröffentlicht', $this->text($danach), 'nie „nicht veröffentlicht“, wenn es niemand weiß');
+        self::assertSame($schluessel, $this->schluessel($danach), 'dasselbe Formular, derselbe Schlüssel');
+
+        // Der zweite Versuch mit diesem Schlüssel gelingt (der Dienst liefert die Fassung oder ihre Wiederholung).
+        $antworten['POST ' . self::API . 'sites/01SITEA/declaration/publish'] = $this->veroeffentlicht(5, ['Idempotent-Replayed' => 'true']);
+        $this->attrappe($antworten);
+        $erfolg = $this->formularAbsenden($danach, 'barrierepruefung-freigabe');
+        $gesendet = $this->freigaben();
+        self::assertCount(1, $gesendet);
+        self::assertSame($schluessel, $gesendet[0]->getHeaderLine('Idempotency-Key'));
+        self::assertCount(1, $this->suche($this->html($this->folgen($erfolg)), '//*[@role="status"][contains(.,"Fassung 5 ist veröffentlicht")]'));
+
+        // Danach (Rückmeldung verbraucht) zeigt die Freigabe wieder einen neuen Schlüssel.
+        $this->attrappe($antworten);
+        self::assertNotSame($schluessel, $this->schluessel($this->html($this->aufrufen(self::FREIGABE, ['site' => 'a']))));
+    }
+
+    #[Test]
+    public function neuerEntwurfNachOffenemAusgangBekommtNeuenSchluessel(): void
+    {
+        $this->verbinde();
+        $antworten = $this->dienst();
+        $antworten['POST ' . self::API . 'sites/01SITEA/declaration/publish'] = $this->zeitueberlauf();
+        $this->attrappe($antworten);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::FREIGABE, ['site' => 'a']));
+        $schluessel = $this->schluessel($html);
+        $antwort = $this->formularAbsenden($html, 'barrierepruefung-freigabe');
+        // Inzwischen ein anderer Entwurf: der alte Schlüssel gehört zu einer anderen Entscheidung.
+        $antworten['GET ' . self::API . 'sites/01SITEA/declaration/draft'] = $this->json($this->entwurf(['draft_etag' => 'andereKennung000000000000000000']));
+        $this->attrappe($antworten);
+
+        self::assertNotSame($schluessel, $this->schluessel($this->html($this->folgen($antwort))));
+    }
+
     #[Test]
     public function geaenderterEntwurf(): void
     {

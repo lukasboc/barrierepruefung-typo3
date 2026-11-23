@@ -416,7 +416,7 @@ final class WegController
             'dokument' => is_string($dokument['title'] ?? null) ? $dokument['title'] : '',
             'formular' => $formular,
             'mitFormular' => $mitFormular,
-            'schluessel' => $mitFormular ? self::uuid() : '',
+            'schluessel' => $mitFormular ? self::schluesselFuer($werte, $formular) : '',
             'bereit' => $bereit,
             'wegBekannt' => $weg->ok(),
             'naechster' => $naechster,
@@ -490,16 +490,29 @@ final class WegController
 
         if ($antwort->ok()) {
             $neu = is_array($antwort->daten['data'] ?? null) ? $antwort->daten['data'] : [];
-            // Gleich neu holen: Seiten mit dem Element zeigen die neue Fassung sofort, nicht erst nach Ablauf des Caches.
-            $this->abruf->auffrischen($verbindung);
-            $text = $this->anzeige->t('weg.freigabe.erfolg', (string)(is_int($neu['version'] ?? null) ? $neu['version'] : $fassung));
-            if (strtolower($antwort->kopf['idempotent-replayed'][0] ?? '') === 'true') {
-                $text .= ' ' . $this->anzeige->t('weg.freigabe.wiederholt');
-            }
-            $adresse = $this->anzeige->adresse($neu['public_url'] ?? null);
-            $this->rueckmeldung->merken('erfolg', $text, [], [], $adresse !== null ? ['uri' => $adresse, 'text' => $this->anzeige->t('erklaerung.oeffnen')] : null);
+            $wiederholt = strtolower($antwort->kopf['idempotent-replayed'][0] ?? '') === 'true';
 
-            return $this->zurueck($site);
+            return $this->veroeffentlicht($verbindung, $site, is_int($neu['version'] ?? null) ? $neu['version'] : $fassung, $neu['public_url'] ?? null, $wiederholt ? 'weg.freigabe.wiederholt' : null);
+        }
+
+        // Keine Antwort, Zeitüberlauf, Fehler des Dienstes: die Fassung kann trotzdem angelegt sein. Der Weg sagt, ob es
+        // sie gibt; sonst ist der Ausgang offen, und das Formular kommt mit DEMSELBEN Schlüssel wieder – ein erneutes
+        // Absenden ergibt beim Dienst höchstens eine Fassung.
+        if ($antwort->status === 0 || $antwort->status >= 500) {
+            $weg = $this->client->get($zugang, 'sites/' . rawurlencode($verbindung->siteId) . '/declaration/path');
+            $gilt = $weg->ok() && is_array($weg->daten['data']['published'] ?? null) ? $weg->daten['data']['published'] : [];
+            if (($gilt['version'] ?? null) === $fassung) {
+                return $this->veroeffentlicht($verbindung, $site, $fassung, $gilt['public_url'] ?? null, 'weg.freigabe.nachtraeglich');
+            }
+            $fehler = $this->anzeige->fehler($antwort);
+            $this->rueckmeldung->merken(
+                'fehler',
+                trim($this->anzeige->t('weg.freigabe.unklar', (string)$fassung) . ' ' . $fehler['detail']),
+                [],
+                $werte + ['idempotency_key' => $schluessel, 'draft_etag' => $kennung, 'expected_version' => (string)$fassung],
+            );
+
+            return $this->zurFreigabe($site);
         }
 
         $problem = $antwort->problem;
@@ -529,6 +542,37 @@ final class WegController
         $this->rueckmeldung->merken('fehler', $text, $felder, $werte, $link);
 
         return $this->zurFreigabe($site);
+    }
+
+    /**
+     * Die Fassung steht im Dienst: die Erklärung gleich neu holen (Seiten mit dem Element zeigen sie sofort, nicht erst
+     * nach Ablauf des Caches), Rückmeldung mit der Nummer, zur Übersicht.
+     */
+    private function veroeffentlicht(Verbindung $verbindung, Site $site, int $fassung, mixed $oeffentlich, ?string $zusatz): ResponseInterface
+    {
+        $this->abruf->auffrischen($verbindung);
+        $text = $this->anzeige->t('weg.freigabe.erfolg', (string)$fassung) . ($zusatz !== null ? ' ' . $this->anzeige->t($zusatz) : '');
+        $adresse = $this->anzeige->adresse($oeffentlich);
+        $this->rueckmeldung->merken('erfolg', $text, [], [], $adresse !== null ? ['uri' => $adresse, 'text' => $this->anzeige->t('erklaerung.oeffnen')] : null);
+
+        return $this->zurueck($site);
+    }
+
+    /**
+     * Der Schlüssel der Anzeige: derselbe wie beim letzten Versuch, wenn dessen Ausgang offen blieb und Entwurf und
+     * Fassung noch dieselben sind – sonst ein neuer. Ein neuer Entwurf ist eine neue Entscheidung und bekommt einen neuen.
+     *
+     * @param array<string, string> $werte   aus der Rückmeldung
+     * @param array<string, mixed>  $formular
+     */
+    private static function schluesselFuer(array $werte, array $formular): string
+    {
+        $alt = $werte['idempotency_key'] ?? '';
+        if (preg_match(self::UUID, $alt) === 1 && ($werte['draft_etag'] ?? null) === $formular['etag'] && ($werte['expected_version'] ?? null) === (string)$formular['fassung']) {
+            return $alt;
+        }
+
+        return self::uuid();
     }
 
     /**

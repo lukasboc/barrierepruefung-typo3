@@ -1187,6 +1187,14 @@
 				<source>Not published. Please check the marked entries.</source>
 				<target>Nicht veröffentlicht. Bitte prüfen Sie die markierten Angaben.</target>
 			</trans-unit>
+			<trans-unit id="weg.freigabe.unklar">
+				<source>The service did not confirm the release, so it is not certain whether version %s was published. Send the form below again: it carries the same key, so the service creates the version at most once.</source>
+				<target>Der Dienst hat die Freigabe nicht bestätigt; ob Fassung %s veröffentlicht ist, ist deshalb offen. Schicken Sie das Formular unten noch einmal ab: Es trägt denselben Schlüssel, der Dienst legt die Fassung also höchstens einmal an.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nachtraeglich">
+				<source>The service's answer did not arrive, but the service lists the version as published.</source>
+				<target>Die Antwort des Dienstes kam nicht an, im Dienst steht die Fassung aber als veröffentlicht.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

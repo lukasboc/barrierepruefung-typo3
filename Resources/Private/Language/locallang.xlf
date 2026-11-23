@@ -891,6 +891,12 @@
 			<trans-unit id="weg.freigabe.fehler.felder">
 				<source>Not published. Please check the marked entries.</source>
 			</trans-unit>
+			<trans-unit id="weg.freigabe.unklar">
+				<source>The service did not confirm the release, so it is not certain whether version %s was published. Send the form below again: it carries the same key, so the service creates the version at most once.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nachtraeglich">
+				<source>The service's answer did not arrive, but the service lists the version as published.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
