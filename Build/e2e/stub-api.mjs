@@ -11,7 +11,7 @@ const port = Number(process.argv[2] ?? process.env.STUB_PORT ?? 8091);
 const laden = (name) => JSON.parse(readFileSync(join(verzeichnis, `${name}.json`), 'utf8'));
 const ohneHinweis = (o) => { const { _von_hand, ...rest } = o; return rest; };
 
-const zustand = { ausfall: false, version: null, unbestaetigt: false, unveroeffentlicht: false, wegOffen: false, eingabefehler: false, ohneRecht: false, anfragen: [] };
+const zustand = { ausfall: false, version: null, unbestaetigt: false, unveroeffentlicht: false, wegOffen: false, eingabefehler: false, ohneRecht: false, entwurfGeaendert: false, nichtBereit: false, freigaben: {}, anfragen: [] };
 
 const routen = [
   ['GET', /^\/sites\/[^/]+$/, 'site'],
@@ -109,6 +109,27 @@ function senden(res, status, body, kopf = {}) {
   res.end(text);
 }
 
+// POST …/declaration/publish wie der Dienst: ohne Idempotency-Key 400; ein Schlüssel, unter dem schon eine Fassung
+// liegt, bekommt deren Antwort mit `Idempotent-Replayed: true` (Fehler werden nicht gespeichert). Die neue Fassung trägt
+// `expected_version` und wird die veröffentlichte (GET …/declaration).
+function freigeben(req, res, text) {
+  const problem = { 'Content-Type': 'application/problem+json' };
+  const schluessel = String(req.headers['idempotency-key'] ?? '').trim();
+  if (schluessel === '') return senden(res, 400, { message: 'Eine Veröffentlichung verlangt den Header Idempotency-Key.' }, problem);
+  if (zustand.freigaben[schluessel]) return senden(res, 201, zustand.freigaben[schluessel], { 'Idempotent-Replayed': 'true' });
+  if (zustand.ohneRecht) return senden(res, 403, { message: 'Diesem Token fehlt das Recht, die Erklärung zu veröffentlichen.', reason: zustand.ohneRecht === 'erloschen' ? 'recht_erloschen' : 'recht_fehlt' }, problem);
+  if (zustand.nichtBereit) return senden(res, 422, { message: 'Die Erklärung kann noch nicht veröffentlicht werden.', reason: 'nicht_bereit', blockers: [{ key: 'land', text: 'Wählen Sie, ob die Stelle zum Bund oder zu einem Land gehört.' }] }, problem);
+  if (zustand.entwurfGeaendert) return senden(res, 409, { message: 'Der Entwurf hat sich seit Ihrer Vorschau geändert. Bitte sehen Sie ihn sich noch einmal an.', reason: 'entwurf_geaendert', draft_etag: 'geaendert0000000000000000000000' }, problem);
+  let daten = {};
+  try { daten = JSON.parse(text || '{}'); } catch { /* wie leer */ }
+  const body = ohneHinweis(laden('publish'));
+  body.data.version = Number(daten.expected_version) || body.data.version;
+  body.data.conformance_status = daten.conformance_status ?? laden('draft').data.conformance.suggested;
+  zustand.freigaben[schluessel] = body;
+  zustand.version = body.data.version;
+  return senden(res, 201, body);
+}
+
 async function rumpf(req) {
   const teile = [];
   for await (const t of req) teile.push(t);
@@ -130,9 +151,12 @@ createServer(async (req, res) => {
     if (aktion === 'eingabefehler' && req.method === 'POST') { zustand.eingabefehler = Boolean(daten.an); return senden(res, 200, { eingabefehler: zustand.eingabefehler }); }
     // {"an": true} = recht_fehlt, {"an": "erloschen"} = recht_erloschen
     if (aktion === 'ohne_recht' && req.method === 'POST') { zustand.ohneRecht = daten.an === 'erloschen' ? 'erloschen' : Boolean(daten.an); return senden(res, 200, { ohneRecht: zustand.ohneRecht }); }
+    // Freigabe: {"an": true} – jedes POST …/declaration/publish antwortet 409 entwurf_geaendert bzw. 422 nicht_bereit (Blocker `land`).
+    if (aktion === 'entwurf_geaendert' && req.method === 'POST') { zustand.entwurfGeaendert = Boolean(daten.an); return senden(res, 200, { entwurfGeaendert: zustand.entwurfGeaendert }); }
+    if (aktion === 'nicht_bereit' && req.method === 'POST') { zustand.nichtBereit = Boolean(daten.an); return senden(res, 200, { nichtBereit: zustand.nichtBereit }); }
     if (aktion === 'fassung' && req.method === 'POST') { zustand.version = Number(daten.version); return senden(res, 200, { version: zustand.version }); }
     if (aktion === 'anfragen' && req.method === 'GET') return senden(res, 200, zustand.anfragen);
-    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.unbestaetigt = false; zustand.unveroeffentlicht = false; zustand.wegOffen = false; zustand.eingabefehler = false; zustand.ohneRecht = false; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
+    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.unbestaetigt = false; zustand.unveroeffentlicht = false; zustand.wegOffen = false; zustand.eingabefehler = false; zustand.ohneRecht = false; zustand.entwurfGeaendert = false; zustand.nichtBereit = false; zustand.freigaben = {}; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
     return senden(res, 404, { fehler: 'unbekannt' });
   }
 
@@ -151,6 +175,8 @@ createServer(async (req, res) => {
   if (req.method === 'PUT' && zustand.ohneRecht) return senden(res, 403, { message: 'Diesem Token fehlt das Recht, die Erklärung vorzubereiten und zu veröffentlichen.', reason: zustand.ohneRecht === 'erloschen' ? 'recht_erloschen' : 'recht_fehlt', url: 'https://dienst.example/websites/01STUBSITE0000000000000000/einbindung' }, { 'Content-Type': 'application/problem+json' });
   // Schalter /__stub/eingabefehler: die Pflichtangaben scheitern an einem leeren Kontakt (wie der Dienst: 422 mit errors je Feld).
   if (req.method === 'PUT' && zustand.eingabefehler && treffer[2] === 'draft') return senden(res, 422, { message: 'Ohne Kontakt kann niemand eine Barriere melden — das ist Pflichtangabe.', errors: { contact: ['Ohne Kontakt kann niemand eine Barriere melden — das ist Pflichtangabe.'] } }, { 'Content-Type': 'application/problem+json' });
+
+  if (treffer[2] === 'publish') return freigeben(req, res, text);
 
   const body = antwort(treffer[2], pfad);
   if (treffer[2] === 'findings-regel') blaettern(body, url);
