@@ -1183,6 +1183,10 @@
 				<source>Not published.</source>
 				<target>Nicht veröffentlicht.</target>
 			</trans-unit>
+			<trans-unit id="weg.freigabe.fehler.felder">
+				<source>Not published. Please check the marked entries.</source>
+				<target>Nicht veröffentlicht. Bitte prüfen Sie die markierten Angaben.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

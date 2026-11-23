@@ -474,7 +474,7 @@ final class WegController
         $werte = ['conformance_status' => $wahl, 'override_reason' => $begruendung];
         $abweichend = $wahl !== '' && $wahl !== $ermittelt;
         if ($abweichend && trim($begruendung) === '') {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('weg.fehler.felder'), ['override_reason' => $this->anzeige->t('weg.freigabe.begruendung.fehlt')], $werte);
+            $this->rueckmeldung->merken('fehler', $this->anzeige->t('weg.freigabe.fehler.felder'), ['override_reason' => $this->anzeige->t('weg.freigabe.begruendung.fehlt')], $werte);
 
             return $this->zurFreigabe($site);
         }

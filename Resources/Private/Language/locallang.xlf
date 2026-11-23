@@ -888,6 +888,9 @@
 			<trans-unit id="weg.freigabe.nicht_veroeffentlicht">
 				<source>Not published.</source>
 			</trans-unit>
+			<trans-unit id="weg.freigabe.fehler.felder">
+				<source>Not published. Please check the marked entries.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
