@@ -2,8 +2,12 @@
 // (http://127.0.0.1:<Port>): jeden Schritt einmal ausfüllen – Prüfschritt (Notiz), Wer erklärt (Land und zurück zu
 // Bund), Betroffenheits-Check (dafür kurz „Privatwirtschaft“, danach zurück), Pflichtangaben mit provoziertem
 // Feldfehler (Kontakt leer) und danach dem alten Wert –, alles per Tastatur, mit axe und Bildschirmfotos hell und dunkel.
-// Danach mit einem Token OHNE Veröffentlichungsrecht: nur Sätze, kein Formular. Zum Schluss wieder mit dem Token mit Recht
-// verbunden. Veröffentlicht wird nichts.
+// Mit ABNAHME_FREIGEBEN=1 danach die Freigabe: Vorschau, dann Enter auf „Fassung n jetzt veröffentlichen“ und im selben
+// Augenblick ein zweites Absenden desselben Formulars (Doppelklick) – der Dienst muss genau EINE neue Fassung anlegen, die
+// Frontend-Seite mit dem Element zeigt sie sofort. Ohne den Schalter wird nichts veröffentlicht. In 14.3 trägt die
+// Backend-Person dafür kurz einen realName (danach wieder leer), in 13.4 steht ihr Benutzername in der Fassung.
+// Danach mit einem Token OHNE Veröffentlichungsrecht: nur Sätze, kein Formular, keine Freigabe. Zum Schluss wieder mit
+// dem Token mit Recht verbunden.
 //
 // Zugangsdaten nur aus der Umgebung, nie aus dem Repository:
 //   ABNAHME_TOKEN             Token der Website MIT Veröffentlichungsrecht
@@ -18,6 +22,7 @@
 import { chromium } from 'playwright';
 import net from 'node:net';
 import { mkdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { anmelden, modulOeffnen, neuGeladen, tabBis, inDenRahmen, enterUndWarten, farbschema, axeModul, fokus } from './hilfen.mjs';
 
 const ERGEBNISSE = new URL('./ergebnisse/', import.meta.url).pathname;
@@ -33,8 +38,8 @@ if (!token || !ohneRecht || !siteId) {
   process.exit(2);
 }
 const instanzen = {
-  v13: { name: 'v13', basis: 'http://localhost:8089', host: '127.0.0.1:8089' },
-  v14: { name: 'v14', basis: 'http://localhost:8090', host: '127.0.0.1:8090' },
+  v13: { name: 'v13', fassung: '13', basis: 'http://localhost:8089', host: '127.0.0.1:8089', echt: 'http://127.0.0.1:8089', realName: '' },
+  v14: { name: 'v14', fassung: '14', basis: 'http://localhost:8090', host: '127.0.0.1:8090', echt: 'http://127.0.0.1:8090', realName: 'Rita Redaktion (Abnahme)' },
 };
 const inst = instanzen[process.argv[2]];
 if (!inst) {
@@ -85,6 +90,24 @@ async function verbinden(mit) {
   await frame.fill('#barrierepruefung-token', mit);
   frame = await neuGeladen(page, () => frame.locator('#barrierepruefung-verbinden button[type=submit]').click());
   pruefe(await frame.locator('#barrierepruefung-trennen').count() === 1, 'verbunden');
+}
+
+// SQL in der Instanz (SQLite, Pfad aus den Einstellungen) – nur für den realName der Backend-Person.
+const sql = (abfrage) => {
+  const php = '$p=new PDO("sqlite:".(require "config/system/settings.php")["DB"]["Connections"]["Default"]["path"]);$p->exec($argv[1]);';
+  execFileSync('docker', ['compose', 'exec', '-T', `v${inst.fassung}`, 'php', '-r', php, '--', abfrage], { cwd: new URL('../lokal/', import.meta.url).pathname, encoding: 'utf8' });
+};
+
+// Die Stand-Zeile der Seite mit dem Element auf der zweiten Site.
+async function standImFrontend() {
+  const html = await (await fetch(`${inst.echt}/barrierefreiheit`)).text();
+  return (html.match(/<p class="a11y-erklaerung-stand">(.*?)<\/p>/s)?.[1] ?? '').replace(/<[^>]+>/g, '');
+}
+
+async function versionen() {
+  await atemholen();
+  const antwort = await fetch(`${dienst}/sites/${siteId}/declaration/versions`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } });
+  return antwort.ok ? (await antwort.json()).data : [];
 }
 
 // Tab bis zum Knopf mit diesem Text, Enter, neu geladener Rahmen.
@@ -210,6 +233,54 @@ try {
   await bild('uebersicht-dunkel');
   await farbschema(page, 'light');
 
+  // --- Freigabe (nur mit ABNAHME_FREIGEBEN=1: legt im Dienst eine Fassung an) ---
+  if (process.env.ABNAHME_FREIGEBEN === '1') {
+    sql(`UPDATE be_users SET realName='${inst.realName}' WHERE username='admin'`);
+    const erwarteterName = inst.realName || 'admin';
+    const vorherListe = await versionen();
+    const vorherFassung = vorherListe[0]?.version ?? 0;
+    const vorherFrontend = await standImFrontend();
+    pruefe(vorherFrontend.includes(`Version ${vorherFassung}`), `Frontend vorher: „${vorherFrontend}“`);
+    const entwurfFreigabe = await api(`sites/${siteId}/declaration/draft`);
+    frame = (await atemholen(), await modulOeffnen(page, inst.basis, MODUL, { site: 'zweite-site' }));
+    frame = await absenden(frame, /^(Entwurf prüfen und freigeben|Review the draft and publish)$/);
+    pruefe(/\/weg\/freigabe/.test(frame.url()), 'Übersicht führt zur Freigabe');
+    pruefe(await frame.locator('#barrierepruefung-vorschau h1, #barrierepruefung-vorschau h2').count() === 0 && (await frame.locator('#barrierepruefung-vorschau :is(h3,h4,h5,h6)').first().evaluate((e) => e.tagName)) === 'H3', 'Vorschau des Dienstes ab h3');
+    pruefe(await frame.locator('input[name=draft_etag]').inputValue() === entwurfFreigabe.draft_etag && Number(await frame.locator('input[name=expected_version]').inputValue()) === entwurfFreigabe.next_version, `Formular trägt draft_etag und expected_version ${entwurfFreigabe.next_version} des Dienstes`);
+    pruefe(await frame.locator(`#barrierepruefung-freigabe button[type=submit]:has-text("${entwurfFreigabe.next_version}")`).count() === 1, `ein Knopf für Fassung ${entwurfFreigabe.next_version}`);
+    pruefe(await frame.locator('input[name=conformance_status]').count() === entwurfFreigabe.conformance.choices.length + (entwurfFreigabe.conformance.choices.includes(entwurfFreigabe.conformance.suggested) ? 0 : 1), `Aussagen wie vom Dienst (${entwurfFreigabe.conformance.choices.join(', ')}; ermittelt ${entwurfFreigabe.conformance.suggested})`);
+    pruefe((await frame.locator('.module-body').innerText()).includes(erwarteterName), `„Freigegeben von“ nennt „${erwarteterName}“`);
+    await bild('freigabe-hell');
+    await axe(frame, 'Freigabe');
+    await frame.locator('#barrierepruefung-freigabe').scrollIntoViewIfNeeded();
+    await bild('freigabe-formular-hell');
+
+    // Doppelklick: Enter auf dem Knopf und im selben Augenblick dasselbe Formular ein zweites Mal (aus dem Hauptfenster,
+    // damit die Navigation des Rahmens die Anfrage nicht abbricht).
+    await inDenRahmen(page);
+    await tabBis(page, frame, (f) => f.tag === 'button' && /veröffentlichen|Publish version/.test(f.text), protokoll, 60);
+    const felder = await frame.evaluate(() => [...new FormData(document.getElementById('barrierepruefung-freigabe'))]);
+    const ziel = await frame.locator('#barrierepruefung-freigabe').getAttribute('action');
+    await atemholen();
+    const zweites = page.evaluate(({ ziel, felder }) => fetch(ziel, { method: 'POST', body: new URLSearchParams(felder), redirect: 'manual', credentials: 'same-origin' }).then((r) => r.status), { ziel, felder });
+    frame = await neuGeladen(page, () => page.keyboard.press('Enter'));
+    console.log(`     zweites Absenden: Status ${await zweites}`);
+    const nachherListe = await versionen();
+    const neue = nachherListe.filter((v) => v.version > vorherFassung);
+    pruefe(neue.length === 1 && neue[0].version === entwurfFreigabe.next_version, `genau eine neue Fassung im Dienst: ${neue.map((v) => v.version).join(', ')} (vorher ${vorherFassung})`);
+    console.log(`     FASSUNG ${inst.name}: Website ${siteId}, Fassung ${neue[0].version}, ${neue[0].conformance_status}, ${neue[0].published_at}`);
+    pruefe(await frame.locator(`[role=status]:has-text("${neue[0].version}")`).count() === 1, 'Rückmeldung nennt die Fassung: ' + (await frame.locator('[role=status]').allInnerTexts()).join(' | ').replace(/\s+/g, ' '));
+    const nachherFrontend = await standImFrontend();
+    pruefe(nachherFrontend.includes(`Version ${neue[0].version}`), `Frontend zeigt sofort die neue Fassung: „${nachherFrontend}“`);
+    await bild('freigabe-erfolg-hell');
+    await farbschema(page, 'dark');
+    frame = (await atemholen(), await modulOeffnen(page, inst.basis, `${MODUL}_freigabe`, { site: 'zweite-site' }));
+    await bild('freigabe-dunkel');
+    await axe(frame, 'Freigabe dunkel');
+    await farbschema(page, 'light');
+    sql(`UPDATE be_users SET realName='' WHERE username='admin'`);
+  }
+
   // --- Token ohne Recht: nur Sätze ---
   await verbinden(ohneRecht);
   for (const s of ['pruefschritte', 'verantwortliche_stelle', 'betroffenheit', 'pflichtangaben']) {
@@ -219,6 +290,9 @@ try {
   }
   await bild('ohne-recht-hell');
   await axe(frame, 'ohne Recht');
+  frame = (await atemholen(), await modulOeffnen(page, inst.basis, `${MODUL}_freigabe`, { site: 'zweite-site' }));
+  pruefe(await frame.locator('.module-body form, .module-body button').count() === 0 && /Reiter „Einbindung“|“Embedding” tab/.test(await frame.locator('.module-body').innerText()), 'ohne Recht (Freigabe): Vorschau, aber kein Formular und kein Knopf');
+  await bild('freigabe-ohne-recht-hell');
   frame = (await atemholen(), await modulOeffnen(page, inst.basis, MODUL, { site: 'zweite-site' }));
   pruefe(await frame.locator('.module-body form').count() === 0, 'Übersicht ohne Recht: kein Formular');
   await farbschema(page, 'dark');

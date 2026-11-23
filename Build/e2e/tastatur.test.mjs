@@ -1,4 +1,4 @@
-// Tastaturdurchgang durch die vier Untermodule (Übersicht, Befunde, Erklärung, Weg zur Erklärung) in beiden lokalen Instanzen.
+// Tastaturdurchgang durch die vier Untermodule (Übersicht, Befunde, Erklärung, Weg zur Erklärung mit Freigabe) in beiden lokalen Instanzen.
 //
 // Teil 1: die vier Modulläufe (modul-*.mjs) bedienen alles nur mit Tab, Umschalt+Tab, Pfeiltasten und Enter, prüfen an
 // jedem Halt den sichtbaren Fokus (hilfen.mjs → tabBis) und führen axe-core über `.module-body` aus; sie scheitern
@@ -18,12 +18,12 @@ const INSTANZEN = [
 ].filter((i) => !process.env.INSTANZ || i.name === process.env.INSTANZ);
 
 const LAEUFE = ['modul-uebersicht', 'modul-befunde', 'modul-erklaerung', 'modul-weg'];
-const MODULE = ['barrierepruefung_uebersicht', 'barrierepruefung_befunde', 'barrierepruefung_erklaerung', 'barrierepruefung_weg'];
+const MODULE = ['barrierepruefung_uebersicht', 'barrierepruefung_befunde', 'barrierepruefung_erklaerung', 'barrierepruefung_weg', 'barrierepruefung_weg_freigabe'];
 
 for (const inst of INSTANZEN) {
   for (const lauf of LAEUFE) {
     test(`${inst.name} ${lauf}: Tastatur, sichtbarer Fokus, axe`, () => {
-      const r = spawnSync('node', [`${lauf}.mjs`, inst.name], { cwd: new URL('./', import.meta.url).pathname, encoding: 'utf8', timeout: 240000 });
+      const r = spawnSync('node', [`${lauf}.mjs`, inst.name], { cwd: new URL('./', import.meta.url).pathname, encoding: 'utf8', timeout: 420000 });
       process.stdout.write(r.stdout.split('\n').filter((z) => /bekannt:/.test(z)).join('\n') + '\n');
       assert.equal(r.status, 0, `${lauf} ${inst.name}:\n${r.stdout}\n${r.stderr}`);
       assert.match(r.stdout, /Fokus an allen \d+ Halten sichtbar/, 'der Lauf hat den sichtbaren Fokus geprüft');
@@ -45,6 +45,8 @@ const schluessel = (f) => `${f.tag}|${f.id}|${f.name}|${f.href}|${f.text}`;
 // Alle sichtbaren, tabbaren Bedienelemente des Modulrahmens (Docheader und Inhalt) als Schlüssel.
 const bedienelemente = (frame) => frame.evaluate(() => [...document.querySelectorAll('a[href], button, input, select, textarea, summary, [tabindex]')]
   .filter((e) => !e.disabled && e.type !== 'hidden' && e.tabIndex >= 0 && e.checkVisibility({ visibilityProperty: true }) && !e.closest('[inert]'))
+  // Eine Gruppe von Optionsfeldern ist ein Halt: Tab erreicht das gewählte, die übrigen die Pfeiltasten.
+  .filter((e) => !(e.type === 'radio' && !e.checked && e.form?.querySelector(`input[type=radio][name="${CSS.escape(e.name)}"]:checked`)))
   .map((a) => `${a.tagName.toLowerCase()}|${a.id}|${a.getAttribute('name') ?? ''}|${a.getAttribute('href') ?? ''}|${(a.innerText || '').trim()}`));
 
 for (const inst of INSTANZEN) {
