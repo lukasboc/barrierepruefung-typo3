@@ -32,8 +32,8 @@ Barrierepruefung.de – accessibility statement
 
 Connects a TYPO3 site to `barrierepruefung.de <https://barrierepruefung.de>`__, a service that checks websites
 for accessibility (BFSG, BITV 2.0) and generates the accessibility statement. The extension is a thin client of the
-service's public API: it starts checks, shows their open findings, and puts the **published** statement of the
-site into a content element.
+service's public API: it starts checks, shows their open findings, leads along the way to the statement (and, with a
+token that has the right, publishes it), and puts the **published** statement of the site into a content element.
 
 ----
 
@@ -53,7 +53,7 @@ site into a content element.
 
    .. card:: Installation
 
-      Composer or TER, database setup, the scheduler task and the backend rights.
+      Composer or TER, database setup, the scheduler task and the backend rights of the four sub-modules.
 
       .. card-footer:: :ref:`Read more <installation>`
          :button-style: btn btn-secondary stretched-link

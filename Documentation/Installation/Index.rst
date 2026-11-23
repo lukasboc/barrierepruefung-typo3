@@ -44,7 +44,8 @@ Without a scheduler task a page shows the statement fetched on its last view, fo
 valid (one hour at most). For prompt updates, create a task in the scheduler (system extension
 :composer:`typo3/cms-scheduler`):
 
-#. :guilabel:`System > Scheduler`, add a task of type :guilabel:`Execute console commands`.
+#. :guilabel:`System > Scheduler` (TYPO3 13.4) or :guilabel:`Administration > Scheduler` (TYPO3 14.3), add a task of
+   type :guilabel:`Execute console commands`.
 #. Choose the command :bash:`barrierepruefung:aktualisieren`.
 #. Frequency: hourly (for example ``0 * * * *``).
 
@@ -64,11 +65,13 @@ You can also run it by hand:
 Backend rights
 ==============
 
-The module group :guilabel:`Accessibility` consists of three sub-modules: :guilabel:`Overview`,
-:guilabel:`Findings` and :guilabel:`Statement`. **Every sub-module needs its own right.**
+:guilabel:`Site Management > Accessibility` consists of four sub-modules: :guilabel:`Overview`,
+:guilabel:`Findings`, :guilabel:`Statement` and :guilabel:`Way to the statement`. **Every sub-module needs its own
+right.**
 
 For a backend user group, open :guilabel:`Access Rights > Modules` and tick the sub-modules the group should see.
-A group that only has :guilabel:`Overview` does not see :guilabel:`Findings` and :guilabel:`Statement`.
+A group that only has :guilabel:`Overview` does not see the other three. Groups that existed before
+:guilabel:`Way to the statement` was added do not see it until it is ticked for them.
 
 Besides the module right, the person needs a web mount that contains the site. A person without such a mount does
 not see the site in the selection and cannot start anything for it, even with a hand-made ``site`` parameter: the
