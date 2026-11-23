@@ -115,7 +115,7 @@
 				<source>The service does not know this website (any more). Check the website ID or connect the site again.</source>
 			</trans-unit>
 			<trans-unit id="fehler.status_429">
-				<source>Too many requests in a short time. Wait a minute, then refresh the status.</source>
+				<source>Too many requests in a short time. Wait a minute, then try again.</source>
 			</trans-unit>
 			<trans-unit id="fehler.status_5xx">
 				<source>The service has a temporary fault. Try again later.</source>
@@ -791,6 +791,102 @@
 			</trans-unit>
 			<trans-unit id="weg.angabe.enforcement_body_url">
 				<source>Website</source>
+			</trans-unit>
+			<trans-unit id="weg.gespeichert.noch_offen">
+				<source>Saved. Something in this step is still open.</source>
+			</trans-unit>
+			<trans-unit id="weg.zur_freigabe">
+				<source>Review the draft and publish</source>
+			</trans-unit>
+			<trans-unit id="weg.entwurf_ansehen">
+				<source>View the draft</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_abrufbar">
+				<source>The draft could not be retrieved</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.diese">
+				<source>This release</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.fassung">
+				<source>Version %s</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_bereit.titel">
+				<source>Not all steps are done yet</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_bereit">
+				<source>You can look at the draft now. It can be published once every step is done.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.weg_unbekannt">
+				<source>Whether every step is done could not be retrieved, so the statement cannot be published right now. Reload the page to try again.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.vorschau">
+				<source>Preview of the draft</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.vorschau.hinweis">
+				<source>This is the text version %s will carry.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.aussage">
+				<source>Conformance statement</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.ermittelt">
+				<source>Determined from the check:</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.wahl">
+				<source>Statement this version carries</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.wahl.ermittelt">
+				<source>(determined)</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.begruendung">
+				<source>Reason for a different statement</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.begruendung.hilfe">
+				<source>Required if you choose a statement other than the determined one. It is stored with the version.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.begruendung.fehlt">
+				<source>Give a reason for the different statement, or keep the determined one.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.ueberschrift">
+				<source>Publish version %s</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.festgeschrieben">
+				<source>Version %s is recorded and cannot be changed afterwards. A correction becomes a new version; the old one stays available as evidence.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.online">
+				<source>The statement goes online at its public address in the service, together with a PDF.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.seiten">
+				<source>Pages of this site with the element “Accessibility statement” show the new version right away.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.veraltet">
+				<source>If a later check finds something different, the version is marked as outdated. It stays online.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge">
+				<source>What happens when you publish</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.handelnde">
+				<source>Released by</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.handelnde.hilfe">
+				<source>Your name from your backend user account. It is recorded in the version as the person who released it. Responsible in the service is the person who granted this connection the right to publish.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.knopf">
+				<source>Publish version %s now</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.erfolg">
+				<source>Version %s is published. Pages with the element show it from now on.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.wiederholt">
+				<source>The form was sent more than once; the version was published only once.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.geaendert">
+				<source>The draft has changed since you looked at it, for example because a check step was answered in the service. Nothing was published. Review the new draft below, then publish again.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.formular_ungueltig">
+				<source>The form was incomplete; nothing was published. Review the draft again and publish from this page.</source>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_veroeffentlicht">
+				<source>Not published.</source>
 			</trans-unit>
 		</body>
 	</file>

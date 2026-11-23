@@ -134,6 +134,13 @@ return [
                 'target' => WegController::class . '::angaben',
                 'methods' => ['POST'],
             ],
+            'freigabe' => [
+                'target' => WegController::class . '::freigabe',
+            ],
+            'freigeben' => [
+                'target' => WegController::class . '::freigeben',
+                'methods' => ['POST'],
+            ],
         ],
     ],
 ];

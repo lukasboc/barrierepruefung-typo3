@@ -27,19 +27,20 @@ final class Rueckmeldung
      * @param array<string, string> $felder Fehler je Formularfeld
      * @param array<string, string> $werte  Eingaben, die das Formular wieder zeigt (nie ein Token)
      * @param array{uri: string, text: string}|null $link ein Weg weiter, als Link unter dem Text (Adresse aus dem UriBuilder)
+     * @param list<array{text: string, uri: string|null}> $liste Einträge unter dem Text, je mit Weg dorthin, wo er sich beheben lässt
      */
-    public function merken(string $art, string $text, array $felder = [], array $werte = [], ?array $link = null): void
+    public function merken(string $art, string $text, array $felder = [], array $werte = [], ?array $link = null, array $liste = []): void
     {
         if (!isset(self::ARTEN[$art])) {
             throw new \InvalidArgumentException('Unbekannte Art der Rückmeldung: ' . $art, 1763800001);
         }
-        $this->benutzer()?->setAndSaveSessionData(self::SCHLUESSEL, ['art' => $art, 'text' => $text, 'felder' => $felder, 'werte' => $werte, 'link' => $link]);
+        $this->benutzer()?->setAndSaveSessionData(self::SCHLUESSEL, ['art' => $art, 'text' => $text, 'felder' => $felder, 'werte' => $werte, 'link' => $link, 'liste' => $liste]);
     }
 
     /**
      * Die gemerkte Rückmeldung, danach ist sie weg.
      *
-     * @return array{art: string, text: string, felder: array<string, string>, werte: array<string, string>, link: array{uri: string, text: string}|null, rolle: string, klasse: string, symbol: string}|null
+     * @return array{art: string, text: string, felder: array<string, string>, werte: array<string, string>, link: array{uri: string, text: string}|null, liste: list<array{text: string, uri: string|null}>, rolle: string, klasse: string, symbol: string}|null
      */
     public function nehmen(): ?array
     {
@@ -59,6 +60,7 @@ final class Rueckmeldung
             'felder' => self::texte($daten['felder'] ?? null),
             'werte' => self::texte($daten['werte'] ?? null),
             'link' => self::link($daten['link'] ?? null),
+            'liste' => self::liste($daten['liste'] ?? null),
             // Ein Fehler unterbricht, alles andere wird höflich angesagt.
             'rolle' => $art === 'fehler' ? 'alert' : 'status',
             'klasse' => 'callout-' . $schwere->getCssClass(),
@@ -74,6 +76,21 @@ final class Rueckmeldung
         return is_array($link) && is_string($link['uri'] ?? null) && $link['uri'] !== '' && is_string($link['text'] ?? null)
             ? ['uri' => $link['uri'], 'text' => $link['text']]
             : null;
+    }
+
+    /**
+     * @return list<array{text: string, uri: string|null}>
+     */
+    private static function liste(mixed $liste): array
+    {
+        $ergebnis = [];
+        foreach (is_array($liste) ? $liste : [] as $eintrag) {
+            if (is_array($eintrag) && is_string($eintrag['text'] ?? null) && $eintrag['text'] !== '') {
+                $ergebnis[] = ['text' => $eintrag['text'], 'uri' => is_string($eintrag['uri'] ?? null) && $eintrag['uri'] !== '' ? $eintrag['uri'] : null];
+            }
+        }
+
+        return $ergebnis;
     }
 
     /**

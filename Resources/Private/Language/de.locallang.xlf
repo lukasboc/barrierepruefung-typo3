@@ -152,8 +152,8 @@
 				<target>Der Dienst kennt diese Website nicht (mehr). Prüfen Sie die Website-Kennung oder verbinden Sie die Site neu.</target>
 			</trans-unit>
 			<trans-unit id="fehler.status_429">
-				<source>Too many requests in a short time. Wait a minute, then refresh the status.</source>
-				<target>Zu viele Anfragen in kurzer Zeit. Warten Sie eine Minute und aktualisieren Sie dann den Status.</target>
+				<source>Too many requests in a short time. Wait a minute, then try again.</source>
+				<target>Zu viele Anfragen in kurzer Zeit. Warten Sie eine Minute und versuchen Sie es dann noch einmal.</target>
 			</trans-unit>
 			<trans-unit id="fehler.status_5xx">
 				<source>The service has a temporary fault. Try again later.</source>
@@ -1054,6 +1054,134 @@
 			<trans-unit id="weg.angabe.enforcement_body_url">
 				<source>Website</source>
 				<target>Website</target>
+			</trans-unit>
+			<trans-unit id="weg.gespeichert.noch_offen">
+				<source>Saved. Something in this step is still open.</source>
+				<target>Gespeichert. In diesem Schritt ist noch etwas offen.</target>
+			</trans-unit>
+			<trans-unit id="weg.zur_freigabe">
+				<source>Review the draft and publish</source>
+				<target>Entwurf prüfen und freigeben</target>
+			</trans-unit>
+			<trans-unit id="weg.entwurf_ansehen">
+				<source>View the draft</source>
+				<target>Entwurf ansehen</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_abrufbar">
+				<source>The draft could not be retrieved</source>
+				<target>Der Entwurf ließ sich nicht abrufen</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.diese">
+				<source>This release</source>
+				<target>Diese Freigabe</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.fassung">
+				<source>Version %s</source>
+				<target>Fassung %s</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_bereit.titel">
+				<source>Not all steps are done yet</source>
+				<target>Noch nicht alle Schritte erledigt</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_bereit">
+				<source>You can look at the draft now. It can be published once every step is done.</source>
+				<target>Den Entwurf können Sie schon ansehen. Freigeben lässt er sich, sobald alle Schritte erledigt sind.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.weg_unbekannt">
+				<source>Whether every step is done could not be retrieved, so the statement cannot be published right now. Reload the page to try again.</source>
+				<target>Ob alle Schritte erledigt sind, ließ sich nicht abrufen; deshalb lässt sich die Erklärung gerade nicht freigeben. Laden Sie die Seite neu, um es noch einmal zu versuchen.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.vorschau">
+				<source>Preview of the draft</source>
+				<target>Vorschau des Entwurfs</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.vorschau.hinweis">
+				<source>This is the text version %s will carry.</source>
+				<target>Diesen Text trägt Fassung %s.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.aussage">
+				<source>Conformance statement</source>
+				<target>Aussage zur Konformität</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.ermittelt">
+				<source>Determined from the check:</source>
+				<target>Aus der Prüfung ermittelt:</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.wahl">
+				<source>Statement this version carries</source>
+				<target>Aussage dieser Fassung</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.wahl.ermittelt">
+				<source>(determined)</source>
+				<target>(ermittelt)</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.begruendung">
+				<source>Reason for a different statement</source>
+				<target>Begründung für eine abweichende Aussage</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.begruendung.hilfe">
+				<source>Required if you choose a statement other than the determined one. It is stored with the version.</source>
+				<target>Pflicht, wenn Sie eine andere als die ermittelte Aussage wählen. Sie wird mit der Fassung gespeichert.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.begruendung.fehlt">
+				<source>Give a reason for the different statement, or keep the determined one.</source>
+				<target>Begründen Sie die abweichende Aussage, oder behalten Sie die ermittelte.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.ueberschrift">
+				<source>Publish version %s</source>
+				<target>Fassung %s freigeben</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.festgeschrieben">
+				<source>Version %s is recorded and cannot be changed afterwards. A correction becomes a new version; the old one stays available as evidence.</source>
+				<target>Fassung %s wird festgeschrieben und lässt sich danach nicht mehr ändern. Eine Korrektur wird eine neue Fassung; die alte bleibt als Beleg erhalten.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.online">
+				<source>The statement goes online at its public address in the service, together with a PDF.</source>
+				<target>Die Erklärung steht danach unter ihrer öffentlichen Adresse im Dienst, dazu als PDF.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.seiten">
+				<source>Pages of this site with the element “Accessibility statement” show the new version right away.</source>
+				<target>Seiten dieser Site mit dem Element „Erklärung zur Barrierefreiheit“ zeigen die neue Fassung sofort.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge.veraltet">
+				<source>If a later check finds something different, the version is marked as outdated. It stays online.</source>
+				<target>Findet eine spätere Prüfung etwas anderes, wird die Fassung als veraltet markiert. Sie bleibt online.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.folge">
+				<source>What happens when you publish</source>
+				<target>Was beim Freigeben geschieht</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.handelnde">
+				<source>Released by</source>
+				<target>Freigegeben von</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.handelnde.hilfe">
+				<source>Your name from your backend user account. It is recorded in the version as the person who released it. Responsible in the service is the person who granted this connection the right to publish.</source>
+				<target>Ihr Name aus Ihrem Backend-Benutzerkonto. Er steht in der Fassung als die Person, die freigegeben hat. Verantwortlich im Dienst ist die Person, die dieser Verbindung das Recht zum Veröffentlichen erteilt hat.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.knopf">
+				<source>Publish version %s now</source>
+				<target>Fassung %s jetzt veröffentlichen</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.erfolg">
+				<source>Version %s is published. Pages with the element show it from now on.</source>
+				<target>Fassung %s ist veröffentlicht. Seiten mit dem Element zeigen sie ab sofort.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.wiederholt">
+				<source>The form was sent more than once; the version was published only once.</source>
+				<target>Das Formular wurde mehrmals abgeschickt; veröffentlicht wurde die Fassung nur einmal.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.geaendert">
+				<source>The draft has changed since you looked at it, for example because a check step was answered in the service. Nothing was published. Review the new draft below, then publish again.</source>
+				<target>Der Entwurf hat sich geändert, seit Sie ihn angesehen haben – etwa weil im Dienst ein Prüfschritt beantwortet wurde. Veröffentlicht wurde nichts. Sehen Sie sich den neuen Entwurf unten an und geben Sie dann erneut frei.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.formular_ungueltig">
+				<source>The form was incomplete; nothing was published. Review the draft again and publish from this page.</source>
+				<target>Das Formular war unvollständig; veröffentlicht wurde nichts. Sehen Sie sich den Entwurf noch einmal an und geben Sie auf dieser Seite frei.</target>
+			</trans-unit>
+			<trans-unit id="weg.freigabe.nicht_veroeffentlicht">
+				<source>Not published.</source>
+				<target>Nicht veröffentlicht.</target>
 			</trans-unit>
 		</body>
 	</file>

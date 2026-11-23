@@ -94,11 +94,14 @@ trait Modulaufrufe
         self::assertNotNull($form, 'Formular ' . $formular . ' fehlt');
         self::assertSame('post', strtolower($form->getAttribute('method')));
         $werte = [];
-        foreach ((new \DOMXPath($dom))->query('.//input', $form) ?: [] as $feld) {
+        foreach ((new \DOMXPath($dom))->query('.//input | .//textarea', $form) ?: [] as $feld) {
             \assert($feld instanceof \DOMElement);
-            if ($feld->getAttribute('name') !== '') {
-                $werte[$feld->getAttribute('name')] = $feld->getAttribute('value');
+            // Wie ein Browser: von Optionsfeldern und Kästchen nur die gewählten.
+            $art = strtolower($feld->getAttribute('type'));
+            if ($feld->getAttribute('name') === '' || (in_array($art, ['radio', 'checkbox'], true) && !$feld->hasAttribute('checked'))) {
+                continue;
             }
+            $werte[$feld->getAttribute('name')] = $feld->tagName === 'textarea' ? $feld->textContent : $feld->getAttribute('value');
         }
 
         return $this->anfrage($form->getAttribute('action'), $felder + $werte);

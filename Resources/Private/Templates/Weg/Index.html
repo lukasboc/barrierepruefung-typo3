@@ -89,12 +89,23 @@
                         </table>
                     </div>
 
+                    <f:comment>
+                        Ein hervorgehobener Knopf: der nächste offene Schritt, sonst die Freigabe – die aber nur mit dem Recht des
+                        Tokens; ohne heißt der Weg dorthin „Entwurf ansehen“ und behauptet kein Recht.
+                    </f:comment>
                     <f:if condition="{naechster}">
                         <f:then>
-                            <p><a class="btn btn-primary" href="{f:be.uri(route: 'barrierepruefung_weg', parameters: {site: site.identifier, schritt: naechster.schluessel})}"><f:translate key="weg.naechster" arguments="{0: naechster.titel}" extensionName="Barrierepruefung" /></a></p>
+                            <p>
+                                <a class="btn btn-primary" href="{f:be.uri(route: 'barrierepruefung_weg', parameters: {site: site.identifier, schritt: naechster.schluessel})}"><f:translate key="weg.naechster" arguments="{0: naechster.titel}" extensionName="Barrierepruefung" /></a>
+                                <a class="btn btn-default" href="{freigabeUri}"><f:translate key="weg.entwurf_ansehen" extensionName="Barrierepruefung" /></a>
+                            </p>
                         </f:then>
                         <f:else>
                             <p><f:translate key="weg.alles_erledigt" extensionName="Barrierepruefung" /></p>
+                            <f:if condition="{freigaberecht.darf}">
+                                <f:then><p><a class="btn btn-primary" href="{freigabeUri}"><f:translate key="weg.zur_freigabe" extensionName="Barrierepruefung" /></a></p></f:then>
+                                <f:else><p><a class="btn btn-default" href="{freigabeUri}"><f:translate key="weg.entwurf_ansehen" extensionName="Barrierepruefung" /></a></p></f:else>
+                            </f:if>
                         </f:else>
                     </f:if>
 

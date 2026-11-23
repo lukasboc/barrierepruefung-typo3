@@ -14,6 +14,9 @@ use Lubomedia\Barrierepruefung\Modul\Anzeige;
  */
 final class Formulare
 {
+    /** `deferred`: „kann ich nicht beurteilen“, bei sperrenden Fragen nie erlaubt. */
+    private const NICHT_BEURTEILBAR = 'deferred';
+
     public function __construct(private readonly Anzeige $anzeige) {}
 
     /**
@@ -27,7 +30,9 @@ final class Formulare
         $meta = is_array($antwort['meta'] ?? null) ? $antwort['meta'] : [];
         $antworten = [];
         foreach (is_array($meta['answers'] ?? null) ? $meta['answers'] : [] as $wert => $wort) {
-            if (is_string($wert) && is_string($wort)) {
+            // Hier stehen nur sperrende Fragen, und für die lehnt der Dienst „kann ich nicht beurteilen“ ab. Liefert er
+            // die Option trotzdem (etwa mit `umfang=alle`), bietet das Formular sie nicht an.
+            if (is_string($wert) && is_string($wort) && $wert !== self::NICHT_BEURTEILBAR) {
                 $antworten[] = ['wert' => $wert, 'wort' => $wort];
             }
         }
@@ -268,6 +273,68 @@ final class Formulare
         unset($gruppe);
 
         return ['uebrige' => $uebrige, 'stelle' => $stelle, 'gerendert' => $gerendert];
+    }
+
+    /**
+     * Die Aussage zur Konformität aus `draft.conformance`: die ermittelte (`suggested`) ist gewählt, angeboten wird nur,
+     * was der Dienst wählbar nennt (`choices`; „vollständig konform“ fehlt, solange etwas offen ist), mit seinen Wörtern
+     * (`labels`). Wer abweicht, begründet es (`override_reason`). Dazu Kennung und Nummer der Fassung, die freigegeben
+     * würde – genau das, was die Vorschau zeigt.
+     *
+     * @param array<mixed>          $entwurf `data` von `GET /sites/{id}/declaration/draft`
+     * @param array<string, string> $felder
+     * @param array<string, string> $werte
+     * @return array<string, mixed>
+     */
+    public function freigabe(array $entwurf, array $felder, array $werte): array
+    {
+        $aussage = is_array($entwurf['conformance'] ?? null) ? $entwurf['conformance'] : [];
+        $woerter = is_array($aussage['labels'] ?? null) ? $aussage['labels'] : [];
+        $ermittelt = self::text($aussage['suggested'] ?? null);
+        $wahl = $werte['conformance_status'] ?? $ermittelt;
+        $werteListe = array_values(array_filter(is_array($aussage['choices'] ?? null) ? $aussage['choices'] : [], static fn(mixed $w): bool => is_string($w) && $w !== ''));
+        if ($ermittelt !== '' && !in_array($ermittelt, $werteListe, true)) {
+            array_unshift($werteListe, $ermittelt);
+        }
+        $id = Schritte::feldId('conformance_status');
+        $fehler = $felder['conformance_status'] ?? '';
+        $optionen = [];
+        foreach ($werteListe as $wert) {
+            /** @var string $wert */
+            $optionen[] = [
+                'wert' => $wert,
+                'id' => Schritte::feldId('conformance_status.' . $wert),
+                'wort' => self::text($woerter[$wert] ?? null) ?: $wert,
+                'ermittelt' => $wert === $ermittelt,
+                'gewaehlt' => $wert === $wahl,
+            ];
+        }
+        $begruendung = $this->feld(
+            'override_reason',
+            'override_reason',
+            $this->anzeige->t('weg.freigabe.begruendung'),
+            $this->anzeige->t('weg.freigabe.begruendung.hilfe'),
+            $werte['override_reason'] ?? '',
+            $felder,
+            false,
+            2000,
+            'textarea',
+            'off',
+        );
+        $begruendung['fokus'] = $fehler === '' && $begruendung['fehler'] !== '';
+
+        return [
+            'ermittelt' => $ermittelt,
+            'ermitteltWort' => self::text($woerter[$ermittelt] ?? null) ?: $ermittelt,
+            'grund' => self::text($aussage['reason'] ?? null),
+            'id' => $id,
+            'optionen' => self::mitFokus($optionen, $fehler !== ''),
+            'fehler' => $fehler,
+            'begruendung' => $begruendung,
+            'etag' => self::text($entwurf['draft_etag'] ?? null),
+            'fassung' => is_int($entwurf['next_version'] ?? null) && $entwurf['next_version'] > 0 ? $entwurf['next_version'] : null,
+            'gerendert' => ['conformance_status', 'override_reason'],
+        ];
     }
 
     /**

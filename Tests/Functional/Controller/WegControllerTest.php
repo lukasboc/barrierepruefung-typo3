@@ -614,6 +614,80 @@ final class WegControllerTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function nichtBeurteilbarWirdNieAngeboten(): void
+    {
+        $this->verbinde();
+        $antworten = $this->dienst();
+        // Der Dienst liefert „kann ich nicht beurteilen“ mit (wie mit `umfang=alle`); hier stehen nur sperrende Fragen.
+        $daten = $this->pruefschritteDaten();
+        $daten['meta']['answers'] = ['passed' => 'erfüllt', 'failed' => 'nicht erfüllt', 'not_applicable' => 'trifft nicht zu', 'deferred' => 'kann ich nicht beurteilen', 'unanswered' => 'offen'];
+        $antworten['GET ' . self::API . 'scans/' . self::LAUF . '/manual-checks'] = $this->json($daten);
+        $this->attrappe($antworten);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a', 'schritt' => 'pruefschritte']));
+
+        self::assertSame([], $this->suche($html, '//input[@type="radio"][@value="deferred"]'));
+        self::assertStringNotContainsString('kann ich nicht beurteilen', $this->text($this->inhalt($html)));
+        self::assertSame(['passed', 'failed', 'not_applicable', 'unanswered'], array_map(
+            static fn(\DOMElement $e): string => $e->getAttribute('value'),
+            $this->suche($html, '//input[@name="checks[11][answer]"]'),
+        ));
+    }
+
+    #[Test]
+    public function nochOffenePruefschritteBleibenAufDemSchritt(): void
+    {
+        $this->verbinde();
+        $antworten = $this->dienst();
+        // Eine von zwei Fragen beantwortet: der Weg nennt danach weiter „pruefschritte“ als nächsten Schritt.
+        $antworten['PUT ' . self::API . 'scans/' . self::LAUF . '/manual-checks'] = $this->json($this->pruefschritteDaten());
+        $this->attrappe($antworten);
+        $this->anmelden(self::ADMIN);
+
+        $antwort = $this->aufrufen(self::ROUTE . '.pruefschritte', [], $this->verschachtelt([
+            'site' => 'a', 'scan' => self::LAUF,
+            'checks[11][answer]' => 'passed', 'checks[11][note]' => '', 'checks[11][vorher_antwort]' => 'unanswered', 'checks[11][vorher_notiz]' => '',
+        ]));
+
+        self::assertSame(303, $antwort->getStatusCode());
+        self::assertStringContainsString('schritt=pruefschritte', $antwort->getHeaderLine('Location'), 'auf dem Schritt, nicht auf der Übersicht');
+        $danach = $this->html($this->folgen($antwort));
+        self::assertCount(1, $this->suche($danach, '//*[@role="status"][contains(.,"noch etwas offen")]'));
+        self::assertCount(1, $this->suche($danach, '//form[@id="barrierepruefung-pruefschritte"]'));
+    }
+
+    #[Test]
+    public function unbekannteAngabeStehtMitIhremSchluessel(): void
+    {
+        $this->verbinde();
+        $antworten = $this->dienst();
+        $entwurf = $this->aufnahme('draft');
+        $entwurf['data']['fields'][] = ['key' => 'pdf_hinweis', 'value' => 'Alte PDFs', 'applies' => true, 'required' => false, 'max' => 255, 'type' => 'text'];
+        $antworten['GET ' . self::API . 'sites/01SITEA/declaration/draft'] = $this->json($entwurf);
+        $antworten['PUT ' . self::API . 'sites/01SITEA/declaration/details'] = $this->json($entwurf);
+        $this->attrappe($antworten);
+        $this->anmelden(self::ADMIN);
+
+        $html = $this->html($this->aufrufen(self::ROUTE, ['site' => 'a', 'schritt' => 'pflichtangaben']));
+        $feld = $this->dom($html)->getElementById('bp-pdf_hinweis');
+        self::assertNotNull($feld, 'ein Feld, das diese Fassung nicht kennt, erscheint trotzdem');
+        self::assertSame('Alte PDFs', $feld->getAttribute('value'));
+        $beschriftung = $this->suche($html, '//label[@for="bp-pdf_hinweis"]');
+        self::assertCount(1, $beschriftung);
+        self::assertSame('pdf_hinweis', trim($beschriftung[0]->textContent), 'mit dem Schlüssel als Beschriftung');
+
+        $felder = [];
+        foreach ($this->suche($html, '//form[@id="barrierepruefung-angaben"]//*[@name]') as $element) {
+            $felder[$element->getAttribute('name')] = $element->tagName === 'textarea' ? $element->textContent : $element->getAttribute('value');
+        }
+        $felder['angaben[pdf_hinweis]'] = 'Archiv-PDFs vor 2020';
+        $this->aufrufen(self::ROUTE . '.angaben', [], $this->verschachtelt($felder));
+
+        self::assertSame('Archiv-PDFs vor 2020', $this->gesendet('PUT', 'sites/01SITEA/declaration/details')['pdf_hinweis'] ?? null, 'und wird gespeichert');
+    }
+
+    #[Test]
     public function fremdeSiteWirdAbgewiesen(): void
     {
         $this->verbinde();

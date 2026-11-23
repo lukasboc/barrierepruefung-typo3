@@ -1,0 +1,129 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    Die Freigabe: erst sehen, was veröffentlicht wird, dann entscheiden. Die Nummer der Fassung zieht sich durch die
+    Seite – „Diese Freigabe“, die Überschrift des Formulars und der Knopf nennen dieselbe Zahl, die der Dienst als nächste
+    erwartet. Die Vorschau beginnt bei h3 unter der h2 „Vorschau des Entwurfs“ und ist bereinigt. Formular und Knopf gibt
+    es nur mit dem Recht des Tokens und nur, wenn kein Schritt mehr offen ist; sonst steht ein Satz mit dem Weg weiter.
+    Der Idempotency-Key ist beim Anzeigen entstanden: zweimal dasselbe Formular ergibt eine Fassung.
+</f:comment>
+<f:layout name="Module" />
+<f:section name="Content">
+    <f:if condition="{fehlerliste}"><f:be.pageRenderer includeJavaScriptModules="{0: '@lubomedia/barrierepruefung/formular-fokus.js'}" /></f:if>
+    <h1>{modultitel} – {siteName}</h1>
+    <p><a class="d-inline-block py-1 text-decoration-underline" href="{wegUri}"><f:translate key="weg.zur_uebersicht" extensionName="Barrierepruefung" /></a></p>
+    <f:render partial="Rueckmeldung" arguments="{rueckmeldung: rueckmeldung, fehlerliste: fehlerliste}" />
+
+    <f:if condition="{zustand} == 'fehler'">
+        <f:then>
+            <f:render partial="Befunde/Fehler" arguments="{titel: 'weg.freigabe.nicht_abrufbar', fehler: fehler}" />
+        </f:then>
+        <f:else>
+            <dl class="row">
+                <f:if condition="{dokument}">
+                    <dt class="col-sm-3"><f:translate key="weg.dokument" extensionName="Barrierepruefung" /></dt>
+                    <dd class="col-sm-9">{dokument}</dd>
+                </f:if>
+                <f:if condition="{veroeffentlicht}">
+                    <dt class="col-sm-3"><f:translate key="weg.veroeffentlicht" extensionName="Barrierepruefung" /></dt>
+                    <dd class="col-sm-9">
+                        <f:if condition="{veroeffentlicht.veraltet}">
+                            <f:then><span class="badge badge-warning"><f:translate key="erklaerung.veraltet" extensionName="Barrierepruefung" /></span></f:then>
+                            <f:else><span class="badge badge-success"><f:translate key="erklaerung.veroeffentlicht" extensionName="Barrierepruefung" /></span></f:else>
+                        </f:if>
+                        <f:translate key="weg.fassung" arguments="{0: veroeffentlicht.fassung, 1: veroeffentlicht.am}" extensionName="Barrierepruefung" />
+                    </dd>
+                </f:if>
+                <f:if condition="{formular.fassung}">
+                    <dt class="col-sm-3"><f:translate key="weg.freigabe.diese" extensionName="Barrierepruefung" /></dt>
+                    <dd class="col-sm-9"><f:translate key="weg.freigabe.fassung" arguments="{0: formular.fassung}" extensionName="Barrierepruefung" /></dd>
+                </f:if>
+            </dl>
+
+            <f:if condition="{freigaberecht.darf}">
+                <f:then>
+                    <f:if condition="{bereit}">
+                        <f:else>
+                            <div class="callout callout-warning">
+                                <div class="callout-icon"><span class="icon-emphasized"><core:icon identifier="actions-exclamation" size="small" /></span></div>
+                                <div class="callout-content">
+                                    <f:if condition="{wegBekannt}">
+                                        <f:then>
+                                            <div class="callout-title"><f:translate key="weg.freigabe.nicht_bereit.titel" extensionName="Barrierepruefung" /></div>
+                                            <div class="callout-body">
+                                                <p><f:translate key="weg.freigabe.nicht_bereit" extensionName="Barrierepruefung" /></p>
+                                                <f:if condition="{naechster}">
+                                                    <p><a class="btn btn-default" href="{f:be.uri(route: 'barrierepruefung_weg', parameters: {site: site.identifier, schritt: naechster.schluessel})}"><f:translate key="weg.naechster" arguments="{0: naechster.titel}" extensionName="Barrierepruefung" /></a></p>
+                                                </f:if>
+                                            </div>
+                                        </f:then>
+                                        <f:else>
+                                            <div class="callout-body"><p><f:translate key="weg.freigabe.weg_unbekannt" extensionName="Barrierepruefung" /></p></div>
+                                        </f:else>
+                                    </f:if>
+                                </div>
+                            </div>
+                        </f:else>
+                    </f:if>
+                </f:then>
+                <f:else><f:render partial="Weg/OhneRecht" arguments="{stand: freigaberecht.stand}" /></f:else>
+            </f:if>
+
+            <h2 id="barrierepruefung-vorschau-titel"><f:translate key="weg.freigabe.vorschau" extensionName="Barrierepruefung" /></h2>
+            <f:if condition="{formular.fassung}"><p class="form-text mt-0"><f:translate key="weg.freigabe.vorschau.hinweis" arguments="{0: formular.fassung}" extensionName="Barrierepruefung" /></p></f:if>
+            <f:comment>Kein Scrollbereich: der ganze Text steht da, so wie er veröffentlicht würde, ohne eigene Höhe und ohne tabindex.</f:comment>
+            <div class="card mb-4">
+                <div class="card-body" id="barrierepruefung-vorschau" lang="{sprache}"><f:format.raw>{vorschau}</f:format.raw></div>
+            </div>
+
+            <h2><f:translate key="weg.freigabe.aussage" extensionName="Barrierepruefung" /></h2>
+            <f:if condition="{formular.ermittelt}">
+                <p>
+                    <f:translate key="weg.freigabe.ermittelt" extensionName="Barrierepruefung" /> <strong>{formular.ermitteltWort}</strong>.
+                    <f:if condition="{formular.grund}">{formular.grund}</f:if>
+                </p>
+            </f:if>
+
+            <f:if condition="{mitFormular}">
+                <form method="post" action="{f:be.uri(route: 'barrierepruefung_weg.freigeben')}" id="barrierepruefung-freigabe" novalidate>
+                    <input type="hidden" name="site" value="{site.identifier}">
+                    <input type="hidden" name="draft_etag" value="{formular.etag}">
+                    <input type="hidden" name="expected_version" value="{formular.fassung}">
+                    <input type="hidden" name="idempotency_key" value="{schluessel}">
+                    <input type="hidden" name="ermittelt" value="{formular.ermittelt}">
+
+                    <f:if condition="{formular.optionen}">
+                        <fieldset class="mb-3" id="{formular.id}">
+                            <legend class="form-label fs-6"><f:translate key="weg.freigabe.wahl" extensionName="Barrierepruefung" /></legend>
+                            <f:for each="{formular.optionen}" as="option">
+                                <div class="form-check">
+                                    <input class="form-check-input{f:if(condition: formular.fehler, then: ' is-invalid')}" type="radio" name="conformance_status" id="{option.id}" value="{option.wert}"<f:if condition="{option.gewaehlt}"> checked</f:if><f:if condition="{formular.fehler}"> aria-invalid="true" aria-describedby="{formular.id}-fehler"</f:if><f:if condition="{option.fokus}"> autofocus</f:if>>
+                                    <label class="form-check-label" for="{option.id}">{option.wort}<f:if condition="{option.ermittelt}"> <f:translate key="weg.freigabe.wahl.ermittelt" extensionName="Barrierepruefung" /></f:if></label>
+                                </div>
+                            </f:for>
+                            <f:if condition="{formular.fehler}"><div class="invalid-feedback d-block" id="{formular.id}-fehler">{formular.fehler}</div></f:if>
+                        </fieldset>
+                        <f:render partial="Weg/Feld" arguments="{feld: formular.begruendung}" />
+                    </f:if>
+
+                    <h2><f:translate key="weg.freigabe.ueberschrift" arguments="{0: formular.fassung}" extensionName="Barrierepruefung" /></h2>
+                    <p class="mb-1"><f:translate key="weg.freigabe.folge" extensionName="Barrierepruefung" /></p>
+                    <ul>
+                        <li><f:translate key="weg.freigabe.folge.festgeschrieben" arguments="{0: formular.fassung}" extensionName="Barrierepruefung" /></li>
+                        <li><f:translate key="weg.freigabe.folge.online" extensionName="Barrierepruefung" /></li>
+                        <li><f:translate key="weg.freigabe.folge.seiten" extensionName="Barrierepruefung" /></li>
+                        <li><f:translate key="weg.freigabe.folge.veraltet" extensionName="Barrierepruefung" /></li>
+                    </ul>
+                    <dl class="row">
+                        <dt class="col-sm-3"><f:translate key="weg.freigabe.handelnde" extensionName="Barrierepruefung" /></dt>
+                        <dd class="col-sm-9">
+                            {handelnde}
+                            <p class="form-text mt-1 mb-0"><f:translate key="weg.freigabe.handelnde.hilfe" extensionName="Barrierepruefung" /></p>
+                        </dd>
+                    </dl>
+                    <button type="submit" class="btn btn-primary"><f:translate key="weg.freigabe.knopf" arguments="{0: formular.fassung}" extensionName="Barrierepruefung" /></button>
+                </form>
+            </f:if>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

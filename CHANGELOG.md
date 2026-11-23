@@ -2,6 +2,25 @@
 
 ## Unveröffentlicht
 
+### Neu
+
+- **Weg zur Erklärung:** Untermodul „Weg zur Erklärung“ (`barrierepruefung_weg`). Es zeigt die Schritte, wie der Dienst
+  sie nennt, und erfasst Prüfschritte, wer erklärt, den Betroffenheits-Check und die Pflichtangaben im Backend. Das
+  braucht einen Token, dem eine Administratorin oder ein Administrator im Dienst das Recht zum Vorbereiten und
+  Veröffentlichen erteilt hat; ohne dieses Recht stehen statt der Formulare Sätze mit dem Weg zum Recht.
+- **Freigeben:** Am Ende des Wegs lässt sich die Erklärung aus TYPO3 veröffentlichen: Vorschau des Entwurfs, Aussage
+  zur Konformität (eine Abweichung von der ermittelten braucht eine Begründung), dann „Fassung n jetzt
+  veröffentlichen“. Ein Doppelklick ergibt eine Fassung, ein inzwischen geänderter Entwurf wird nicht still
+  veröffentlicht, sondern neu gezeigt. Seiten mit dem Element zeigen die neue Fassung sofort. In der Fassung steht der
+  Name der Backend-Person (`realName`, sonst Benutzername) als die Person, die freigegeben hat.
+
+### Hinweise für Betreiber
+
+- **Bestehende Backend-Gruppen** sehen „Weg zur Erklärung“ erst, wenn ihnen das Untermodul `barrierepruefung_weg`
+  freigegeben ist.
+- **Sprache der Fachtexte:** Backend-Personen mit der Sprache „default“ (Englisch) bekommen die Texte des Dienstes
+  jetzt englisch. Bisher kamen sie deutsch.
+
 ## 0.1.0
 
 Erste Fassung (beta): verbinden, prüfen, einbetten.
