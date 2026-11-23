@@ -17,16 +17,23 @@ jobs:
     name: Ins TER hochladen
     runs-on: ubuntu-latest
     environment: ter
-    env:
-      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
     steps:
       - name: Secret prüfen
+        env:
+          TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
         run: |
           if [ -z "$TYPO3_API_TOKEN" ]; then
             echo "::error::Das Secret TYPO3_API_TOKEN fehlt (Repository > Settings > Environments > ter). Es wurde nichts hochgeladen."
             exit 1
           fi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - name: Tailor installieren
+        run: composer global require 'typo3/tailor:^2.1' --prefer-dist --no-progress
       - name: Version aus dem Tag und ext_emconf.php
         id: version
         run: |
@@ -47,7 +54,12 @@ jobs:
           FASSUNG: ${{ steps.version.outputs.fassung }}
         run: |
           # Abschnitt der Fassung aus CHANGELOG.md (TER-Kommentar); fehlt er, bricht der Lauf ab.
-          abschnitt=$(awk -v v="$FASSUNG" '$0 ~ "^## " v "( |$)" {a=1; next} /^## / {a=0} a' CHANGELOG.md | sed '/^$/N;/^\n$/D')
+          kopf=$(grep -E "^## ${FASSUNG//./\\.}( |$)" CHANGELOG.md || true)
+          if grep -qi 'unveröffentlicht' <<<"$kopf"; then
+            echo "::error::Der Abschnittskopf in CHANGELOG.md nennt $FASSUNG noch „unveröffentlicht“ (\"$kopf\"). Datum eintragen, committen, Tag neu setzen. Es wurde nichts hochgeladen."
+            exit 1
+          fi
+          abschnitt=$(awk -v v="$FASSUNG" '$0 ~ "^## " v "( |$)" {a=1; next} /^## / {a=0} a' CHANGELOG.md | sed '/^$/N;/^\n$/D' | sed '/./,$!d')
           if [ -z "$abschnitt" ]; then
             echo "::error::CHANGELOG.md hat keinen Abschnitt für $FASSUNG."
             exit 1
@@ -57,13 +69,6 @@ jobs:
             echo "$abschnitt"
             echo 'EOF_KOMMENTAR'
           } >> "$GITHUB_OUTPUT"
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          coverage: none
-          tools: composer:v2
-      - name: Tailor installieren
-        run: composer global require typo3/tailor --prefer-dist --no-progress
       - name: Archiv bauen (git archive, .gitattributes entscheidet wie bei Packagist; Tailor packt es für das TER neu)
         env:
           FASSUNG: ${{ steps.version.outputs.fassung }}
@@ -89,6 +94,7 @@ jobs:
         env:
           FASSUNG: ${{ steps.version.outputs.fassung }}
           KOMMENTAR: ${{ steps.kommentar.outputs.text }}
+          TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
         run: |
           "$(composer global config bin-dir --absolute --quiet)/tailor" ter:publish \
             --artefact "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip" \

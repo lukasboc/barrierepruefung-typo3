@@ -38,7 +38,8 @@ Erklärung gehen und die Erklärung freigeben.
 
 - **Der Composer-Name lautet `barrierepruefungde/typo3`** (Extension-Key `barrierepruefung`).
 - **Backend-Gruppen brauchen das Modulrecht für jedes der vier Untermodule einzeln:** `barrierepruefung_uebersicht`,
-  Befunde, Erklärung und `barrierepruefung_weg`. Eine Gruppe, die nur die Übersicht hat, sieht die anderen drei nicht.
+  `barrierepruefung_befunde`, `barrierepruefung_erklaerung` und `barrierepruefung_weg`. Eine Gruppe, die nur die
+  Übersicht hat, sieht die anderen drei nicht.
   Zusätzlich braucht die Person einen Web-Mount, der die Site enthält.
 - **Scheduler-Aufgabe einrichten:** Für zeitnahe Aktualisierung die Aufgabe „Konsolenbefehl ausführen“ mit
   `barrierepruefung:aktualisieren` stündlich anlegen. Ohne sie ist eine Seite höchstens so lange alt, wie die Fassung
@@ -50,8 +51,7 @@ Erklärung gehen und die Erklärung freigeben.
 - **Site mit Pfad als Basis** (`https://example.org/museum/`): Die Nachweisdatei löst dort nicht auf die Site auf, der
   Dienst fragt sie immer am Wurzelpfad des Hosts. Die Domain lässt sich nur über das Meta-Element bestätigen.
 - **Nach einem Wechsel des `encryptionKey`** lässt sich der Token nicht mehr entschlüsseln: Die Seiten zeigen weiter die
-  letzte Fassung, der Befehl bricht nicht ab, das Modul bittet darum, die Verbindung neu herzustellen. Die Site neu
-  verbinden.
+  letzte Fassung, der Befehl bricht nicht ab, das Modul bittet darum, die Verbindung neu herzustellen.
 - **Sprache der Fachtexte:** Backend-Personen mit der Sprache „default“ (Englisch) bekommen die Texte des Dienstes
   englisch.
 - **Gestaltung ist Sache des Sitepackages.** Das Element bringt kein CSS mit. In Camino (Standard-Theme von 14.3) ist
