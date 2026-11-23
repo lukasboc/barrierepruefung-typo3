@@ -48,7 +48,7 @@ final class ErklaerungController
         $benutzer = $this->rahmen->benutzer();
         $vorlage = $this->rahmen->rahmen($request, self::UNTERMODUL);
         $site = $this->sitewahl->gewaehlt($request, $benutzer);
-        $vorlage->assign('rueckmeldung', $this->rueckmeldung->nehmen());
+        $vorlage->assign('rueckmeldung', $this->rueckmeldung->nehmen($site?->getIdentifier()));
         if ($site === null) {
             return $vorlage->assign('keineSite', true)->renderResponse('Erklaerung/Index');
         }
@@ -98,11 +98,12 @@ final class ErklaerungController
         try {
             $seite = $this->seiteAnlegen->anlegen($site);
         } catch (SeiteNichtAngelegt) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('seite.fehler'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('seite.fehler'));
 
             return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
         }
         $this->rueckmeldung->merken(
+            $site->getIdentifier(),
             'erfolg',
             $this->anzeige->t('seite.angelegt', $this->seiteAnlegen->titel($site)),
             [],
@@ -122,14 +123,14 @@ final class ErklaerungController
 
         $verbindung = $this->verbindungen->fuerSite($site->getIdentifier());
         if ($verbindung === null) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('befunde.nicht_verbunden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('befunde.nicht_verbunden'));
 
             return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
         }
         try {
             $this->verbindungen->zugang($verbindung);
         } catch (TresorFehler) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('fehler.neu_verbinden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('fehler.neu_verbinden'));
 
             return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
         }
@@ -137,11 +138,11 @@ final class ErklaerungController
         $fassung = $this->abruf->auffrischen($verbindung);
         if ($fassung->zustand === Fassung::AKTUELL) {
             $anzeige = $this->anzeige->erklaerung($fassung);
-            $this->rueckmeldung->merken('erfolg', $this->anzeige->t('abgleichen.erfolg', (string)($anzeige['fassung'] ?? ''), (string)($anzeige['stand'] ?? '')));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $this->anzeige->t('abgleichen.erfolg', (string)($anzeige['fassung'] ?? ''), (string)($anzeige['stand'] ?? '')));
         } else {
             $fehler = $this->anzeige->erklaerungsfehler($fassung);
             // „Im Dienst ist nichts veröffentlicht“ ist kein Fehler der Verbindung, nur ein Befund.
-            $this->rueckmeldung->merken($fehler['art'] === 'nicht_veroeffentlicht' ? 'info' : 'fehler', implode(' ', $fehler['saetze']));
+            $this->rueckmeldung->merken($site->getIdentifier(), $fehler['art'] === 'nicht_veroeffentlicht' ? 'info' : 'fehler', implode(' ', $fehler['saetze']));
         }
 
         return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);

@@ -70,6 +70,8 @@ trait Modulaufrufe
     {
         $pfad = (string)$this->get(UriBuilder::class)->buildUriFromRoute($route, $query);
         // Der Schlüssel hinter dem Routen-Token liegt sonst nur im Speicher der Formularschutz-Instanz.
+        // Achtung: das speichert die Sitzungsdaten des Testprozesses und überschreibt eine vom Modul gemerkte
+        // Rückmeldung – wer sie nach einer Aktion lesen will, folgt dem Redirect (folgen()) oder ruft anfrage() direkt.
         $this->get(FormProtectionFactory::class)->createForType('backend')->persistSessionToken();
 
         return $this->anfrage($pfad, $rumpf);

@@ -68,7 +68,7 @@ final class UebersichtController
     {
         $vorlage = $this->rahmen->rahmen($request, self::UNTERMODUL);
         $site = $this->sitewahl->gewaehlt($request, $this->rahmen->benutzer());
-        $rueckmeldung = $this->rueckmeldung->nehmen();
+        $rueckmeldung = $this->rueckmeldung->nehmen($site?->getIdentifier());
         $vorlage->assign('rueckmeldung', $rueckmeldung);
         if ($site === null) {
             return $vorlage->assign('keineSite', true)->renderResponse('Uebersicht/Index');
@@ -123,11 +123,11 @@ final class UebersichtController
         $siteId = $this->text($rumpf['site_id'] ?? null);
         $ergebnis = $this->verbinden->verbinden($site, $dienst, $siteId, $this->text($rumpf['api_token'] ?? null));
         if ($ergebnis->ok) {
-            $this->rueckmeldung->merken('erfolg', $this->t('verbinden.erfolg'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $this->t('verbinden.erfolg'));
         } else {
             [$text, $felder] = $this->verbindungsfehler($ergebnis, $dienst);
             // Das Token kommt nie zurück ins Formular.
-            $this->rueckmeldung->merken('fehler', $text, $felder, ['dienst_url' => $dienst, 'site_id' => $siteId]);
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $text, $felder, ['dienst_url' => $dienst, 'site_id' => $siteId]);
         }
 
         return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
@@ -141,7 +141,7 @@ final class UebersichtController
             return $this->verboten();
         }
         $this->verbindungen->trennen($site->getIdentifier());
-        $this->rueckmeldung->merken('info', $this->t('trennen.erfolg'));
+        $this->rueckmeldung->merken($site->getIdentifier(), 'info', $this->t('trennen.erfolg'));
 
         return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
     }
@@ -154,7 +154,7 @@ final class UebersichtController
         }
         $verbindung = $this->verbindungen->fuerSite($site->getIdentifier());
         if ($verbindung === null) {
-            $this->rueckmeldung->merken('fehler', $this->t('fehler.nicht_verbunden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->t('fehler.nicht_verbunden'));
 
             return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
         }
@@ -162,24 +162,24 @@ final class UebersichtController
         try {
             $ergebnis = $this->verifikation->bestaetigen($verbindung);
         } catch (TresorFehler) {
-            $this->rueckmeldung->merken('fehler', $this->t('fehler.neu_verbinden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->t('fehler.neu_verbinden'));
 
             return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
         }
 
         if ($ergebnis->bestaetigt) {
-            $this->rueckmeldung->merken('erfolg', $this->t('bestaetigen.erfolg.' . $ergebnis->methode));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $this->t('bestaetigen.erfolg.' . $ergebnis->methode));
         } elseif ($ergebnis->fehler !== null) {
             // Wie bei „Jetzt prüfen“: das Detail des Dienstes und ein Hinweis nach `reason`, nie ein Rohcode.
             $fehler = $this->fehler($ergebnis->fehler);
-            $this->rueckmeldung->merken('fehler', trim($this->t('bestaetigen.fehler.api') . ' ' . $fehler['detail'] . ' ' . $fehler['hinweis']));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', trim($this->t('bestaetigen.fehler.api') . ' ' . $fehler['detail'] . ' ' . $fehler['hinweis']));
         } else {
             $gruende = [];
             foreach ($ergebnis->gruende as $grund) {
                 [$methode, $warum] = array_pad(explode(':', $grund, 2), 2, 'unbekannt');
                 $gruende[] = $this->t('nachweis.methode.' . $methode) . ': ' . $this->wort('nachweis.', $warum);
             }
-            $this->rueckmeldung->merken('fehler', $this->t('bestaetigen.fehler', implode(' ', $gruende)));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->t('bestaetigen.fehler', implode(' ', $gruende)));
         }
 
         return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
@@ -196,23 +196,23 @@ final class UebersichtController
         $verbindung = $this->verbindungen->fuerSite($site->getIdentifier());
         if (preg_match(self::UUID, $schluessel) !== 1) {
             // Ohne den Schlüssel aus der Anzeige gäbe ein Doppelklick zwei Prüfungen.
-            $this->rueckmeldung->merken('fehler', $this->t('pruefen.ohne_schluessel'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->t('pruefen.ohne_schluessel'));
         } elseif ($verbindung === null) {
-            $this->rueckmeldung->merken('fehler', $this->t('fehler.nicht_verbunden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->t('fehler.nicht_verbunden'));
         } else {
             try {
                 $zugang = $this->verbindungen->zugang($verbindung);
                 $antwort = $this->client->senden($zugang, 'POST', 'sites/' . rawurlencode($verbindung->siteId) . '/scans', [], ['Idempotency-Key' => $schluessel]);
                 if ($antwort->status === 202) {
-                    $this->rueckmeldung->merken('erfolg', $this->t('pruefen.erfolg'));
+                    $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $this->t('pruefen.erfolg'));
                 } elseif ($antwort->ok()) {
-                    $this->rueckmeldung->merken('info', $this->t('pruefen.laeuft_bereits'));
+                    $this->rueckmeldung->merken($site->getIdentifier(), 'info', $this->t('pruefen.laeuft_bereits'));
                 } else {
                     $fehler = $this->fehler($antwort);
-                    $this->rueckmeldung->merken('fehler', trim($this->t('pruefen.fehler') . ' ' . $fehler['detail'] . ' ' . $fehler['hinweis']));
+                    $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', trim($this->t('pruefen.fehler') . ' ' . $fehler['detail'] . ' ' . $fehler['hinweis']));
                 }
             } catch (TresorFehler) {
-                $this->rueckmeldung->merken('fehler', $this->t('fehler.neu_verbinden'));
+                $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->t('fehler.neu_verbinden'));
             }
         }
 
@@ -226,7 +226,7 @@ final class UebersichtController
             return $this->verboten();
         }
         // Den Stand holt die Übersicht nach dem Redirect; die Zeile sagt, dass etwas geschehen ist.
-        $this->rueckmeldung->merken('info', $this->t('aktualisieren.info', date($this->t('format.zeit'))));
+        $this->rueckmeldung->merken($site->getIdentifier(), 'info', $this->t('aktualisieren.info', date($this->t('format.zeit'))));
 
         return $this->rahmen->zurueck($request, self::UNTERMODUL, $site);
     }

@@ -68,7 +68,7 @@ final class WegController
     {
         $vorlage = $this->rahmen->rahmen($request, self::UNTERMODUL);
         $site = $this->sitewahl->gewaehlt($request, $this->rahmen->benutzer());
-        $rueckmeldung = $this->rueckmeldung->nehmen();
+        $rueckmeldung = $this->rueckmeldung->nehmen($site?->getIdentifier());
         $vorlage->assign('rueckmeldung', $rueckmeldung);
         if ($site === null) {
             return $vorlage->assign('zustand', 'keineSite')->renderResponse('Weg/Index');
@@ -278,20 +278,20 @@ final class WegController
         }
         $verbindung = $this->verbindungen->fuerSite($site->getIdentifier());
         if ($verbindung === null) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('fehler.nicht_verbunden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('fehler.nicht_verbunden'));
 
             return $this->zurueck($site);
         }
         try {
             $zugang = $this->verbindungen->zugang($verbindung);
         } catch (TresorFehler) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('fehler.neu_verbinden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('fehler.neu_verbinden'));
 
             return $this->zurueck($site);
         }
         // Wer das Formular nicht sehen durfte, schickt auch nichts ab.
         if (!$verbindung->darfVorbereiten()) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('weg.ohne_recht.' . $this->recht($verbindung)['stand']));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('weg.ohne_recht.' . $this->recht($verbindung)['stand']));
 
             return $this->zurueck($site, $schritt);
         }
@@ -299,7 +299,7 @@ final class WegController
         $ergebnis = $senden($zugang, $rumpf);
         $antwort = $ergebnis['antwort'] ?? null;
         if ($antwort === null) {
-            $this->rueckmeldung->merken('info', $this->anzeige->t($ergebnis['meldung'] ?? 'weg.pruefschritte.unveraendert'), [], $ergebnis['werte']);
+            $this->rueckmeldung->merken($site->getIdentifier(), 'info', $this->anzeige->t($ergebnis['meldung'] ?? 'weg.pruefschritte.unveraendert'), [], $ergebnis['werte']);
 
             return $this->zurueck($site, $schritt);
         }
@@ -313,7 +313,7 @@ final class WegController
         if ($problem !== null && $antwort->status === 403 && in_array($problem->reason, self::RECHT_GRUENDE, true)) {
             // Der Dienst weiß es besser als der gespeicherte Stand: ab jetzt steht der Satz statt des Formulars.
             $this->verbindungen->faehigkeitenAktualisieren($site->getIdentifier(), ['publish' => ['state' => $problem->reason]] + $verbindung->faehigkeiten);
-            $this->rueckmeldung->merken('fehler', $problem->detail, [], [], $link);
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $problem->detail, [], [], $link);
 
             return $this->zurueck($site, $schritt);
         }
@@ -325,7 +325,7 @@ final class WegController
             $fehler = $this->anzeige->fehler($antwort);
             $text = trim($this->anzeige->t('weg.fehler.nicht_gespeichert') . ' ' . $fehler['detail'] . ' ' . $fehler['hinweis']);
         }
-        $this->rueckmeldung->merken('fehler', $text, $felder, $ergebnis['werte'], $link);
+        $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $text, $felder, $ergebnis['werte'], $link);
 
         return $this->zurueck($site, $schritt);
     }
@@ -340,16 +340,16 @@ final class WegController
         $daten = $weg->ok() && is_array($weg->daten['data'] ?? null) ? $weg->daten['data'] : [];
         $naechster = Schritte::finden($this->schritte->liste($daten['steps'] ?? null), $daten['next'] ?? null);
         if ($naechster !== null && $naechster['schluessel'] === $schritt) {
-            $this->rueckmeldung->merken('erfolg', $this->anzeige->t('weg.gespeichert.noch_offen'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $this->anzeige->t('weg.gespeichert.noch_offen'));
 
             return $this->zurueck($site, $schritt);
         }
         if ($naechster !== null) {
-            $this->rueckmeldung->merken('erfolg', $this->anzeige->t('weg.gespeichert.weiter', $naechster['titel']));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $this->anzeige->t('weg.gespeichert.weiter', $naechster['titel']));
 
             return $this->zurueck($site, $naechster['schluessel']);
         }
-        $this->rueckmeldung->merken('erfolg', $this->anzeige->t('weg.gespeichert'));
+        $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $this->anzeige->t('weg.gespeichert'));
 
         return $this->zurueck($site);
     }
@@ -363,7 +363,7 @@ final class WegController
     {
         $vorlage = $this->rahmen->rahmen($request, self::UNTERMODUL);
         $site = $this->sitewahl->gewaehlt($request, $this->rahmen->benutzer());
-        $rueckmeldung = $this->rueckmeldung->nehmen();
+        $rueckmeldung = $this->rueckmeldung->nehmen($site?->getIdentifier());
         $vorlage->assign('rueckmeldung', $rueckmeldung);
         if ($site === null) {
             return $vorlage->assign('zustand', 'keineSite')->renderResponse('Weg/Index');
@@ -440,20 +440,20 @@ final class WegController
         }
         $verbindung = $this->verbindungen->fuerSite($site->getIdentifier());
         if ($verbindung === null) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('fehler.nicht_verbunden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('fehler.nicht_verbunden'));
 
             return $this->zurueck($site);
         }
         try {
             $zugang = $this->verbindungen->zugang($verbindung);
         } catch (TresorFehler) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('fehler.neu_verbinden'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('fehler.neu_verbinden'));
 
             return $this->zurueck($site);
         }
         // Wer den Knopf nicht sehen durfte, veröffentlicht auch nichts.
         if (!$verbindung->darfFreigeben()) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('weg.ohne_recht.' . $this->freigaberecht($verbindung)['stand']));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('weg.ohne_recht.' . $this->freigaberecht($verbindung)['stand']));
 
             return $this->zurFreigabe($site);
         }
@@ -463,7 +463,7 @@ final class WegController
         $fassung = is_string($rumpf['expected_version'] ?? null) && preg_match('/^[1-9]\d{0,8}$/', $rumpf['expected_version']) === 1 ? (int)$rumpf['expected_version'] : 0;
         // Ohne den Schlüssel aus der Anzeige kein Versuch: ein hier erzeugter wäre bei jedem Absenden ein anderer.
         if (preg_match(self::UUID, $schluessel) !== 1 || $kennung === '' || strlen($kennung) > 64 || $fassung === 0) {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('weg.freigabe.formular_ungueltig'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('weg.freigabe.formular_ungueltig'));
 
             return $this->zurFreigabe($site);
         }
@@ -474,7 +474,7 @@ final class WegController
         $werte = ['conformance_status' => $wahl, 'override_reason' => $begruendung];
         $abweichend = $wahl !== '' && $wahl !== $ermittelt;
         if ($abweichend && trim($begruendung) === '') {
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('weg.freigabe.fehler.felder'), ['override_reason' => $this->anzeige->t('weg.freigabe.begruendung.fehlt')], $werte);
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('weg.freigabe.fehler.felder'), ['override_reason' => $this->anzeige->t('weg.freigabe.begruendung.fehlt')], $werte);
 
             return $this->zurFreigabe($site);
         }
@@ -506,6 +506,7 @@ final class WegController
             }
             $fehler = $this->anzeige->fehler($antwort);
             $this->rueckmeldung->merken(
+                $site->getIdentifier(),
                 'fehler',
                 trim($this->anzeige->t('weg.freigabe.unklar', (string)$fassung) . ' ' . $fehler['detail']),
                 [],
@@ -521,18 +522,18 @@ final class WegController
         $link = $link !== null ? ['uri' => $link, 'text' => $this->anzeige->t('weg.im_dienst_beheben')] : null;
         if ($problem !== null && $antwort->status === 403 && in_array($problem->reason, self::RECHT_GRUENDE, true)) {
             $this->verbindungen->faehigkeitenAktualisieren($site->getIdentifier(), ['publish' => ['state' => $problem->reason]] + $verbindung->faehigkeiten);
-            $this->rueckmeldung->merken('fehler', $problem->detail, [], [], $link);
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $problem->detail, [], [], $link);
 
             return $this->zurFreigabe($site);
         }
         if ($problem?->reason === 'entwurf_geaendert') {
             // Zurück zur Freigabe: sie holt den neuen Entwurf, mit neuer Kennung und neuem Schlüssel.
-            $this->rueckmeldung->merken('fehler', $this->anzeige->t('weg.freigabe.geaendert'));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $this->anzeige->t('weg.freigabe.geaendert'));
 
             return $this->zurFreigabe($site);
         }
         if ($problem?->reason === 'nicht_bereit') {
-            $this->rueckmeldung->merken('fehler', $problem->detail, [], [], null, $this->blocker($zugang, $site, $problem->blockers));
+            $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $problem->detail, [], [], null, $this->blocker($zugang, $site, $problem->blockers));
 
             return $this->zurueck($site);
         }
@@ -540,7 +541,7 @@ final class WegController
         $felder = Eingaben::fehler($problem->errors ?? []);
         $fehler = $this->anzeige->fehler($antwort);
         $text = trim($this->anzeige->t('weg.freigabe.nicht_veroeffentlicht') . ' ' . $fehler['detail'] . ' ' . $fehler['hinweis']);
-        $this->rueckmeldung->merken('fehler', $text, $felder, $werte, $link);
+        $this->rueckmeldung->merken($site->getIdentifier(), 'fehler', $text, $felder, $werte, $link);
 
         return $this->zurFreigabe($site);
     }
@@ -554,7 +555,7 @@ final class WegController
         $this->abruf->auffrischen($verbindung);
         $text = $this->anzeige->t('weg.freigabe.erfolg', (string)$fassung) . ($zusatz !== null ? ' ' . $this->anzeige->t($zusatz) : '');
         $adresse = $this->anzeige->adresse($oeffentlich);
-        $this->rueckmeldung->merken('erfolg', $text, [], [], $adresse !== null ? ['uri' => $adresse, 'text' => $this->anzeige->t('erklaerung.oeffnen')] : null);
+        $this->rueckmeldung->merken($site->getIdentifier(), 'erfolg', $text, [], [], $adresse !== null ? ['uri' => $adresse, 'text' => $this->anzeige->t('erklaerung.oeffnen')] : null);
 
         return $this->zurueck($site);
     }
@@ -564,8 +565,9 @@ final class WegController
      * und Fassung noch dieselben sind – sonst ein neuer. Ein neuer Entwurf ist eine neue Entscheidung und bekommt einen
      * neuen; eine andere Site nie den Schlüssel einer anderen (die Rückmeldung gilt für die ganze Sitzung).
      *
-     * @param array<string, string> $werte   aus der Rückmeldung
+     * @param array<string, string> $werte    aus der Rückmeldung
      * @param array<string, mixed>  $formular
+     * @param string                $site     Kennung der gezeigten TYPO3-Site; nur ein Schlüssel, der für sie gemerkt wurde, gilt
      */
     private static function schluesselFuer(array $werte, array $formular, string $site): string
     {

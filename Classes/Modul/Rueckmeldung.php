@@ -11,6 +11,10 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
  * Die Antwort auf eine Aktion, über den Redirect hinweg (PRG): in den Sitzungsdaten der Backend-Person, genau
  * einmal angezeigt. Bewusst keine FlashMessage: deren Toast verschwindet nach Sekunden (WCAG 2.2.1); die
  * Rückmeldung steht als `callout` oben im Inhalt, bis die Seite verlassen wird.
+ *
+ * Je Site eine: Die Sitzung gilt für alle Sites, eine Rückmeldung aber nur für die, auf der gehandelt wurde. Wer nach
+ * einer Aktion auf Site A die Seite von Site B öffnet, sieht dort nichts von A; die Rückmeldung von A bleibt liegen und
+ * erscheint, wenn A wieder gezeigt wird (verworfen würde sie gerade dann, wenn sie etwas Offenes meldet).
  */
 final class Rueckmeldung
 {
@@ -23,33 +27,45 @@ final class Rueckmeldung
     ];
 
     /**
+     * @param string                $site   Kennung der TYPO3-Site, auf der gehandelt wurde
      * @param string                $art    erfolg|fehler|info
      * @param array<string, string> $felder Fehler je Formularfeld
      * @param array<string, string> $werte  Eingaben, die das Formular wieder zeigt (nie ein Token)
      * @param array{uri: string, text: string}|null $link ein Weg weiter, als Link unter dem Text (Adresse aus dem UriBuilder)
      * @param list<array{text: string, uri: string|null}> $liste Einträge unter dem Text, je mit Weg dorthin, wo er sich beheben lässt
      */
-    public function merken(string $art, string $text, array $felder = [], array $werte = [], ?array $link = null, array $liste = []): void
+    public function merken(string $site, string $art, string $text, array $felder = [], array $werte = [], ?array $link = null, array $liste = []): void
     {
         if (!isset(self::ARTEN[$art])) {
             throw new \InvalidArgumentException('Unbekannte Art der Rückmeldung: ' . $art, 1763800001);
         }
-        $this->benutzer()?->setAndSaveSessionData(self::SCHLUESSEL, ['art' => $art, 'text' => $text, 'felder' => $felder, 'werte' => $werte, 'link' => $link, 'liste' => $liste]);
+        $benutzer = $this->benutzer();
+        if ($benutzer === null) {
+            return;
+        }
+        $alle = self::alle($benutzer);
+        $alle[$site] = ['art' => $art, 'text' => $text, 'felder' => $felder, 'werte' => $werte, 'link' => $link, 'liste' => $liste];
+        $benutzer->setAndSaveSessionData(self::SCHLUESSEL, $alle);
     }
 
     /**
-     * Die gemerkte Rückmeldung, danach ist sie weg.
+     * Die gemerkte Rückmeldung dieser Site, danach ist sie weg; die anderer Sites bleibt liegen. Ohne Site: keine.
      *
      * @return array{art: string, text: string, felder: array<string, string>, werte: array<string, string>, link: array{uri: string, text: string}|null, liste: list<array{text: string, uri: string|null}>, rolle: string, klasse: string, symbol: string}|null
      */
-    public function nehmen(): ?array
+    public function nehmen(?string $site): ?array
     {
         $benutzer = $this->benutzer();
-        $daten = $benutzer?->getSessionData(self::SCHLUESSEL);
-        if ($benutzer === null || !is_array($daten)) {
+        if ($benutzer === null || $site === null) {
             return null;
         }
-        $benutzer->setAndSaveSessionData(self::SCHLUESSEL, null);
+        $alle = self::alle($benutzer);
+        $daten = $alle[$site] ?? null;
+        if (!is_array($daten)) {
+            return null;
+        }
+        unset($alle[$site]);
+        $benutzer->setAndSaveSessionData(self::SCHLUESSEL, $alle === [] ? null : $alle);
 
         $art = is_string($daten['art'] ?? null) && isset(self::ARTEN[$daten['art']]) ? $daten['art'] : 'info';
         $schwere = self::ARTEN[$art];
@@ -76,6 +92,28 @@ final class Rueckmeldung
         return is_array($link) && is_string($link['uri'] ?? null) && $link['uri'] !== '' && is_string($link['text'] ?? null)
             ? ['uri' => $link['uri'], 'text' => $link['text']]
             : null;
+    }
+
+    /**
+     * Die gemerkten Rückmeldungen je Site. Eine aus der Zeit vor der Trennung nach Site (ein einzelner Eintrag mit
+     * `art`) gehört keiner Site und wird verworfen.
+     *
+     * @return array<string, array<mixed>>
+     */
+    private static function alle(BackendUserAuthentication $benutzer): array
+    {
+        $daten = $benutzer->getSessionData(self::SCHLUESSEL);
+        if (!is_array($daten) || array_key_exists('art', $daten)) {
+            return [];
+        }
+        $alle = [];
+        foreach ($daten as $site => $eintrag) {
+            if (is_string($site) && is_array($eintrag)) {
+                $alle[$site] = $eintrag;
+            }
+        }
+
+        return $alle;
     }
 
     /**

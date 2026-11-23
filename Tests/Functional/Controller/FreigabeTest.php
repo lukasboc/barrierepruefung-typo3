@@ -471,13 +471,18 @@ final class FreigabeTest extends FunctionalTestCase
         $antwort = $this->formularAbsenden($html, 'barrierepruefung-freigabe');
         self::assertStringContainsString('freigabe', $antwort->getHeaderLine('Location'), 'Ausgang offen');
 
-        // Statt der Freigabe von A öffnet die Person die von B: die gemerkte Rückmeldung wird dort gelesen. (Direkt über
-        // anfrage(): aufrufen() speichert die Sitzung des Testprozesses und löschte die Rückmeldung.)
+        // Statt der Freigabe von A öffnet die Person die von B: dort steht nichts von A, und B bekommt einen eigenen
+        // Schlüssel. (Direkt über anfrage(), siehe Modulaufrufe::aufrufen().)
         $b = $this->html($this->anfrage((string)$this->get(UriBuilder::class)->buildUriFromRoute(self::FREIGABE, ['site' => 'b']), null));
-        self::assertCount(1, $this->suche($b, '//*[@role="alert"][contains(.,"ist deshalb offen")]'), 'die Rückmeldung von A kommt auf B an');
         self::assertStringContainsString('Gemeinde B', $this->text($this->inhalt($b)));
+        self::assertSame([], $this->suche($b, '//*[@role="alert"][contains(.,"ist deshalb offen")]'), 'die Rückmeldung von A erscheint nicht auf B');
         self::assertSame(self::ETAG, $this->suche($b, '//input[@name="draft_etag"]')[0]->getAttribute('value'), 'gleiche Kennung wie bei A');
         self::assertNotSame($schluessel, $this->schluessel($b), 'B bekommt nie den Schlüssel von A');
+
+        // Zurück auf A: die Rückmeldung lag für A bereit, mit demselben Schlüssel.
+        $a = $this->html($this->anfrage((string)$this->get(UriBuilder::class)->buildUriFromRoute(self::FREIGABE, ['site' => 'a']), null));
+        self::assertCount(1, $this->suche($a, '//*[@role="alert"][contains(.,"ist deshalb offen")]'), 'auf A steht der offene Ausgang');
+        self::assertSame($schluessel, $this->schluessel($a), 'A bekommt seinen Schlüssel zurück');
     }
 
     #[Test]
