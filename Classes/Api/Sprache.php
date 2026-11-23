@@ -25,7 +25,8 @@ final class Sprache
             return 'de';
         }
 
-        return str_starts_with(strtolower($lang), 'de') ? 'de' : 'en';
+        // Nicht str_starts_with('de'): „default“ beginnt auch so und ist Englisch.
+        return preg_match('/^de(?:[-_]|$)/i', $lang) === 1 ? 'de' : 'en';
     }
 
     private function ausBackendBenutzer(): ?string

@@ -79,6 +79,19 @@ final class ClientTest extends UnitTestCase
         self::assertSame('en', $this->anfrage()->getHeaderLine('Accept-Language'));
     }
 
+    /**
+     * `default` (und leer) ist in TYPO3 Englisch – und beginnt trotzdem mit „de“.
+     */
+    #[Test]
+    public function defaultIstEnglischNichtDeutsch(): void
+    {
+        foreach (['default' => 'en', '' => 'en', 'de' => 'de', 'de-AT' => 'de', 'de_CH' => 'de', 'dk' => 'en'] as $lang => $erwartet) {
+            $this->verlauf = [];
+            $this->client([new Response(200, [], '{}')], $lang)->get($this->zugang(), '/x');
+            self::assertSame($erwartet, $this->anfrage()->getHeaderLine('Accept-Language'), 'lang „' . $lang . '“');
+        }
+    }
+
     #[Test]
     public function liestEtagUndMaxAge(): void
     {
