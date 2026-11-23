@@ -1,7 +1,8 @@
 name: Release
 
 # Bei einem Tag v* wird die Fassung ins TER (extensions.typo3.org) hochgeladen. Packagist holt sich den Tag
-# selbst (GitHub-Hook des Pakets). Ohne das Secret TYPO3_API_TOKEN bricht der Lauf ab, bevor etwas hochgeladen wird.
+# selbst (GitHub-Hook des Pakets). Das Secret TYPO3_API_TOKEN liegt im Environment `ter` (nur für Tags v*, mit
+# Freigabe durch die Betreiberin); ohne es bricht der Lauf ab, bevor etwas hochgeladen wird.
 
 on:
   push:
@@ -15,13 +16,14 @@ jobs:
   ter:
     name: Ins TER hochladen
     runs-on: ubuntu-latest
+    environment: ter
     env:
       TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
     steps:
       - name: Secret prüfen
         run: |
           if [ -z "$TYPO3_API_TOKEN" ]; then
-            echo "::error::Das Secret TYPO3_API_TOKEN fehlt (Repository > Settings > Secrets and variables > Actions). Es wurde nichts hochgeladen."
+            echo "::error::Das Secret TYPO3_API_TOKEN fehlt (Repository > Settings > Environments > ter). Es wurde nichts hochgeladen."
             exit 1
           fi
       - uses: actions/checkout@v4
@@ -62,11 +64,14 @@ jobs:
           tools: composer:v2
       - name: Tailor installieren
         run: composer global require typo3/tailor --prefer-dist --no-progress
-      - name: Archiv bauen (git archive, .gitattributes entscheidet wie bei Packagist)
+      - name: Archiv bauen (git archive, .gitattributes entscheidet wie bei Packagist; Tailor packt es für das TER neu)
         env:
           FASSUNG: ${{ steps.version.outputs.fassung }}
         run: |
-          git archive --format=zip -o "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip" HEAD
+          # Mit Wurzelordner: Tailor erkennt einen Wurzelordner am ersten Eintrag des Zips und packt flach neu (es
+          # nimmt dabei seine eigene Ausschlussliste: u. a. Tests/ fällt weg). Ohne Präfix hinge die Erkennung davon
+          # ab, ob der erste Eintrag zufällig ein Verzeichnis ist.
+          git archive --format=zip --prefix=barrierepruefung/ -o "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip" HEAD
           unzip -l "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip"
       - name: Archivinhalt prüfen
         env:
@@ -74,18 +79,12 @@ jobs:
         run: |
           # Entwicklungsdateien dürfen nicht ins öffentliche TER-Archiv.
           inhalt=$(unzip -Z1 "$RUNNER_TEMP/barrierepruefung_$FASSUNG.zip")
-          if echo "$inhalt" | grep -Eiq '(^|/)(CLAUDE\.md|\.github/|Build/|Tests/Unit|Tests/Functional|\.php-cs-fixer|phpstan|node_modules/|package(-lock)?\.json)'; then
+          muster='(^|/)(CLAUDE\.md|\.github/|Build/|Tests/Unit|Tests/Functional|\.php-cs-fixer|phpstan|node_modules/|package(-lock)?\.json)'
+          if grep -Ei "$muster" <<<"$inhalt" >/dev/null; then
             echo "::error::Das Archiv enthält Entwicklungsdateien:"
-            echo "$inhalt" | grep -Ei '(^|/)(CLAUDE\.md|\.github/|Build/|Tests/Unit|Tests/Functional|\.php-cs-fixer|phpstan|node_modules/|package(-lock)?\.json)'
+            grep -Ei "$muster" <<<"$inhalt"
             exit 1
           fi
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          coverage: none
-          tools: composer:v2
-      - name: Tailor installieren
-        run: composer global require typo3/tailor --prefer-dist --no-progress
       - name: Ins TER hochladen
         env:
           FASSUNG: ${{ steps.version.outputs.fassung }}

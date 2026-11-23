@@ -1,7 +1,9 @@
 * text=auto eol=lf
 
-# Aus dem Tag-Archiv bleibt heraus, was nur der Entwicklung dient. Packagist (Composer) und das TER-Archiv
-# (release.yml baut es mit `git archive`, Tailor liest export-ignore nicht selbst) sind derselbe Inhalt.
+# Aus dem Tag-Archiv bleibt heraus, was nur der Entwicklung dient. Packagist (Composer) bekommt dieses Archiv.
+# Das TER-Archiv entsteht aus demselben `git archive` (release.yml), Tailor packt es aber mit seiner eigenen
+# Ausschlussliste neu: Tests/ fällt dort ganz weg, also auch Tests/Fixtures/fragment/ (das TER-Archiv ist daher
+# etwas kleiner als das von Packagist; der Gleichlauf-Test im Dienst liest die Fixtures aus Packagist).
 /.github export-ignore
 /Build export-ignore
 /.php-cs-fixer.dist.php export-ignore
@@ -11,8 +13,7 @@
 /.gitignore export-ignore
 
 # Tests/ steht nicht als Ganzes hier: Tests/Fixtures/fragment/ muss im Archiv bleiben,
-# weil der Gleichlauf-Test im Dienst die Fixtures aus dem Composer-Archiv (Packagist) liest; das TER-Archiv
-# ist dasselbe `git archive` und enthält sie daher auch. Git kann ein
+# weil der Gleichlauf-Test im Dienst die Fixtures aus dem Composer-Archiv (Packagist) liest. Git kann ein
 # Unterverzeichnis eines export-ignore-Verzeichnisses nicht wieder einschließen,
 # deshalb werden die übrigen Verzeichnisse einzeln ausgenommen.
 /Tests/Unit export-ignore
