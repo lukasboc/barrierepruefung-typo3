@@ -11,7 +11,7 @@ const port = Number(process.argv[2] ?? process.env.STUB_PORT ?? 8091);
 const laden = (name) => JSON.parse(readFileSync(join(verzeichnis, `${name}.json`), 'utf8'));
 const ohneHinweis = (o) => { const { _von_hand, ...rest } = o; return rest; };
 
-const zustand = { ausfall: false, version: null, unbestaetigt: false, unveroeffentlicht: false, anfragen: [] };
+const zustand = { ausfall: false, version: null, unbestaetigt: false, unveroeffentlicht: false, wegOffen: false, eingabefehler: false, ohneRecht: false, anfragen: [] };
 
 const routen = [
   ['GET', /^\/sites\/[^/]+$/, 'site'],
@@ -28,7 +28,43 @@ const routen = [
   ['POST', /^\/sites\/[^/]+\/verify$/, 'verify', 200],
   ['POST', /^\/sites\/[^/]+\/scans$/, 'scan-start', 202],
   ['POST', /^\/sites\/[^/]+\/declaration\/publish$/, 'publish', 201],
+  // Weg zur Erklärung: die PUT antworten wie das zugehörige GET (der Dienst liefert den neuen Stand zurück).
+  ['PUT', /^\/scans\/[^/]+\/manual-checks$/, 'manual-checks', 200],
+  ['PUT', /^\/sites\/[^/]+\/declaring-party$/, 'declaring-party', 200],
+  ['PUT', /^\/sites\/[^/]+\/applicability$/, 'applicability', 200],
+  ['PUT', /^\/sites\/[^/]+\/declaration\/details$/, 'draft', 200],
 ];
+
+// Schalter /__stub/weg_offen: zwei offene Schritte (mit Gründen), ein Schritt, den die Extension nicht kennt, und zwei
+// sperrende Prüfschritte – die aufgenommenen Antworten sind alle erledigt.
+function wegOffen(name, inhalt) {
+  if (name === 'path') {
+    const schritte = inhalt.data.steps;
+    const p = schritte.find((s) => s.key === 'pruefschritte');
+    p.state = 'offen';
+    p.reasons = [{ key: 'pruefschritte_offen', text: 'Zwei manuelle Prüfschritte sind noch offen: „Ist die Fokusreihenfolge sinnvoll?“, „Haben Videos Untertitel?“' }];
+    const s = schritte.find((x) => x.key === 'verantwortliche_stelle');
+    s.state = 'offen';
+    s.reasons = [{ key: 'land', text: 'Wählen Sie, ob die Stelle zum Bund oder zu einem Land gehört.' }];
+    schritte.splice(4, 0, { key: 'neu_im_dienst', title: 'PDF-Dokumente nennen', state: 'offen', reasons: [{ key: 'pdf_fehlt', text: 'Nennen Sie die PDF-Dokumente, die nicht barrierefrei sind.' }], web_url: 'https://dienst.example/pruefung/01STUBSCAN0000000000000000/pdf' });
+    inhalt.data.done = 4;
+    inhalt.data.total = 7;
+    inhalt.data.next = 'pruefschritte';
+  }
+  if (name === 'manual-checks') {
+    inhalt.data = [
+      { id: 11, rule: 'manual.focus-order', title: 'Ist die Fokusreihenfolge sinnvoll?', description: 'Gehen Sie mit der Tabulatortaste durch die Seite.', success_criteria: ['2.4.3'], evidence: null, answer: 'unanswered', note: null, stale: false, inherited: false, answered_at: null },
+      { id: 12, rule: 'manual.captions', title: 'Haben Videos Untertitel?', description: null, success_criteria: ['1.2.2'], evidence: 'Die Prüfung hat ein Video gefunden.', answer: 'passed', note: 'Untertitel per YouTube', stale: false, inherited: true, answered_at: '2026-11-01T10:00:00+00:00' },
+    ];
+    inhalt.meta.total = 2;
+    inhalt.meta.open = 1;
+  }
+  if (name === 'declaring-party') {
+    inhalt.data.subdivision = null;
+    inhalt.data.subdivision_required = true;
+  }
+  return inhalt;
+}
 
 // Zweite Website für die 14.3-Instanz: der Adressabgleich vergleicht den Port mit (localhost:8089 ≠ :8090).
 const SITE_14 = '01STUBSITE0000000000000014';
@@ -44,6 +80,11 @@ function antwort(name, pfad) {
     inhalt.data.verified_at = null;
   }
   if (name === 'verify') zustand.unbestaetigt = false;
+  if (zustand.wegOffen) inhalt = wegOffen(name, inhalt);
+  if (name === 'site' && zustand.ohneRecht) {
+    inhalt.data.token.abilities = inhalt.data.token.abilities.filter((r) => r !== 'declaration:prepare' && r !== 'declaration:publish');
+    inhalt.data.token.publish = { state: zustand.ohneRecht === 'erloschen' ? 'recht_erloschen' : 'recht_fehlt' };
+  }
   if (zustand.version !== null) {
     if (name === 'declaration') inhalt.declaration.version = zustand.version;
     if (name === 'publish') inhalt.data.version = zustand.version;
@@ -85,9 +126,13 @@ createServer(async (req, res) => {
     if (aktion === 'ausfall' && req.method === 'POST') { zustand.ausfall = Boolean(daten.an); return senden(res, 200, { ausfall: zustand.ausfall }); }
     if (aktion === 'unbestaetigt' && req.method === 'POST') { zustand.unbestaetigt = Boolean(daten.an); return senden(res, 200, { unbestaetigt: zustand.unbestaetigt }); }
     if (aktion === 'unveroeffentlicht' && req.method === 'POST') { zustand.unveroeffentlicht = Boolean(daten.an); return senden(res, 200, { unveroeffentlicht: zustand.unveroeffentlicht }); }
+    if (aktion === 'weg_offen' && req.method === 'POST') { zustand.wegOffen = Boolean(daten.an); return senden(res, 200, { wegOffen: zustand.wegOffen }); }
+    if (aktion === 'eingabefehler' && req.method === 'POST') { zustand.eingabefehler = Boolean(daten.an); return senden(res, 200, { eingabefehler: zustand.eingabefehler }); }
+    // {"an": true} = recht_fehlt, {"an": "erloschen"} = recht_erloschen
+    if (aktion === 'ohne_recht' && req.method === 'POST') { zustand.ohneRecht = daten.an === 'erloschen' ? 'erloschen' : Boolean(daten.an); return senden(res, 200, { ohneRecht: zustand.ohneRecht }); }
     if (aktion === 'fassung' && req.method === 'POST') { zustand.version = Number(daten.version); return senden(res, 200, { version: zustand.version }); }
     if (aktion === 'anfragen' && req.method === 'GET') return senden(res, 200, zustand.anfragen);
-    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.unbestaetigt = false; zustand.unveroeffentlicht = false; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
+    if (aktion === 'zuruecksetzen' && req.method === 'POST') { zustand.ausfall = false; zustand.version = null; zustand.unbestaetigt = false; zustand.unveroeffentlicht = false; zustand.wegOffen = false; zustand.eingabefehler = false; zustand.ohneRecht = false; zustand.anfragen = []; return senden(res, 200, { ok: true }); }
     return senden(res, 404, { fehler: 'unbekannt' });
   }
 
@@ -102,6 +147,10 @@ createServer(async (req, res) => {
 
   // Noch nichts veröffentlicht (Schalter /__stub/unveroeffentlicht): die Erklärung gibt es nicht, der Rest antwortet wie sonst.
   if (zustand.unveroeffentlicht && treffer[2] === 'declaration') return senden(res, 404, { title: 'Keine veröffentlichte Erklärung', status: 404, detail: 'Für diese Website ist keine Erklärung veröffentlicht.', reason: 'keine_erklaerung' }, { 'Content-Type': 'application/problem+json' });
+
+  if (req.method === 'PUT' && zustand.ohneRecht) return senden(res, 403, { message: 'Diesem Token fehlt das Recht, die Erklärung vorzubereiten und zu veröffentlichen.', reason: zustand.ohneRecht === 'erloschen' ? 'recht_erloschen' : 'recht_fehlt', url: 'https://dienst.example/websites/01STUBSITE0000000000000000/einbindung' }, { 'Content-Type': 'application/problem+json' });
+  // Schalter /__stub/eingabefehler: die Pflichtangaben scheitern an einem leeren Kontakt (wie der Dienst: 422 mit errors je Feld).
+  if (req.method === 'PUT' && zustand.eingabefehler && treffer[2] === 'draft') return senden(res, 422, { message: 'Ohne Kontakt kann niemand eine Barriere melden — das ist Pflichtangabe.', errors: { contact: ['Ohne Kontakt kann niemand eine Barriere melden — das ist Pflichtangabe.'] } }, { 'Content-Type': 'application/problem+json' });
 
   const body = antwort(treffer[2], pfad);
   if (treffer[2] === 'findings-regel') blaettern(body, url);

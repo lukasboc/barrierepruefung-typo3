@@ -11,7 +11,9 @@
     "test": "node --test --test-concurrency=1 axe.test.mjs tastatur.test.mjs",
     "test:axe": "node --test --test-concurrency=1 axe.test.mjs",
     "test:tastatur": "node --test --test-concurrency=1 tastatur.test.mjs",
-    "modul-erklaerung": "node modul-erklaerung.mjs"
+    "modul-erklaerung": "node modul-erklaerung.mjs",
+    "modul-weg": "node modul-weg.mjs",
+    "abnahme-weg": "node abnahme-weg.mjs"
   },
   "dependencies": {
     "@axe-core/playwright": "4.14.0",
