@@ -1,5 +1,5 @@
 {
-    "name": "lubomedia/barrierepruefung-typo3",
+    "name": "barrierepruefungde/typo3",
     "type": "typo3-cms-extension",
     "description": "Barrierefreiheitserklärung von barrierepruefung.de in TYPO3 einbinden: Prüfung, Entwurf und veröffentlichte Erklärung über die Public API des Dienstes.",
     "keywords": ["TYPO3", "extension", "accessibility", "barrierefreiheit", "BFSG", "BITV"],

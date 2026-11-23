@@ -20,7 +20,7 @@
         "typo3/cms-filelist": "^14.3",
         "typo3/cms-seo": "^14.3",
         "typo3/theme-camino": "*",
-        "lubomedia/barrierepruefung-typo3": "@dev"
+        "barrierepruefungde/typo3": "@dev"
     },
     "config": {
         "allow-plugins": {

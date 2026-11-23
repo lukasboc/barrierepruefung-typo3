@@ -39,7 +39,7 @@ final class FreigabeTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = ['fluid_styled_content'];
 
-    protected array $testExtensionsToLoad = ['lubomedia/barrierepruefung-typo3'];
+    protected array $testExtensionsToLoad = ['barrierepruefungde/typo3'];
 
     /** Ein echter Seitencache: das Testsystem merkt sich sonst nichts, und „aus dem Cache gefallen“ wäre immer wahr. */
     protected array $configurationToUseInTestInstance = [

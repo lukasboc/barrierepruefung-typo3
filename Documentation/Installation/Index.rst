@@ -11,7 +11,7 @@ Composer
 
 .. code-block:: bash
 
-   composer require lubomedia/barrierepruefung-typo3
+   composer require barrierepruefungde/typo3
    vendor/bin/typo3 extension:setup
 
 :bash:`extension:setup` creates the database table of the connection and activates the extension. In a classic

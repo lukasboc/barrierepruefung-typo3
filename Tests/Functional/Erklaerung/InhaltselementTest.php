@@ -28,7 +28,7 @@ final class InhaltselementTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = ['fluid_styled_content'];
 
-    protected array $testExtensionsToLoad = ['lubomedia/barrierepruefung-typo3'];
+    protected array $testExtensionsToLoad = ['barrierepruefungde/typo3'];
 
     /**
      * Seitencache in der Datenbank (sonst NullBackend). Jede echte HTTP-Anfrage geht an einen toten Proxy:

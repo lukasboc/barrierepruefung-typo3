@@ -13,7 +13,7 @@ Pflichtangaben und Fragen kommen vom Dienst.
 Voraussetzungen: TYPO3 13.4 LTS oder 14.3 LTS, PHP 8.2 bis 8.5, ein Konto bei barrierepruefung.de.
 
 ```bash
-composer require lubomedia/barrierepruefung-typo3
+composer require barrierepruefungde/typo3
 vendor/bin/typo3 extension:setup
 ```
 
@@ -34,7 +34,7 @@ no legal knowledge of its own: texts, mandatory items and questions come from th
 Requirements: TYPO3 13.4 LTS or 14.3 LTS, PHP 8.2 to 8.5, an account at barrierepruefung.de.
 
 ```bash
-composer require lubomedia/barrierepruefung-typo3
+composer require barrierepruefungde/typo3
 vendor/bin/typo3 extension:setup
 ```
 

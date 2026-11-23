@@ -2,6 +2,12 @@
 
 ## Unveröffentlicht
 
+### Geändert
+
+- **Composer-Name:** Das Paket heißt `barrierepruefungde/typo3` (vorher `lubomedia/barrierepruefung-typo3`). Unter dem alten
+  Namen wurde noch keine Fassung veröffentlicht, es ist also nichts umzustellen. Namensraum und Extension-Key
+  (`barrierepruefung`) bleiben.
+
 ### Neu
 
 - **Weg zur Erklärung:** Untermodul „Weg zur Erklärung“ (`barrierepruefung_weg`). Es zeigt die Schritte, wie der Dienst

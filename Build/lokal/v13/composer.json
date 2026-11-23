@@ -19,7 +19,7 @@
         "typo3/cms-filelist": "^13.4",
         "typo3/cms-seo": "^13.4",
         "bk2k/bootstrap-package": "*",
-        "lubomedia/barrierepruefung-typo3": "@dev"
+        "barrierepruefungde/typo3": "@dev"
     },
     "config": {
         "allow-plugins": {

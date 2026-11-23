@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-TYPO3-Extension `barrierepruefung` (Composer: `lubomedia/barrierepruefung-typo3`) zu barrierepruefung.de
+TYPO3-Extension `barrierepruefung` (Composer: `barrierepruefungde/typo3`) zu barrierepruefung.de
 (Prüfung digitaler Barrierefreiheit, BFSG/BITV 2.0). Sie ist ein dünner Client der Public API des Dienstes,
 Geschwister des WordPress-Plugins. TYPO3 13.4 LTS und 14.3 LTS, PHP 8.2 bis 8.5.
 Deutsch ist die Sprache für Kommentare, Commits und Dokumentation.

@@ -10,7 +10,7 @@ Barrierepruefung.de – accessibility statement
    barrierepruefung
 
 :Package name:
-   lubomedia/barrierepruefung-typo3
+   barrierepruefungde/typo3
 
 :Version:
    |release|

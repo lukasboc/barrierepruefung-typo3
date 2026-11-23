@@ -21,7 +21,7 @@ final class VerifikationBestaetigenTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = ['fluid_styled_content'];
 
-    protected array $testExtensionsToLoad = ['lubomedia/barrierepruefung-typo3'];
+    protected array $testExtensionsToLoad = ['barrierepruefungde/typo3'];
 
     /** @var list<Request> */
     private array $anfragen = [];
