@@ -3,7 +3,7 @@
 // Metadaten für TER und klassische Installationen; Composer-Betrieb liest composer.json.
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Barrierepruefung.de – Barrierefreiheitserklärung',
-    'description' => 'Bindet die Prüfung und die Barrierefreiheitserklärung von barrierepruefung.de über die Public API des Dienstes in TYPO3 ein.',
+    'description' => 'Verbindet TYPO3-Sites mit barrierepruefung.de: Domain bestätigen, Prüfung starten, Befunde ansehen, die veröffentlichte Barrierefreiheitserklärung als Inhaltselement einbetten, den Weg zur Erklärung gehen und sie freigeben.',
     'category' => 'plugin',
     'author' => 'Lukas Boc',
     'author_email' => '',

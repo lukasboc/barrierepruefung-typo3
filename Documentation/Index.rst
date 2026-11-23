@@ -53,7 +53,8 @@ token that has the right, publishes it), and puts the **published** statement of
 
    .. card:: Installation
 
-      Composer or TER, database setup, the scheduler task and the backend rights of the four sub-modules.
+      Available via Composer (``barrierepruefungde/typo3``) and the TYPO3 Extension Repository (key
+      ``barrierepruefung``); database setup, the scheduler task and the backend rights of the four sub-modules.
 
       .. card-footer:: :ref:`Read more <installation>`
          :button-style: btn btn-secondary stretched-link
