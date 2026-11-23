@@ -19,7 +19,7 @@ Barrierepruefung.de – accessibility statement
    en
 
 :Author:
-   Lukas Boc
+   Lukas Bock
 
 :License:
    This document is published under the
