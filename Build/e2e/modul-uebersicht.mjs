@@ -38,7 +38,7 @@ for (const inst of instanzen) {
 
     // Ausgangslage: die Site auf localhost wählen und eine alte Verbindung trennen (Wiederholbarkeit).
     if (!(await frame.locator('h1').innerText()).includes(host)) {
-      await frame.locator('.module-docheader .dropdown-toggle').first().click();
+      await frame.locator('.module-docheader .dropdown-toggle:has-text("Site:")').first().click();
       frame = await neuGeladen(page, () => frame.locator(`.dropdown-menu a:has-text("${host}")`).first().click());
       await frame.waitForSelector(`h1:has-text("${host}")`);
     }

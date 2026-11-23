@@ -1,6 +1,6 @@
-// Tastaturdurchgang durch die drei Untermodule (Übersicht, Befunde, Erklärung) in beiden lokalen Instanzen.
+// Tastaturdurchgang durch die vier Untermodule (Übersicht, Befunde, Erklärung, Weg zur Erklärung) in beiden lokalen Instanzen.
 //
-// Teil 1: die drei Modulläufe (modul-*.mjs) bedienen alles nur mit Tab, Umschalt+Tab, Pfeiltasten und Enter, prüfen an
+// Teil 1: die vier Modulläufe (modul-*.mjs) bedienen alles nur mit Tab, Umschalt+Tab, Pfeiltasten und Enter, prüfen an
 // jedem Halt den sichtbaren Fokus (hilfen.mjs → tabBis) und führen axe-core über `.module-body` aus; sie scheitern
 // mit Exit-Code 1. Teil 2 (unten): in jedem Untermodul wird jedes sichtbare Bedienelement per Tab erreicht, der Fokus
 // verlässt den Modulrahmen wieder (keine Falle) und Umschalt+Tab führt zurück.
@@ -17,8 +17,8 @@ const INSTANZEN = [
   { name: 'v14', basis: 'http://localhost:8090' },
 ].filter((i) => !process.env.INSTANZ || i.name === process.env.INSTANZ);
 
-const LAEUFE = ['modul-uebersicht', 'modul-befunde', 'modul-erklaerung'];
-const MODULE = ['barrierepruefung_uebersicht', 'barrierepruefung_befunde', 'barrierepruefung_erklaerung'];
+const LAEUFE = ['modul-uebersicht', 'modul-befunde', 'modul-erklaerung', 'modul-weg'];
+const MODULE = ['barrierepruefung_uebersicht', 'barrierepruefung_befunde', 'barrierepruefung_erklaerung', 'barrierepruefung_weg'];
 
 for (const inst of INSTANZEN) {
   for (const lauf of LAEUFE) {

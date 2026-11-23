@@ -36,7 +36,7 @@ for (const inst of instanzen) {
     // Ausgangslage: Site auf localhost, verbunden mit der Attrappe (mit der Maus, das ist nicht der Prüfgegenstand).
     let frame = await modulOeffnen(page, inst.basis, 'barrierepruefung_uebersicht');
     if (!(await frame.locator('h1').innerText()).includes(host)) {
-      await frame.locator('.module-docheader .dropdown-toggle').first().click();
+      await frame.locator('.module-docheader .dropdown-toggle:has-text("Site:")').first().click();
       frame = await neuGeladen(page, () => frame.locator(`.dropdown-menu a:has-text("${host}")`).first().click());
     }
     if (await frame.locator('#barrierepruefung-trennen').count()) {

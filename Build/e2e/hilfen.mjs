@@ -146,7 +146,7 @@ export async function verbundenSein(browser, inst) {
     let frame = await modulOeffnen(page, inst.basis, 'barrierepruefung_uebersicht');
     const host = new URL(inst.basis).host;
     if (!(await frame.locator('h1').innerText()).includes(host)) {
-      await frame.locator('.module-docheader .dropdown-toggle').first().click();
+      await frame.locator('.module-docheader .dropdown-toggle:has-text("Site:")').first().click();
       frame = await neuGeladen(page, () => frame.locator(`.dropdown-menu a:has-text("${host}")`).first().click());
     }
     if (await frame.locator('#barrierepruefung-verbinden').count()) {

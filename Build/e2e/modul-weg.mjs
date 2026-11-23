@@ -44,8 +44,13 @@ for (const inst of instanzen) {
     const host = new URL(inst.basis).host;
 
     // Ausgangslage: Site auf localhost, verbunden mit der Attrappe (mit der Maus, das ist nicht der Prüfgegenstand).
-    // Die Site über den Parameter wählen (das Modul merkt sie sich für die folgenden Aufrufe).
-    let frame = await modulOeffnen(page, inst.basis, 'barrierepruefung_uebersicht', { site: inst.site });
+    // Die Site über den Parameter wählen (das Modul merkt sie sich für die folgenden Aufrufe). Ihre Kennung hängt von
+    // der Einrichtung ab (lokal main/camino, in der CI die erste Site aus `typo3 setup`): die erste, deren Titel den Host trägt.
+    let frame;
+    for (const kennung of [...new Set([process.env.E2E_SITE, inst.site, 'main', 'camino'].filter(Boolean))]) {
+      frame = await modulOeffnen(page, inst.basis, 'barrierepruefung_uebersicht', { site: kennung });
+      if ((await frame.locator('h1').innerText()).includes(host)) break;
+    }
     pruefe((await frame.locator('h1').innerText()).includes(host), `Site ${host} gewählt`);
     if (await frame.locator('#barrierepruefung-trennen').count()) {
       frame = await neuGeladen(page, () => frame.locator('#barrierepruefung-trennen button').click());
