@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 – (unveröffentlicht)
+## 0.1.0 – 2026-11-24
 
 Erste Fassung (beta): verbinden, Domain bestätigen, prüfen, Befunde ansehen, Erklärung einbetten, den Weg zur
 Erklärung gehen und die Erklärung freigeben.
